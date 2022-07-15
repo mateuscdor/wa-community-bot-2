@@ -7,4 +7,6 @@ export enum BlockedReason {
     MissingArguments,
     InsufficientGroupLevel,
     InvalidUser,
+    InsufficientArgs,
+    Cooldown
 }

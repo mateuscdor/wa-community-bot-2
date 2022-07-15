@@ -12,6 +12,7 @@ export default class PingCommand extends Command {
         super({
             triggers: [new CommandTrigger("ping")],
             usage: "{prefix}{command}",
+            category: 'Info',
             description: "Ping the bot",
         });
     }

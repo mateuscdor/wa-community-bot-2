@@ -10,7 +10,6 @@ export const messagesCollection = database.collection(messagesCollectionName);
 
 usersCollection.createIndex({ "jid": 1 }, { unique: true });
 chatsCollection.createIndex({ "jid": 1 }, { unique: true });
-messagesCollection.createIndex({ "id": 1 }, { unique: true });
 
 export async function connectToDatabase() {
     await client.connect();

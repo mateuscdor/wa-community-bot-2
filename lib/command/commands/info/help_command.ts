@@ -34,7 +34,7 @@ export default class HelpCommand extends Command {
             if (!command.mainTrigger.command) continue;
             if (command.mainTrigger.command == this.command) continue;
 
-            if ((await this.commandHandler.isBlocked(message, command)) != undefined) continue;
+            if ((await this.commandHandler.isBlocked(message, command, false)) != undefined) continue;
 
             if (command.developerLevel >= DeveloperLevel.Moderator) sendInGroup = false;
             filteredCommands.push(command);
@@ -52,14 +52,11 @@ export default class HelpCommand extends Command {
 
             const section = sections.get(sectionKey);
             section?.rows?.push({
-                title: command.usage.replace(/prefix/gi, prefix).replace(/command/gi, command.mainTrigger.command),
+                title: command.usage.replace(/{prefix}/gi, prefix).replace(/{command}/gi, command.mainTrigger.command),
                 description: command.description,
                 rowId: "HELP_COMMAND-" + id,
             });
 
-            // helpMessage += `${prefix + command.command}`;
-            // if (command.help) helpMessage += ` - ${command.help}`;
-            // helpMessage += '\n'
             id++;
         }
 

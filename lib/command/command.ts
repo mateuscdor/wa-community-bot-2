@@ -25,7 +25,7 @@ export default abstract class Command implements Blockable<Message> {
 
     usage: string;
 
-    category: string;
+    category: string | undefined;
 
     description: string;
 
@@ -44,12 +44,12 @@ export default abstract class Command implements Blockable<Message> {
         usage = "",
         description = "",
         cooldowns = new Map([
-            [ChatLevel.Free, 1500],
+            [ChatLevel.Free, 2000],
             [ChatLevel.Premium, 1000],
             [ChatLevel.Sponser, 500],
         ]),
         groupLevel = GroupLevel.None,
-        category = "",
+        category = undefined,
     }: {
         triggers: CommandTrigger[];
         blockedChats?: Array<"group" | "dm">;

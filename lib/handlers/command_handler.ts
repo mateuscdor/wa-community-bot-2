@@ -1,12 +1,12 @@
-import { isJidGroup, isJidUser } from "@adiwajshing/baileys";
-import { whatsappBot } from "..";
+import {isJidGroup, isJidUser} from "@adiwajshing/baileys";
+import {whatsappBot} from "..";
 import Blockable from "../blockable/blockable";
-import { BlockedReason } from "../blockable/blocked_reason";
+import {BlockedReason} from "../blockable/blocked_reason";
 import Triggerable from "../blockable/triggerable";
-import { Command } from "../command";
-import { chatRepository, userRepository } from "../constants/services";
+import {Command, CommandTrigger} from "../command";
+import {chatRepository, messagingService, userRepository} from "../constants/services";
 import Message from "../message/message";
-import { getUserPrivilegeLevel } from "../utils/group_utils";
+import {getUserPrivilegeLevel} from "../utils/group_utils";
 import BlockableHandler from "./blockable_handler";
 
 export default class CommandHandler extends BlockableHandler<Message> {
@@ -21,17 +21,17 @@ export default class CommandHandler extends BlockableHandler<Message> {
     }
 
     find(data: Message): [Triggerable<any>, Command][] | Promise<[Triggerable<any>, Command][]> {
-        return this.findByContent(data.content ?? '', data);
+        return this.findByContent(data.content ?? "", data);
     }
 
     findByContent(content: string, data?: Message): [Triggerable<any>, Command][] | Promise<[Triggerable<any>, Command][]> {
-        const result: [Triggerable<any>, Command][] = []
+        const result: [Triggerable<any>, Command][] = [];
 
         for (const blockable of this.blockables) {
             let foundTrigger: Triggerable<any> | undefined = undefined;
 
             for (const trigger of blockable.triggers) {
-                const checkedData = content?.slice(this.prefix.length) ?? '';
+                const checkedData = content?.slice(this.prefix.length) ?? "";
 
                 if (!trigger.isTriggered(checkedData)) continue;
                 foundTrigger = trigger;
@@ -49,12 +49,20 @@ export default class CommandHandler extends BlockableHandler<Message> {
         return data.content?.startsWith(this.prefix) ?? false;
     }
 
-    async isBlocked(message: Message, blockable: Blockable<Message>): Promise<BlockedReason | undefined> {
-        if (blockable.blockedChats.includes('group') && isJidGroup(message.raw?.key.remoteJid!)) {
+    async isBlocked(
+        message: Message,
+        blockable: Blockable<Message>,
+        checkCooldown: boolean = true,
+        trigger?: Triggerable<any>,
+    ): Promise<BlockedReason | undefined> {
+        if (!(blockable instanceof Command)) return -1;
+        if (!(trigger instanceof CommandTrigger)) return -1;
+
+        if (blockable.blockedChats.includes("group") && isJidGroup(message.raw?.key.remoteJid!)) {
             return BlockedReason.BlockedChat;
         }
 
-        if (blockable.blockedChats.includes('dm') && isJidUser(message.raw?.key.remoteJid!)) {
+        if (blockable.blockedChats.includes("dm") && isJidUser(message.raw?.key.remoteJid!)) {
             return BlockedReason.BlockedChat;
         }
 
@@ -65,7 +73,6 @@ export default class CommandHandler extends BlockableHandler<Message> {
 
             if (isJidGroup(message.to) && blockable.blacklistedJids.includes(message.to)) {
                 return BlockedReason.Blacklisted;
-
             }
         }
 
@@ -76,7 +83,14 @@ export default class CommandHandler extends BlockableHandler<Message> {
             }
         }
 
-        const user = await userRepository.get(message.sender ?? '');
+        const usedTrigger = trigger ?? blockable.mainTrigger;
+        const body = message.content?.slice(this.prefix.length + usedTrigger.command.length + 1) ?? "";
+        const args = body.split(" ");
+        if (args && args.length < blockable.minArgs) {
+            return BlockedReason.InsufficientArgs;
+        }
+
+        const user = await userRepository.get(message.sender ?? "");
         if (!user) {
             return BlockedReason.InvalidUser;
         }
@@ -85,15 +99,22 @@ export default class CommandHandler extends BlockableHandler<Message> {
             return BlockedReason.InsufficientDeveloperLevel;
         }
 
-
         // const chat = await chatRepository.get(message.to);
         if (blockable.chatLevel > 0 && (user?.model.chatLevel ?? 0) < blockable.chatLevel) {
             return BlockedReason.InsufficientChatLevel;
+        }
+
+        const timeTillCooldownEnd = user.timeTillCooldownEnd(message.raw?.key.remoteJid!, blockable);
+        if (checkCooldown && user.hasCooldown(blockable) && timeTillCooldownEnd > 0) {
+            await messagingService.reply(
+                message,
+                `You have to wait ${timeTillCooldownEnd}ms before using this command again.\nYou can avoid this by donating!`,
+            );
+            return BlockedReason.Cooldown;
         }
     }
 
     add(...blockable: Command[]): void {
         super.add(...blockable);
     }
-
 }

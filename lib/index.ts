@@ -41,6 +41,10 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
                 });
             }
 
+            if (rawMsg.message?.listResponseMessage?.singleSelectReply?.selectedRowId?.startsWith("HELP_COMMAND")) {
+                return await messagingService.reply(msg, "Please type the command in yourself.", true);
+            }
+
             // if ignore flag is set, return
             if (msg.metadata?.meta.get("ignore") == true) {
                 return;

@@ -2,28 +2,30 @@ import {whatsappBot} from "..";
 import Blockable from "../blockable/blockable";
 import Triggerable from "../blockable/triggerable";
 import {Command, CommandTrigger, JIDCommand} from "../command";
-import {chatRepository, messageRepository} from "../constants/services";
+import {
+    PromoteCommand,
+    AnonymousCommand,
+    LmgtfyCommand,
+    MP3Command,
+    SpoofCommand,
+    StickerCommand,
+    AddCommand,
+    DeleteCommand,
+    GtfoCommand,
+    KickCommand,
+    EveryoneCommand,
+    JoinCommand,
+    CreatorCommand,
+    GptCommand,
+    HelpCommand,
+    VCardCommand,
+    PingCommand,
+} from "../command/commands";
+import { messageRepository, userRepository} from "../constants/services";
 import ChatModel from "../database/models/chat/chat_model";
 import BlockableHandler from "../handlers/blockable_handler";
 import CommandHandler from "../handlers/command_handler";
 import Message from "../message/message";
-import {TimestampedData} from "../models";
-import VCardCommand from "../command/commands/info/vcard_command";
-import PromoteCommand from "../command/commands/admin/promote_command";
-import AnonymousCommand from "../command/commands/fun/anonymous_command";
-import LmgtfyCommand from "../command/commands/fun/lmgtfy_command";
-import MP3Command from "../command/commands/fun/mp3_command";
-import SpoofCommand from "../command/commands/fun/spoof_command";
-import StickerCommand from "../command/commands/fun/sticker_command";
-import AddCommand from "../command/commands/groups/admin/add_command";
-import DeleteCommand from "../command/commands/groups/admin/delete_command";
-import GtfoCommand from "../command/commands/groups/admin/gtfo_command";
-import KickCommand from "../command/commands/groups/admin/kick_command";
-import JoinCommand from "../command/commands/groups/outreach/join_command";
-import CreatorCommand from "../command/commands/info/creator_command";
-import GptCommand from "../command/commands/info/gpt_command";
-import HelpCommand from "../command/commands/info/help_command";
-import PingCommand from "../command/commands/info/ping";
 
 export default abstract class Chat {
     public model: ChatModel;
@@ -65,6 +67,7 @@ export default abstract class Chat {
         handler?.add(new DeleteCommand());
         handler?.add(new GtfoCommand());
         handler?.add(new KickCommand());
+        handler?.add(new EveryoneCommand());
 
         // bot outreach commands
         handler?.add(new JoinCommand());
@@ -97,9 +100,9 @@ export default abstract class Chat {
             const res = await handler.find(message);
 
             for (const [trigger, blockable] of res) {
-                const isBlocked = await handler.isBlocked(message, blockable);
+                const isBlocked = await handler.isBlocked(message, blockable, true, trigger);
 
-                if (isBlocked) {
+                if (isBlocked != undefined) {
                     return await blockable.onBlocked(message, isBlocked);
                 }
 
@@ -118,6 +121,9 @@ export default abstract class Chat {
         if (handler instanceof CommandHandler && blockable instanceof Command && trigger instanceof CommandTrigger) {
             const body = command.slice(handler.prefix.length + trigger.command.length + 1) ?? "";
             await blockable.execute(whatsappBot.client!, this, message, body, body, ...body.split(" "));
+            const user = await userRepository.get(message.from);
+            // add command cooldown to user
+            await user?.addCooldown(message.raw?.key.remoteJid!, blockable);
         }
     }
 
@@ -126,7 +132,7 @@ export default abstract class Chat {
         try {
             await messageRepository.create(model);
         } catch (err) {
-            console.error(`MESSAGE ${model.id} ALREADY LOGGED TO DATABASE`);
+            console.error(`MESSAGE ${message.id} ALREADY LOGGED TO DATABASE`);
             console.error(err);
         }
     }

@@ -104,7 +104,7 @@ export default class UserRepository {
     }
 
     public async simpleCreate(jid: string, pushName?: string) {
-        const model = new UserModel(new ObjectId(), jid, pushName, ChatLevel.Free, DeveloperLevel.None);
+        const model = new UserModel(new ObjectId(), jid, pushName, ChatLevel.Free, DeveloperLevel.None, new Map());
 
         return await this.create(model);
     }

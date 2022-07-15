@@ -12,6 +12,7 @@ export default class VCardCommand extends Command {
         super({
             triggers: [new CommandTrigger("vcard")],
             usage: "{prefix}{command}",
+            category: 'Info',
             description: "Sends VCard of a number",
         });
     }

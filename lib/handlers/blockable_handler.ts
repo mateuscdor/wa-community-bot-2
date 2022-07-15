@@ -14,7 +14,7 @@ export default abstract class BlockableHandler<In> {
 
     abstract find(data: In): Promise<Array<[Triggerable<any> | undefined, Blockable<In>]>> | Array<[Triggerable<any> | undefined, Blockable<In>]>;
     abstract appliable(data: In): Promise<boolean> | boolean;
-    abstract isBlocked(data: In, blockable: Blockable<In>): Promise<BlockedReason | undefined> | BlockedReason | undefined
+    abstract isBlocked(data: In, blockable: Blockable<In>, checkCooldown: boolean, trigger?: Triggerable<In>): Promise<BlockedReason | undefined> | BlockedReason | undefined
 
     add(...blockable: Blockable<In>[]) {
         this.blockables.push(...blockable);
