@@ -23,6 +23,7 @@ import JoinCommand from "../command/commands/groups/outreach/join_command";
 import CreatorCommand from "../command/commands/info/creator_command";
 import GptCommand from "../command/commands/info/gpt_command";
 import HelpCommand from "../command/commands/info/help_command";
+import PingCommand from "../command/commands/info/ping";
 
 export default abstract class Chat {
     public model: ChatModel;
@@ -73,6 +74,7 @@ export default abstract class Chat {
         handler?.add(new GptCommand());
         handler?.add(new HelpCommand(this.commandHandler!));
         handler?.add(new VCardCommand());
+        handler?.add(new PingCommand());
     }
 
     async getHandlers<J>(data: J) {
