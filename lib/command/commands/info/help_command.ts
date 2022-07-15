@@ -87,6 +87,7 @@ export default class HelpCommand extends Command {
                     text: helpMessage,
                     buttonText: "Click me for help!",
                     sections: Array.from(sections.entries()).map((arr) => arr[1] as proto.ISection),
+                    footer: 'Please consider supporting the bot by donating to the Patreon!\n\nIn the future, donators will receive special perks!\nhttps://www.patreon.com/wailcommunitybot',
                 },
                 {quoted: message.raw!},
             );

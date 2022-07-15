@@ -56,7 +56,7 @@ export default class CommandHandler extends BlockableHandler<Message> {
         trigger?: Triggerable<any>,
     ): Promise<BlockedReason | undefined> {
         if (!(blockable instanceof Command)) return -1;
-        if (!(trigger instanceof CommandTrigger)) return -1;
+        if (trigger && !(trigger instanceof CommandTrigger)) return -1;
 
         if (blockable.blockedChats.includes("group") && isJidGroup(message.raw?.key.remoteJid!)) {
             return BlockedReason.BlockedChat;
