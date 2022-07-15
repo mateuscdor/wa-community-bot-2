@@ -27,11 +27,10 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
             // mutates rawMsg key to a fixed version. current state of key has bugs.
             messageKeyFix(rawMsg);
 
-            const jid = normalizeJid(rawMsg?.key?.remoteJid ?? "");
-            if (!jid) return; // if JID failed to normalize return
-
             // apply metadata bound to message id in messaging service (this allows bot to send messages with metadata)
             const msg = await messagingService.messageInterceptor(rawMsg);
+            const jid = normalizeJid(msg.sender ?? "");
+            if (!jid) return; // if JID failed to normalize return
 
             const pushName = !msg.fromMe ? rawMsg.pushName ?? undefined : undefined; // if message is not from bot save with push name (WA name))
             let user = await fetchOrCreateUserFromJID(jid, pushName);
