@@ -58,7 +58,7 @@ export default abstract class Chat {
         // fun commands
         handler?.add(new AnonymousCommand());
         handler?.add(new LmgtfyCommand());
-        handler?.add(new MP3Command());
+        // handler?.add(new MP3Command());
         handler?.add(new SpoofCommand());
         handler?.add(new StickerCommand());
 
