@@ -65,16 +65,12 @@ export default class MP3Command extends Command {
                     this.deleteFiles(video.title, path);
                     delete this.downloading_list[video.title];
                 } else if (downloadData["messages"].length == 0) {
-                    await wait(5000);
                     if (downloadData["messages"].length == 0) this.deleteFiles(video.title, path);
                 }
 
                 const fileBuffer = fs.readFileSync(path);
                 while (downloadData["messages"].length > 0) {
                     await this.sendRoutine(downloadData["messages"], fileBuffer, video.title);
-                    console.log('waiting')
-                    await wait(5000);
-                    console.log('waited')
                 }
 
                 this.deleteFiles(video.title, path);
