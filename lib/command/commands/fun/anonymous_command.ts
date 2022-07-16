@@ -24,7 +24,10 @@ export default class AnonymousCommand extends Command {
 
         const splitData = body?.split(" ") ?? [];
         let number = splitData.shift();
-        number = number?.replace(/-/g, "")?.replace(/(?<=\d\d\d) /, "");
+        number = number
+            ?.replace(/-/g, "")
+            ?.replace(/(?<=\d\d\d) /, "")
+            ?.replace("+", "");
         if (number?.startsWith("0")) number = "972" + number.substring(1);
         if (number) number += "@s.whatsapp.net";
         if (!number) {

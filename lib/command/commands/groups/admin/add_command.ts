@@ -76,6 +76,7 @@ export default class AddCommand extends Command {
             ...body
                 .replace(/-/g, "")
                 .replace(/(?<=\d\d\d) /, "")
+                .replace("+", "")
                 .matchAll(/\d+/gim),
         ]
             .map((num) => {

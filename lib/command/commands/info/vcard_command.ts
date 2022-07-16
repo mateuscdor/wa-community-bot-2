@@ -12,7 +12,7 @@ export default class VCardCommand extends Command {
         super({
             triggers: [new CommandTrigger("vcard")],
             usage: "{prefix}{command}",
-            category: 'Info',
+            category: "Info",
             description: "Sends VCard of a number",
         });
     }
@@ -20,10 +20,18 @@ export default class VCardCommand extends Command {
     async onBlocked(msg: Message, blockedReason: BlockedReason) {}
 
     async execute(client: WASocket, chat: Chat, msg: Message, body: string) {
-        const jid = formatNumberToJID(extractNumberFromString(body));
-        const vcard = await buildVCardFromJID(jid);
-        const user = await userRepository.get(jid);
-        if (!vcard) {
+        let jid = body
+            .split(" ")
+            .shift()
+            ?.replace("+", "")
+            .replace(/-/g, "")
+            .replace(/(?<=\d\d\d) /, "");
+        if (jid?.startsWith("0")) {
+            jid = "972" + jid.slice(1);
+        }
+        const vcard = jid ? await buildVCardFromJID(jid) : undefined;
+        const user = jid ? await userRepository.get(jid) : undefined;
+        if (!vcard || !jid) {
             return await messagingService.reply(msg, "הזן מספר טלפון לאחר הפקודה", true);
         }
 
