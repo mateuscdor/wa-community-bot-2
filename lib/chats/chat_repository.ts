@@ -28,7 +28,9 @@ export default class ChatRepository {
 
     public async update(jid: string | undefined, update: UpdateFilter<any>): Promise<Chat | undefined> {
         if (!jid) return;
+        console.log(`entered: ${jid}`)
         jid = normalizeJid(jid);
+        console.log(`exit: ${jid}`)
 
         if (!jid || (!isJidUser(jid) && !isJidGroup(jid))) return;
 
