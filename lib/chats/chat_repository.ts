@@ -111,12 +111,20 @@ export default class ChatRepository {
         } else if (isJidUser(jid)) {
             model = new ChatModel(jid, ChatType.DM, ">>", false);
         }
-        if (!model) return;
+        if (!model) {
+            console.log('failed to create chat model');
+            return;
+        }
 
         const chat = model ? this.initializeChatInstance(model) : undefined;
-        if (!chat) return;
+        if (!chat) {
+            console.log('failed to create chat')
+            return;
+        }
         chatsCollection.insertOne(model.toMap());
 
+        console.log('created chat!!')
+        console.log(chat.model)
         this.repository.set(jid, chat);
         await chat.setupHandlers();
         return chat;
