@@ -10,6 +10,7 @@ import CommandTrigger from "../../command_trigger";
 import {wait} from "../../../utils/async_utils";
 import {BlockedReason} from "../../../blockable";
 import {DeveloperLevel} from "../../../database/models";
+import { MessageMetadata } from "../../../message";
 
 export default class MP3Command extends Command {
     constructor() {
@@ -103,7 +104,6 @@ export default class MP3Command extends Command {
             }
 
             console.log("sending message");
-            messagingService.setIgnoreMode(true)
             await messagingService.sendMessage(
                 jid,
                 {
@@ -112,8 +112,8 @@ export default class MP3Command extends Command {
                     mimetype: "audio/mpeg",
                 },
                 {quoted: message.raw ?? undefined},
+                new MessageMetadata(new Map([['media', false]]))
             );
-            messagingService.setIgnoreMode(false)
             
             console.log("send audio!");
         }

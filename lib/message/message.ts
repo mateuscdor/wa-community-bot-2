@@ -49,12 +49,13 @@ export default class Message {
 
         let quoted: WAMessage | undefined = getQuotedMessage(message)
 
+        console.log(`include media ${metadata?.meta.get('media') ?? true}`)
         return new Message(
             new MessageModel(
                 message.key.id!,
                 Number(message.messageTimestamp!),
                 getMessageBody(message),
-                await getMessageMediaBuffer(message),
+                (metadata?.meta.get('media') ?? true) ? await getMessageMediaBuffer(message) : undefined,
                 getMessageMediaType(message),
                 quoted?.key?.id ?? undefined,
                 from!,
