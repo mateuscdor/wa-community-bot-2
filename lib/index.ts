@@ -83,6 +83,8 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
                 return console.error(`Failed to get a chat for JID(${chatJid}).`);
             }
 
+            chat = await chatRepository.get(chatJid, true);
+            if (!chat) return;
             console.log(`chat: ${chatJid} | sent: ${chat.model.sentDisclaimer}`)
             if (!chat.model.sentDisclaimer) {
                 if (chatJid != "120363041344515310@g.us" && chatJid != "972585551784@s.whatsapp.net") break;
