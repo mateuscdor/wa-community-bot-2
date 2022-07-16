@@ -32,6 +32,7 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
 
             const pushName = !msg.fromMe ? rawMsg.pushName ?? undefined : undefined; // if message is not from bot save with push name (WA name))
             let user = await fetchOrCreateUserFromJID(jid, pushName);
+            if (!user) return; // if user failed to fetch return
 
             // if pushName exists and current user name does not match pushName, update user name
             if (pushName && user?.model.name != pushName) {
@@ -60,6 +61,16 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
 
             if (!chat) {
                 return console.error(`Failed to get a chat for JID(${jid}).`);
+            }
+
+            const [isExecutableCommand, commands] = await chat.isExecutableCommand(msg);
+            if (isExecutableCommand) {
+                const promises: Promise<any>[] = [];
+                for (const command of commands ?? []) {
+                    promises.push(user.addCooldown(chat.model.jid, command));
+                }
+
+                await Promise.all(promises);
             }
 
             chat?.handleMessage(msg).catch((e) => console.error(e));

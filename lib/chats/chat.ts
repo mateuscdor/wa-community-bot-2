@@ -22,11 +22,12 @@ import {
     PingCommand,
     RawCommand,
 } from "../command/commands";
-import { messageRepository, userRepository} from "../constants/services";
+import {messageRepository, userRepository} from "../constants/services";
 import ChatModel from "../database/models/chat/chat_model";
 import BlockableHandler from "../handlers/blockable_handler";
 import CommandHandler from "../handlers/command_handler";
 import Message from "../message/message";
+import User from "../user/user";
 
 export default abstract class Chat {
     public model: ChatModel;
@@ -111,6 +112,28 @@ export default abstract class Chat {
                 await this.executeBlockable(message, message.content ?? "", trigger, blockable, handler);
             }
         }
+    }
+
+    async isExecutableCommand(message: Message): Promise<[boolean, Command[] | undefined]> {
+        const handler = this.commandHandler;
+        if (!handler) return [false, undefined];
+
+        const res = await handler.find(message);
+        const executables: Command[] = []
+
+        for (const [trigger, blockable] of res) {
+            const isBlocked = await handler.isBlocked(message, blockable, false, trigger);
+            
+            if (isBlocked != undefined) {
+                return [false, undefined];
+            }
+
+            if (blockable instanceof Command) {
+                executables.push(blockable);
+            }
+        }
+
+        return [true, executables];
     }
 
     public async executeBlockable(
