@@ -7,8 +7,9 @@ import {chatRepository, messagingService, userRepository} from "./constants/serv
 import {normalizeJid} from "./utils/group_utils";
 import moment from "moment";
 ffmpeg.setFfmpegPath(ffmpegPath);
-dotenv.config();
-
+dotenv.config({path: "./"});
+console.log(process.env)
+console.log(dotenv.config())
 export const whatsappBot: BotClient = new BotClient("./session", registerEventHandlers);
 
 whatsappBot.start();
