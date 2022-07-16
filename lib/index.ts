@@ -56,7 +56,7 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
 
                 return await messagingService.replyAdvanced(
                     msg,
-                    {text: `*${aliasesButtons[0].buttonText?.displayText ?? ''}*\n${commandDescription}`, buttons: aliasesButtons},
+                    {text: `*${aliasesButtons[0].buttonText?.displayText ?? ''}*\n\n${commandDescription}`, buttons: aliasesButtons},
                     true,
                 );
             }
