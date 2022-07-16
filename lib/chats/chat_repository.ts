@@ -47,7 +47,8 @@ export default class ChatRepository {
         const res = await chatsCollection.findOne({jid}) || undefined;
         if (updateRes.acknowledged && res) {
             console.log("updated model: ");
-            const model = res ? ChatModel.fromMap(res.value as WithId<Map<string, object>>) ?? undefined : undefined;
+            console.log(res)
+            const model = res ? ChatModel.fromMap(res as WithId<Map<string, object>>) ?? undefined : undefined;
             console.log(model);
             if (model) {
                 chat.model = model;
