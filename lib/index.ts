@@ -95,7 +95,7 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
                     $set: {sent_disclaimer: true},
                 });
                 await messagingService.reply(msg, joinMessage, false);
-            // }
+            }
 
             // const [isExecutableCommand, commands] = await chat.isExecutableCommand(msg);
             // if (isExecutableCommand) {
