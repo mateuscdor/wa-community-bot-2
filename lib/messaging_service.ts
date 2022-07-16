@@ -1,6 +1,7 @@
 import { AnyMessageContent, isJidGroup, MiscMessageGenerationOptions, WAMessage, WASocket } from "@adiwajshing/baileys";
 import { assert } from "console";
 import { ObjectId } from "mongodb";
+import { createImportSpecifier } from "typescript";
 import Message from "./message/message";
 import MessageMetadata from "./message/message_metadata";
 
@@ -101,7 +102,9 @@ export default class MessagingService {
                 this.metadataAssignment.set(response?.key.id!, metadata);
             }
 
-            return Message.fromWAMessage(response!, metadata);
+            const msg = await Message.fromWAMessage(response!, metadata);
+            console.log('built sent message')
+            return msg
         } catch (error) {
             console.error("FAILED TO SEND MESSAGE");
             console.error(content);

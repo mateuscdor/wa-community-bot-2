@@ -75,7 +75,7 @@ export default class MP3Command extends Command {
                 while (messages.length > 0) {
                     console.log("huh");
                     await this.sendRoutine(downloadData["messages"], fileBuffer, video.title);
-                    console.log('finished send routine')
+                    console.log("finished send routine");
                 }
 
                 console.log("out!");
@@ -88,19 +88,20 @@ export default class MP3Command extends Command {
     private async sendRoutine(messages: Array<Message>, file: Buffer, title: string) {
         while (messages.length > 0) {
             console.log("oh 1");
-            console.log(messages)
+            console.log(messages);
             const message: Message | undefined = messages.shift();
             if (!message) {
-                console.log('continue 1')
+                console.log("continue 1");
                 continue;
             }
 
             const jid = message.raw?.key?.remoteJid ?? "";
             if (!isJidUser(jid) && !isJidGroup(jid)) {
-                console.log('continue 2')
+                console.log("continue 2");
                 continue;
             }
 
+            console.log("sending message");
             await messagingService.sendMessage(
                 jid,
                 {
