@@ -6,6 +6,7 @@ import {messagingService} from "../../../constants/services";
 import Message from "../../../message/message";
 import Command from "../../command";
 import CommandTrigger from "../../command_trigger";
+const process = require("process");
 
 export default class CreatorCommand extends Command {
     constructor() {
