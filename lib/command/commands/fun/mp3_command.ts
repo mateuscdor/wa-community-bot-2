@@ -58,29 +58,32 @@ export default class MP3Command extends Command {
         this.downloading_list[video.title] = {path, messages: [message]};
         downloadData = this.downloading_list[video.title];
 
-        ytdl.default(video.url)
-            .pipe(fs.createWriteStream(path))
-            .addListener("finish", async () => {
-                if (!downloadData) {
-                    console.log("intriguingly, downloadData is null");
+        console.log("initiated callback");
+        new Promise((res, rej) => {
+            ytdl.default(video.url)
+                .pipe(fs.createWriteStream(path))
+                .addListener("finish", async () => {
+                    if (!downloadData) {
+                        console.log("intriguingly, downloadData is null");
+                        this.deleteFiles(video.title, path);
+                        delete this.downloading_list[video.title];
+                    } else if (downloadData["messages"].length == 0) {
+                        console.log("why thoooo");
+                        if (downloadData["messages"].length == 0) this.deleteFiles(video.title, path);
+                    }
+
+                    const fileBuffer = fs.readFileSync(path);
+                    while (downloadData["messages"]?.length ?? 0 > 0) {
+                        console.log("huh");
+                        this.sendRoutine(downloadData["messages"], fileBuffer, video.title);
+                        delete downloadData["messages"];
+                    }
+
+                    console.log("out!");
                     this.deleteFiles(video.title, path);
                     delete this.downloading_list[video.title];
-                } else if (downloadData["messages"].length == 0) {
-                    console.log("why thoooo");
-                    if (downloadData["messages"].length == 0) this.deleteFiles(video.title, path);
-                }
-
-                const fileBuffer = fs.readFileSync(path);
-                while (downloadData["messages"]?.length ?? 0 > 0) {
-                    console.log("huh");
-                    this.sendRoutine(downloadData["messages"], fileBuffer, video.title);
-                    delete downloadData["messages"];
-                }
-
-                console.log("out!");
-                this.deleteFiles(video.title, path);
-                delete this.downloading_list[video.title];
-            });
+                });
+        });
         console.log("finished executing wtf");
     }
 
