@@ -71,9 +71,11 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
             let chat = await chatRepository.get(chatJid, true);
             if (!chat) {
                 try {
+                    console.log(`creating chat ${chatJid}`);
                     chat = await chatRepository.create(chatJid);
                 } catch (e) {
-                    chat = await chatRepository.get(chatJid).catch(() => undefined);
+                    console.error(e)
+                    chat = await chatRepository.get(chatJid, true).catch((err) => console.error(err)) || undefined;
                 }
             }
 

@@ -1,9 +1,9 @@
-import { isJidGroup, isJidUser } from "@adiwajshing/baileys";
-import { ReturnDocument, WithId } from "mongodb";
-import { Chat, GroupChat, DMChat } from ".";
-import { chatsCollection } from "../database";
-import { ChatModel, ChatType } from "../database/models";
-import { normalizeJid } from "../utils/group_utils";
+import {isJidGroup, isJidUser} from "@adiwajshing/baileys";
+import {ReturnDocument, WithId} from "mongodb";
+import {Chat, GroupChat, DMChat} from ".";
+import {chatsCollection} from "../database";
+import {ChatModel, ChatType} from "../database/models";
+import {normalizeJid} from "../utils/group_utils";
 
 export default class ChatRepository {
     private repository: Map<string, Chat> = new Map<string, Chat>();
@@ -12,12 +12,12 @@ export default class ChatRepository {
         if (!jid) return;
         jid = normalizeJid(jid);
 
-        if (!jid || !isJidUser(jid) && !isJidGroup(jid)) return;
+        if (!jid || (!isJidUser(jid) && !isJidGroup(jid))) return;
 
         let chat: Chat | undefined = this.repository[jid];
 
         if (update || !chat) {
-            chat = await this.fetch(jid)
+            chat = await this.fetch(jid);
         }
 
         if (chat) this.updateLocal(chat);
@@ -26,10 +26,7 @@ export default class ChatRepository {
         return chat;
     }
 
-    public async update(
-        jid: string | undefined,
-        update: any,
-    ): Promise<Chat | undefined> {
+    public async update(jid: string | undefined, update: any): Promise<Chat | undefined> {
         if (!jid) return;
         jid = normalizeJid(jid);
 
@@ -44,7 +41,7 @@ export default class ChatRepository {
         if (!chat) return;
         if (!update || update.size === 0) return chat;
 
-        const res = await chatsCollection.findOneAndUpdate({ jid }, update, { returnDocument: ReturnDocument.AFTER });
+        const res = await chatsCollection.findOneAndUpdate({jid}, update, {returnDocument: ReturnDocument.AFTER});
         if (res.ok) {
             const model = res.value ? ChatModel.fromMap(res.value as WithId<Map<string, object>>) ?? undefined : undefined;
             if (model) {
@@ -77,22 +74,22 @@ export default class ChatRepository {
         jid = normalizeJid(jid);
         if (!jid) return;
 
-        let doc = await chatsCollection.findOne<Map<string, object>>({ jid })
+        let doc = await chatsCollection.findOne<Map<string, object>>({jid});
         return doc ?? undefined;
     }
-
 
     public async create(jid: string): Promise<Chat | undefined> {
         let model: ChatModel | undefined;
         if (isJidGroup(jid)) {
             model = new ChatModel(jid, ChatType.Group, ">>", false);
         } else if (isJidUser(jid)) {
-            model = new ChatModel(jid, ChatType.DM, '>>', false);
+            model = new ChatModel(jid, ChatType.DM, ">>", false);
         }
+        if (!model) return;
 
         const chat = model ? this.initializeChatInstance(model) : undefined;
-        if (chat && model) chatsCollection.insertOne(model.toMap());
-        else return;
+        if (!chat) return;
+        chatsCollection.insertOne(model.toMap());
 
         if (chat) this.updateLocal(chat);
         await chat.setupHandlers();
