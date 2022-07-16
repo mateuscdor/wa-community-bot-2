@@ -108,7 +108,6 @@ export class BotClient {
   }
 
   public async restart() {
-    await this.client?.logout();
     this.start();
   }
 }
