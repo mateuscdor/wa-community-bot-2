@@ -47,7 +47,10 @@ export default class ChatRepository {
             console.log("COULDNT FIND CHAT")
             return;
         }
-        if (!update || update.size === 0) return chat;
+        if (!update || update.size === 0) {
+            console.log("NO UPDATE")
+            return;
+        }
 
         const updateRes = await chatsCollection.updateOne({jid}, update);
         const res = await chatsCollection.findOne({jid}) || undefined;
@@ -63,6 +66,7 @@ export default class ChatRepository {
             return chat;
         }
 
+        console.log('update failed')
         const model = (await this.fetch(jid)) ?? undefined;
         if (model) chat.model = model.model;
         return chat;
