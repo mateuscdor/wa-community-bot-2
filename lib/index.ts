@@ -79,19 +79,19 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
                 return console.error(`Failed to get a chat for JID(${jid}).`);
             }
 
-            if (!chat.model.sendDisclaimer) {
-                const joinMessage =
-                    "**Disclaimer**\
-                \nThis bot is handled and managed by a human\
-                \nAs such, I have the ability to see the messages in this chat.\
-                \nI DO NOT plan to but the possibility is there.\
-                \nIf you are not keen with this, do not send the bot messages.\
-                \nEnjoy my bot! Get started using: >>help\n\nP.S You can DM the bot.";
-                await chatRepository.update(jid, {
-                    $set: {sent_disclaimer: true},
-                });
-                await messagingService.reply(msg, joinMessage, false);
-            }
+            // if (!chat.model.sendDisclaimer) {
+            //     const joinMessage =
+            //         "**Disclaimer**\
+            //     \nThis bot is handled and managed by a human\
+            //     \nAs such, I have the ability to see the messages in this chat.\
+            //     \nI DO NOT plan to but the possibility is there.\
+            //     \nIf you are not keen with this, do not send the bot messages.\
+            //     \nEnjoy my bot! Get started using: >>help\n\nP.S You can DM the bot.";
+            //     await chatRepository.update(jid, {
+            //         $set: {sent_disclaimer: true},
+            //     });
+            //     await messagingService.reply(msg, joinMessage, false);
+            // }
 
             // const [isExecutableCommand, commands] = await chat.isExecutableCommand(msg);
             // if (isExecutableCommand) {
