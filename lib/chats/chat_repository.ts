@@ -54,6 +54,8 @@ export default class ChatRepository {
 
         const updateRes = await chatsCollection.updateOne({jid}, update);
         const res = await chatsCollection.findOne({jid}) || undefined;
+        console.log('update')
+        console.log(update)
         if (updateRes.acknowledged && res) {
             console.log("updated model: ");
             console.log(res)
