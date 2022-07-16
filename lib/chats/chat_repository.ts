@@ -121,7 +121,7 @@ export default class ChatRepository {
             console.log('failed to create chat')
             return;
         }
-        chatsCollection.insertOne(model.toMap());
+        await chatsCollection.insertOne(model.toMap());
 
         console.log('created chat!!')
         console.log(chat.model)
