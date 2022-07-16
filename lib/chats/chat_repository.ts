@@ -43,11 +43,11 @@ export default class ChatRepository {
             if (chat) this.updateLocal(chat);
         }
 
-        let chat = await this.get(jid, true);
-        if (!chat) {
-            console.log("COULDNT FIND CHAT");
-            return;
-        }
+        // let chat = await this.get(jid, true);
+        // if (!chat) {
+        //     console.log("COULDNT FIND CHAT");
+        //     return;
+        // }
         if (!update || update.size === 0) {
             console.log("NO UPDATE");
             return;
