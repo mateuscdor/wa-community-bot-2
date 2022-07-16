@@ -29,12 +29,12 @@ export default class ChatRepository {
 
     public async update(jid: string | undefined, update: UpdateFilter<any>): Promise<Chat | undefined> {
         if (!jid) return;
-        console.log(`entered: ${jid}`)
+        console.log(`entered: ${jid}`);
         jid = normalizeJid(jid);
-        console.log(`exit: ${jid}`)
+        console.log(`exit: ${jid}`);
 
         if (!jid || (!isJidUser(jid) && !isJidGroup(jid))) {
-            console.log(`invalid JID`)
+            console.log(`invalid JID`);
             return;
         }
 
@@ -45,23 +45,23 @@ export default class ChatRepository {
 
         let chat = await this.get(jid, true);
         if (!chat) {
-            console.log("COULDNT FIND CHAT")
+            console.log("COULDNT FIND CHAT");
             return;
         }
         if (!update || update.size === 0) {
-            console.log("NO UPDATE")
+            console.log("NO UPDATE");
             return;
         }
 
-        console.log("UPDATING")
-        console.log(chat.model)
+        console.log("UPDATING");
+        console.log(chat.model);
         const updateRes = await chatsCollection.updateOne({jid}, update);
-        const res = await chatsCollection.findOne({jid}) || undefined;
-        console.log('update')
-        console.log(update)
+        const res = (await chatsCollection.findOne({jid})) || undefined;
+        console.log("update");
+        console.log(update);
         if (updateRes.acknowledged && res) {
             console.log("updated model: ");
-            console.log(res)
+            console.log(res);
             const model = res ? ChatModel.fromMap(res as WithId<Map<string, object>>) ?? undefined : undefined;
             console.log(model);
             if (model) {
@@ -71,7 +71,7 @@ export default class ChatRepository {
             return chat;
         }
 
-        console.log('update failed')
+        console.log("update failed");
         const model = (await this.fetch(jid)) ?? undefined;
         if (model) chat.model = model.model;
         return chat;
@@ -112,7 +112,7 @@ export default class ChatRepository {
         if (!chat) return;
         chatsCollection.insertOne(model.toMap());
 
-        if (chat) this.updateLocal(chat);
+        this.repository.set(jid, chat);
         await chat.setupHandlers();
         return chat;
     }
