@@ -67,43 +67,34 @@ export default class MP3Command extends Command {
                     this.deleteFiles(video.title, path);
                     delete this.downloading_list[video.title];
                 } else if (downloadData["messages"].length == 0) {
-                    // await wait(5000)
+                    await wait(5000)
                     if (downloadData["messages"].length == 0) this.deleteFiles(video.title, path);
                 }
 
                 const fileBuffer = fs.readFileSync(path);
                 const messages = downloadData["messages"] ?? [];
                 while (messages.length > 0) {
-                    console.log("huh");
                     await this.sendRoutine(downloadData["messages"], fileBuffer, video.title);
-                    console.log("finished send routine");
+                    await wait(5000)
                 }
 
-                console.log("out!");
                 this.deleteFiles(video.title, path);
                 delete this.downloading_list[video.title];
-                console.log('finished executing')
             });
-        console.log("finished executing wtf");
     }
 
     private async sendRoutine(messages: Array<Message>, file: Buffer, title: string) {
         while (messages.length > 0) {
-            console.log("oh 1");
-            console.log(messages);
             const message: Message | undefined = messages.shift();
             if (!message) {
-                console.log("continue 1");
                 continue;
             }
 
             const jid = message.raw?.key?.remoteJid ?? "";
             if (!isJidUser(jid) && !isJidGroup(jid)) {
-                console.log("continue 2");
                 continue;
             }
 
-            console.log("sending message");
             await messagingService.sendMessage(
                 jid,
                 {
@@ -114,11 +105,7 @@ export default class MP3Command extends Command {
                 {quoted: message.raw ?? undefined},
                 new MessageMetadata(new Map([['media', false]]))
             );
-            
-            console.log("send audio!");
         }
-
-        console.log("DONE!");
     }
 
     onBlocked(data: Message, blockedReason: BlockedReason) {}
