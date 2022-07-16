@@ -1,7 +1,7 @@
 import {proto, WASocket} from "@adiwajshing/baileys";
 import {Configuration, OpenAIApi} from "openai";
 import {BlockedReason} from "../../../blockable";
-import {Chat} from "../../../chats";
+import {Chat, ChatLevel} from "../../../chats";
 import {messagingService} from "../../../constants/services";
 import Message from "../../../message/message";
 import Command from "../../command";
@@ -13,6 +13,11 @@ export default class GptCommand extends Command {
             usage: "{prefix}{command}",
             category: "Study",
             description: "Ask an AI a question (This may soon turn into a premium feature)",
+            cooldowns: new Map([
+                [ChatLevel.Free, 30 * 1000],
+                [ChatLevel.Premium, 20 * 1000],
+                [ChatLevel.Sponser, 10 * 1000],
+            ]),
         });
 
         this.configuration = new Configuration({

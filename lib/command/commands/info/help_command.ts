@@ -68,7 +68,8 @@ export default class HelpCommand extends Command {
         sections.get("misc")?.rows?.push({title: "@everyone", description: "Tag everyone in the group", rowId: "HELP_COMMAND-" + id});
         helpMessage += "מקווה שעזרתי ✌\n";
         helpMessage += "~bot";
-        const footer = 'Please consider supporting the bot by donating to the Patreon!\n\nIn the future, donators will receive special perks!\nhttps://www.patreon.com/wailcommunitybot';
+        const footer =
+            "Please consider supporting the bot by donating to the Patreon!\n\nIn the future, donators will receive special perks!\nhttps://www.patreon.com/wailcommunitybot";
 
         if (sendInGroup)
             await messagingService.sendMessage(
@@ -77,13 +78,13 @@ export default class HelpCommand extends Command {
                     text: helpMessage,
                     buttonText: "Click me for help!",
                     sections: Array.from(sections.entries()).map((arr) => arr[1] as proto.ISection),
-                    footer
+                    footer,
                 },
                 {quoted: message.raw!},
             );
         else {
-            await messagingService.replyAdvanced(message, {text: "Check your DMs!"}, true);
-            await messagingService.sendMessage(
+            messagingService.replyAdvanced(message, {text: "Check your DMs!"}, true);
+            messagingService.sendMessage(
                 message.sender!,
                 {
                     text: helpMessage,

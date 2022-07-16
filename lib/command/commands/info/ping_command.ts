@@ -1,7 +1,6 @@
 import {WASocket} from "@adiwajshing/baileys";
-import moment from "moment";
 import {BlockedReason} from "../../../blockable/blocked_reason";
-import {Chat} from "../../../chats";
+import {Chat, ChatLevel} from "../../../chats";
 import {messagingService} from "../../../constants/services";
 import Message from "../../../message/message";
 import Command from "../../command";
@@ -12,8 +11,13 @@ export default class PingCommand extends Command {
         super({
             triggers: [new CommandTrigger("ping")],
             usage: "{prefix}{command}",
-            category: 'Info',
+            category: "Info",
             description: "Ping the bot",
+            cooldowns: new Map([
+                [ChatLevel.Free, 500],
+                [ChatLevel.Premium, 200],
+                [ChatLevel.Sponser, 0],
+            ]),
         });
     }
 

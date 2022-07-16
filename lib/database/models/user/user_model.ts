@@ -2,7 +2,6 @@ import {ObjectId} from "bson";
 import {ChatLevel} from "../../../chats";
 import {DeveloperLevel} from "./developer_level";
 
-// TODO: Implement command cooldown
 export default class UserModel {
     public _id: ObjectId;
     public jid: string;

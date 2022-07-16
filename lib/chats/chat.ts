@@ -1,7 +1,7 @@
 import {whatsappBot} from "..";
 import Blockable from "../blockable/blockable";
 import Triggerable from "../blockable/triggerable";
-import {Command, CommandTrigger, JIDCommand} from "../command";
+import {Command, CommandTrigger} from "../command";
 import {
     PromoteCommand,
     AnonymousCommand,
@@ -21,6 +21,8 @@ import {
     VCardCommand,
     PingCommand,
     RawCommand,
+    CodeCommand,
+    JIDCommand,
 } from "../command/commands";
 import {messageRepository, userRepository} from "../constants/services";
 import ChatModel from "../database/models/chat/chat_model";
@@ -61,7 +63,7 @@ export default abstract class Chat {
         // fun commands
         handler?.add(new AnonymousCommand());
         handler?.add(new LmgtfyCommand());
-        // handler?.add(new MP3Command());
+        handler?.add(new MP3Command());
         handler?.add(new SpoofCommand());
         handler?.add(new StickerCommand());
 
@@ -81,6 +83,7 @@ export default abstract class Chat {
         handler?.add(new HelpCommand(this.commandHandler!));
         handler?.add(new VCardCommand());
         handler?.add(new PingCommand());
+        handler?.add(new CodeCommand());
     }
 
     async getHandlers<J>(data: J) {
@@ -121,11 +124,11 @@ export default abstract class Chat {
         if (!handler) return [false, undefined];
 
         const res = await handler.find(message);
-        const executables: Command[] = []
+        const executables: Command[] = [];
 
         for (const [trigger, blockable] of res) {
             const isBlocked = await handler.isBlockedCheck(message, blockable, true, trigger);
-            
+
             if (isBlocked != undefined) {
                 return [false, undefined];
             }
@@ -150,7 +153,7 @@ export default abstract class Chat {
             const user = await userRepository.get(message.from);
             // add command cooldown to user
             await user?.addCooldown(message.raw?.key.remoteJid!, blockable);
-            await blockable.execute(whatsappBot.client!, this, message, body, body, ...body.split(" "));
+            blockable.execute(whatsappBot.client!, this, message, body, body, ...body.split(" "));
         }
     }
 

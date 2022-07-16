@@ -12,10 +12,11 @@ import EveryoneCommand from "./groups/admin/everyone_command";
 import GtfoCommand from "./groups/admin/gtfo_command";
 import KickCommand from "./groups/admin/kick_command";
 import JoinCommand from "./groups/outreach/join_command";
+import CodeCommand from "./info/code_command";
 import CreatorCommand from "./info/creator_command";
 import GptCommand from "./info/gpt_command";
 import HelpCommand from "./info/help_command";
-import PingCommand from "./info/ping";
+import PingCommand from "./info/ping_command";
 import VCardCommand from "./info/vcard_command";
 
 export {
@@ -38,4 +39,5 @@ export {
     VCardCommand,
     PingCommand,
     RawCommand,
+    CodeCommand
 };

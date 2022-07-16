@@ -5,6 +5,7 @@ import ffmpeg from "fluent-ffmpeg";
 import dotenv from "dotenv";
 import {chatRepository, messagingService, userRepository} from "./constants/services";
 import {normalizeJid} from "./utils/group_utils";
+import moment from "moment";
 ffmpeg.setFfmpegPath(ffmpegPath);
 dotenv.config();
 
@@ -19,6 +20,7 @@ registerCommands();
 function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClient) {
     eventListener?.on("messages.upsert", async (chats) => {
         for (const rawMsg of chats.messages) {
+            // if (rawMsg.messageTimestamp ?? 0 < moment().unix() - 60) return;
             // if not actual message return
             if (rawMsg.message?.protocolMessage) return;
 
@@ -63,17 +65,17 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
                 return console.error(`Failed to get a chat for JID(${jid}).`);
             }
 
-            const [isExecutableCommand, commands] = await chat.isExecutableCommand(msg);
-            if (isExecutableCommand) {
-                const promises: Promise<any>[] = [];
-                for (const command of commands ?? []) {
-                    promises.push(user.addCooldown(chat.model.jid, command));
-                }
+            // const [isExecutableCommand, commands] = await chat.isExecutableCommand(msg);
+            // if (isExecutableCommand) {
+            //     const promises: Promise<any>[] = [];
+            //     for (const command of commands ?? []) {
+            //         promises.push(user.addCooldown(chat.model.jid, command));
+            //     }
 
-                await Promise.all(promises);
-            }
+            //     await Promise.all(promises);
+            // }
 
-            chat?.handleMessage(msg).catch((e) => console.error(e));
+            await chat?.handleMessage(msg).catch((e) => console.error(e));
         }
     });
 }

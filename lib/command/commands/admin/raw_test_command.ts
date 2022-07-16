@@ -11,7 +11,7 @@ export default class RawCommand extends Command {
     constructor() {
         super({
             triggers: [new CommandTrigger("raw")],
-            developerLevel: DeveloperLevel.Operator,
+            developerLevel: DeveloperLevel.Admin,
             usage: "{prefix}{command}",
             category: "Bot Operator",
             description: "Sends a raw message",
@@ -28,8 +28,8 @@ export default class RawCommand extends Command {
     }
 
     async execute(client: WASocket, chat: Chat, msg: Message, body: string) {
-        client.sendMessage(msg.raw?.key.remoteJid!, {text: body || "ahhhhhhh"});
-        client.sendMessage(msg.raw?.key.remoteJid!, {text: body || "ahhhhhhh"}, {quoted: msg.raw});
+        await client.sendMessage(msg.raw?.key.remoteJid!, {text: body || "ahhhhhhh"});
+        await client.sendMessage(msg.raw?.key.remoteJid!, {text: body || "ahhhhhhh"}, {quoted: msg.raw});
         await client.sendMessage(msg.raw?.key.remoteJid!, {text: body || "ahhhhhhh"}, {quoted: msg.raw});
     }
 }

@@ -9,12 +9,14 @@ import Command from "../../command";
 import CommandTrigger from "../../command_trigger";
 import {wait} from "../../../utils/async_utils";
 import {BlockedReason} from "../../../blockable";
+import { DeveloperLevel } from "../../../database/models";
 
 export default class MP3Command extends Command {
     constructor() {
         super({
             triggers: [new CommandTrigger("mp3")],
             usage: "{prefix}{command}",
+            developerLevel: DeveloperLevel.Moderator,
             category: "Fun",
             description: "Downloads an MP3 of a YouTube video (>>mp3 video name)",
         });
