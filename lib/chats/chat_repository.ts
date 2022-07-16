@@ -18,8 +18,6 @@ export default class ChatRepository {
 
         if (update || !chat) {
             chat = await this.fetch(jid);
-            console.log('FETCHED')
-            console.log(chat)
         }
 
         if (chat) this.repository.set(jid, chat);
@@ -31,12 +29,10 @@ export default class ChatRepository {
 
     public async update(jid: string | undefined, update: UpdateFilter<any>): Promise<Chat | undefined> {
         if (!jid) return;
-        console.log(`entered: ${jid}`);
-        // jid = normalizeJid(jid);
-        console.log(`exit: ${jid}`);
+        jid = normalizeJid(jid);
+
 
         if (!jid || (!isJidUser(jid) && !isJidGroup(jid))) {
-            console.log(`invalid JID`);
             return;
         }
 
@@ -47,25 +43,16 @@ export default class ChatRepository {
 
         let chat = await this.get(jid, true);
         if (!chat) {
-            console.log("COULDNT FIND CHAT");
             return;
         }
         if (!update || update.size === 0) {
-            console.log("NO UPDATE");
             return;
         }
 
-        console.log("UPDATING");
-        console.log(chat.model);
         const updateRes = await chatsCollection.updateOne({jid}, update);
         const res = (await chatsCollection.findOne({jid})) || undefined;
-        console.log("update");
-        console.log(update);
         if (updateRes.acknowledged && res) {
-            console.log("updated model: ");
-            console.log(res);
             const model = res ? ChatModel.fromMap(res as WithId<Map<string, object>>) ?? undefined : undefined;
-            console.log(model);
             if (model) {
                 chat.model = model;
             }
@@ -73,7 +60,6 @@ export default class ChatRepository {
             return chat;
         }
 
-        console.log("update failed");
         const model = (await this.fetch(jid)) ?? undefined;
         if (model) chat.model = model.model;
         return chat;
@@ -99,8 +85,6 @@ export default class ChatRepository {
         if (!jid) return;
 
         let doc = await chatsCollection.findOne<Map<string, object>>({jid});
-        console.log('maybe this why???')
-        console.log(doc)
         return doc ?? undefined;
     }
 
@@ -112,19 +96,15 @@ export default class ChatRepository {
             model = new ChatModel(jid, ChatType.DM, ">>", false);
         }
         if (!model) {
-            console.log('failed to create chat model');
             return;
         }
 
         const chat = model ? this.initializeChatInstance(model) : undefined;
         if (!chat) {
-            console.log('failed to create chat')
             return;
         }
         await chatsCollection.insertOne(model.toMap());
 
-        console.log('created chat!!')
-        console.log(chat.model)
         this.repository.set(jid, chat);
         await chat.setupHandlers();
         return chat;

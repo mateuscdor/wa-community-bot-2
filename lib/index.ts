@@ -71,7 +71,6 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
             let chat = await chatRepository.get(chatJid, true);
             if (!chat) {
                 try {
-                    console.log(`creating chat ${chatJid}`);
                     chat = await chatRepository.create(chatJid);
                 } catch (e) {
                     console.error(e);
@@ -83,8 +82,6 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
                 return console.error(`Failed to get a chat for JID(${chatJid}).`);
             }
 
-            if (!chat) return;
-            console.log(`chat: ${chatJid} | sent: ${chat.model.sentDisclaimer}`);
             if (!chat.model.sentDisclaimer) {
                 if (chatJid != "120363041344515310@g.us" && chatJid != "972585551784@s.whatsapp.net") break;
 
@@ -99,7 +96,6 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
                     $set: {sent_disclaimer: true},
                 });
                 chat = await chatRepository.get(chatJid, true);
-                console.log(`after update: ${chat?.model.sentDisclaimer}`);
                 await messagingService.reply(msg, joinMessage, false);
             }
 
