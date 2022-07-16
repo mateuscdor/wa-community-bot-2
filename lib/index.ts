@@ -90,7 +90,7 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
                 \nEnjoy my bot! Get started using: >>help\n\nP.S You can DM the bot.";
                 await messagingService.reply(msg, joinMessage, false);
                 await chatRepository.update(jid, {
-                    $set: {sendDisclaimer: true},
+                    $set: {sent_disclaimer: true},
                 });
             }
 
