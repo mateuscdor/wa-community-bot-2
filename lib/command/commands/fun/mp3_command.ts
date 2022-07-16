@@ -102,7 +102,7 @@ export default class MP3Command extends Command {
             }
 
             console.log("sending message");
-            await messagingService.sendMessage(
+            messagingService.sendMessage(
                 jid,
                 {
                     audio: file as WAMediaUpload,
@@ -111,6 +111,7 @@ export default class MP3Command extends Command {
                 },
                 {quoted: message.raw ?? undefined},
             );
+            
             console.log("send audio!");
         }
 
