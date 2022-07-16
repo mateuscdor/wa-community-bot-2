@@ -10,7 +10,7 @@ import CommandTrigger from "../../command_trigger";
 import {wait} from "../../../utils/async_utils";
 import {BlockedReason} from "../../../blockable";
 import {DeveloperLevel} from "../../../database/models";
-import { MessageMetadata } from "../../../message";
+import {MessageMetadata} from "../../../message";
 
 export default class MP3Command extends Command {
     constructor() {
@@ -65,7 +65,7 @@ export default class MP3Command extends Command {
                     this.deleteFiles(video.title, path);
                     delete this.downloading_list[video.title];
                 } else if (downloadData["messages"].length == 0) {
-                    await wait(5000)
+                    await wait(5000);
                     if (downloadData["messages"].length == 0) this.deleteFiles(video.title, path);
                 }
 
@@ -73,7 +73,7 @@ export default class MP3Command extends Command {
                 const messages = downloadData["messages"] ?? [];
                 while (messages.length > 0) {
                     await this.sendRoutine(downloadData["messages"], fileBuffer, video.title);
-                    await wait(5000)
+                    await wait(5000);
                 }
 
                 this.deleteFiles(video.title, path);
@@ -93,7 +93,7 @@ export default class MP3Command extends Command {
                 continue;
             }
 
-            await messagingService.sendMessage(
+            messagingService.sendMessage(
                 jid,
                 {
                     audio: file as WAMediaUpload,
@@ -101,7 +101,7 @@ export default class MP3Command extends Command {
                     mimetype: "audio/mpeg",
                 },
                 {quoted: message.raw ?? undefined},
-                new MessageMetadata(new Map([['media', false]]))
+                new MessageMetadata(new Map([["media", false]])),
             );
         }
     }
