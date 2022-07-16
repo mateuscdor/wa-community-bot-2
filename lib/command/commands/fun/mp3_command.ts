@@ -9,7 +9,7 @@ import Command from "../../command";
 import CommandTrigger from "../../command_trigger";
 import {wait} from "../../../utils/async_utils";
 import {BlockedReason} from "../../../blockable";
-import {DeveloperLevel} from "../../../database/models";
+import {ChatLevel, DeveloperLevel} from "../../../database/models";
 import {MessageMetadata} from "../../../message";
 
 export default class MP3Command extends Command {
@@ -18,6 +18,11 @@ export default class MP3Command extends Command {
             triggers: [new CommandTrigger("mp3")],
             usage: "{prefix}{command}",
             category: "Fun",
+            cooldowns: new Map([
+                [ChatLevel.Free, 5 * 1000],
+                [ChatLevel.Premium, 3 * 1000],
+                [ChatLevel.Sponser, 2 * 1000],
+            ]),
             description: "Downloads an MP3 of a YouTube video (>>mp3 video name)",
         });
     }
