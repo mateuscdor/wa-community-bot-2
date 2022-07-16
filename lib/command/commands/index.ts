@@ -1,5 +1,6 @@
 import JIDCommand from "./admin/jid_command";
 import PromoteCommand from "./admin/promote_command";
+import RawCommand from "./admin/raw_test_command";
 import AnonymousCommand from "./fun/anonymous_command";
 import LmgtfyCommand from "./fun/lmgtfy_command";
 import MP3Command from "./fun/mp3_command";
@@ -36,4 +37,5 @@ export {
     HelpCommand,
     VCardCommand,
     PingCommand,
-}
+    RawCommand,
+};

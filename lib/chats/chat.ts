@@ -20,6 +20,7 @@ import {
     HelpCommand,
     VCardCommand,
     PingCommand,
+    RawCommand,
 } from "../command/commands";
 import { messageRepository, userRepository} from "../constants/services";
 import ChatModel from "../database/models/chat/chat_model";
@@ -54,6 +55,7 @@ export default abstract class Chat {
         // bot admin tools
         handler?.add(new JIDCommand());
         handler?.add(new PromoteCommand());
+        handler?.add(new RawCommand());
 
         // fun commands
         handler?.add(new AnonymousCommand());
