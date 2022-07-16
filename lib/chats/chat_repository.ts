@@ -20,9 +20,10 @@ export default class ChatRepository {
             chat = await this.fetch(jid);
         }
 
-        if (chat) this.updateLocal(chat);
+        if (chat) this.repository.set(jid, chat);
+        else this.repository.delete(jid);
 
-        chat?.setupHandlers();
+        await chat?.setupHandlers();
         return chat;
     }
 
