@@ -20,7 +20,7 @@ export default class VCardCommand extends Command {
     async onBlocked(msg: Message, blockedReason: BlockedReason) {}
 
     async execute(client: WASocket, chat: Chat, msg: Message, body: string) {
-        let jid = body
+        let jid = body.replace(' ', '')
             .split(" ")
             .shift()
             ?.replace("+", "")

@@ -22,7 +22,7 @@ export default class AnonymousCommand extends Command {
             return await messagingService.reply(message, "You must have some content you want to send in the message.", true);
         }
 
-        const splitData = body?.split(" ") ?? [];
+        const splitData = body?.replace(' ', '')?.split(" ") ?? [];
         let number = splitData.shift();
         number = number
             ?.replace(/-/g, "")
