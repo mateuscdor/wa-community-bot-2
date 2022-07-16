@@ -17,7 +17,6 @@ export default class MP3Command extends Command {
         super({
             triggers: [new CommandTrigger("mp3")],
             usage: "{prefix}{command}",
-            developerLevel: DeveloperLevel.Moderator,
             category: "Fun",
             description: "Downloads an MP3 of a YouTube video (>>mp3 video name)",
         });
@@ -59,7 +58,6 @@ export default class MP3Command extends Command {
         this.downloading_list[video.title] = {path, messages: [message]};
         downloadData = this.downloading_list[video.title];
 
-        console.log("initiated callback");
         ytdl.default(video.url)
             .pipe(fs.createWriteStream(path))
             .addListener("finish", async () => {
@@ -141,10 +139,8 @@ export default class MP3Command extends Command {
     }
 
     private deleteFiles(title: string, path: string) {
-        console.log("started deleting files");
         fs.unlink(path, () => {});
         fs.unlink(path + ".mp3", () => {});
-        console.log("ended deleting files");
     }
 
     private standardizeTitle(title: string) {

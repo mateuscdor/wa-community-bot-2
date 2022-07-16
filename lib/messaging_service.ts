@@ -1,7 +1,7 @@
-import { AnyMessageContent, isJidGroup, MiscMessageGenerationOptions, WAMessage, WASocket } from "@adiwajshing/baileys";
-import { assert } from "console";
-import { ObjectId } from "mongodb";
-import { createImportSpecifier } from "typescript";
+import {AnyMessageContent, isJidGroup, MiscMessageGenerationOptions, WAMessage, WASocket} from "@adiwajshing/baileys";
+import {assert} from "console";
+import {ObjectId} from "mongodb";
+import {createImportSpecifier} from "typescript";
 import Message from "./message/message";
 import MessageMetadata from "./message/message_metadata";
 
@@ -9,7 +9,11 @@ export default class MessagingService {
     private client: WASocket | undefined;
     private metadataEnabled: boolean;
     private metadataAssignment: Map<string, MessageMetadata>;
-    private messageCallbacks: [callbackId: ObjectId, filter: (message: Message) => Promise<boolean> | boolean, callback: (message: Message) => Promise<any> | any][]
+    private messageCallbacks: [
+        callbackId: ObjectId,
+        filter: (message: Message) => Promise<boolean> | boolean,
+        callback: (message: Message) => Promise<any> | any,
+    ][];
 
     private _shouldIgnore: boolean = false;
 
@@ -40,19 +44,12 @@ export default class MessagingService {
                 this.removeMessageCallback(callbackId);
             }
         }
-        
 
         return msg;
     }
 
-    public async reply(
-        message: Message,
-        content: string,
-        quote: boolean = false,
-        privateReply: boolean = false,
-        metadata?: MessageMetadata
-    ) {
-        await this.replyAdvanced(message, { text: content }, quote, privateReply, metadata);
+    public async reply(message: Message, content: string, quote: boolean = false, privateReply: boolean = false, metadata?: MessageMetadata) {
+        await this.replyAdvanced(message, {text: content}, quote, privateReply, metadata);
     }
 
     public async replyAdvanced(
@@ -60,7 +57,7 @@ export default class MessagingService {
         content: AnyMessageContent,
         quote: boolean = false,
         privateReply: boolean = false,
-        metadata?: MessageMetadata
+        metadata?: MessageMetadata,
     ) {
         if (quote) {
             message.raw!.key.fromMe = false;
@@ -70,10 +67,10 @@ export default class MessagingService {
         if (isJidGroup(message.to)) {
             recipient = privateReply ? message.from : message.to;
         } else {
-            recipient = message.fromMe ? message.to : message.from
+            recipient = message.fromMe ? message.to : message.from;
         }
 
-        return this._internalSendMessage(recipient, content, { "quoted": quote ? message.raw ?? undefined : undefined }, metadata);
+        return this._internalSendMessage(recipient, content, {quoted: quote ? message.raw ?? undefined : undefined}, metadata);
     }
 
     public async sendMessage(recipient: string, content: AnyMessageContent, options?: MiscMessageGenerationOptions, metadata?: MessageMetadata) {
@@ -84,17 +81,16 @@ export default class MessagingService {
         recipient: string,
         content: AnyMessageContent,
         options?: MiscMessageGenerationOptions,
-        metadata?: MessageMetadata
+        metadata?: MessageMetadata,
     ): Promise<Message> {
         try {
             assert(this.client, "Client must be set using setClient() method!");
 
             if (metadata) {
-                metadata.meta.set("ignore", this._shouldIgnore)
+                metadata.meta.set("ignore", this._shouldIgnore);
             } else {
-                metadata = new MessageMetadata(new Map<string, any>([["ignore", this._shouldIgnore]]))
+                metadata = new MessageMetadata(new Map<string, any>([["ignore", this._shouldIgnore]]));
             }
-
 
             const response = await this.client!.sendMessage(recipient, content, options);
 
@@ -102,15 +98,13 @@ export default class MessagingService {
                 this.metadataAssignment.set(response?.key.id!, metadata);
             }
 
-            const msg = await Message.fromWAMessage(response!, metadata);
-            console.log('built sent message')
-            return msg
+            return Message.fromWAMessage(response!, metadata);
         } catch (error) {
             console.error("FAILED TO SEND MESSAGE");
             console.error(content);
             console.error(options);
             console.error(error);
-            const response = await this.client!.sendMessage(recipient, { 'text': "Failed to send this message." }, options);
+            const response = await this.client!.sendMessage(recipient, {text: "Failed to send this message."}, options);
             return Message.fromWAMessage(response!, metadata);
         }
     }

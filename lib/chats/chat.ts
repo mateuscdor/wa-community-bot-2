@@ -101,8 +101,6 @@ export default abstract class Chat {
 
     async handleMessage(message: Message) {
         await this.registerMessageToDB(message);
-        console.log('msg')
-
 
         // dont execute blockable if message is from bot
         if (message.fromMe) return;
