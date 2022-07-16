@@ -56,7 +56,7 @@ export default class HelpCommand extends Command {
                 description: `*Description:*\n${command.description}\n\n*Aliases:*\n${command.triggers
                     .map((e) => e.command)
                     .join(", ")}\n\n*Cooldowns:*\n${Array.from(command.cooldowns.entries())
-                    .map((e) => `${ChatLevel[e[1]]}: ${e[0] / 1000}s`)
+                    .map((e) => `${ChatLevel[e[0]]}: ${e[1] / 1000}s`)
                     .join("\n")}`,
                 rowId: "HELP_COMMAND-" + id,
             });
