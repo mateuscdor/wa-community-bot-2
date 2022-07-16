@@ -88,10 +88,10 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
                 \nHe does not plan to but the possibility is there.\
                 \nIf you are not keen with this, do not send the bot messages.\
                 \nEnjoy my bot! Get started using: >>help\n\nP.S You can DM the bot.";
-                await messagingService.reply(msg, joinMessage, false);
                 await chatRepository.update(jid, {
                     $set: {sent_disclaimer: true},
                 });
+                await messagingService.reply(msg, joinMessage, false);
             }
 
             // const [isExecutableCommand, commands] = await chat.isExecutableCommand(msg);
