@@ -14,7 +14,7 @@ export default class ChatRepository {
 
         if (!jid || (!isJidUser(jid) && !isJidGroup(jid))) return;
 
-        let chat: Chat | undefined = this.repository[jid];
+        let chat: Chat | undefined = this.repository.get(jid);
 
         if (update || !chat) {
             chat = await this.fetch(jid);
@@ -30,7 +30,7 @@ export default class ChatRepository {
     public async update(jid: string | undefined, update: UpdateFilter<any>): Promise<Chat | undefined> {
         if (!jid) return;
         console.log(`entered: ${jid}`);
-        jid = normalizeJid(jid);
+        // jid = normalizeJid(jid);
         console.log(`exit: ${jid}`);
 
         if (!jid || (!isJidUser(jid) && !isJidGroup(jid))) {
