@@ -42,7 +42,7 @@ export default class ChatRepository {
             if (chat) this.updateLocal(chat);
         }
 
-        let chat = this.repository.get(jid);
+        let chat = await this.get(jid, true);
         if (!chat) {
             console.log("COULDNT FIND CHAT")
             return;
@@ -52,6 +52,8 @@ export default class ChatRepository {
             return;
         }
 
+        console.log("UPDATING")
+        console.log(chat.model)
         const updateRes = await chatsCollection.updateOne({jid}, update);
         const res = await chatsCollection.findOne({jid}) || undefined;
         console.log('update')
