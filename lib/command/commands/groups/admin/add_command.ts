@@ -72,7 +72,12 @@ export default class AddCommand extends Command {
             return messagingService.reply(message, "You must either provide a body with phone numbers or contact vcards", true);
         }
 
-        const numbers = [...body.matchAll(/\d+/gim)]
+        const numbers = [
+            ...body
+                .replace(/-/g, "")
+                .replace(/(?<=\d\d\d) /, "")
+                .matchAll(/\d+/gim),
+        ]
             .map((num) => {
                 let number = parseInt(num[0]).toString();
                 if (number.startsWith("5")) {

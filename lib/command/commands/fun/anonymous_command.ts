@@ -12,7 +12,7 @@ export default class AnonymousCommand extends Command {
             triggers: [new CommandTrigger("anonymous")],
             chatLevel: ChatLevel.Premium,
             usage: "{prefix}{command}",
-            category: 'Fun',
+            category: "Fun",
             description: "Anonymously message someone through the bot",
         });
     }
@@ -24,6 +24,7 @@ export default class AnonymousCommand extends Command {
 
         const splitData = body?.split(" ") ?? [];
         let number = splitData.shift();
+        number = number?.replace(/-/g, "")?.replace(/(?<=\d\d\d) /, "");
         if (number?.startsWith("0")) number = "972" + number.substring(1);
         if (number) number += "@s.whatsapp.net";
         if (!number) {

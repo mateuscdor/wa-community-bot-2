@@ -26,7 +26,10 @@ export async function sleep(fn: () => Promise<any> | any, ms: number) {
 }
 
 export function extractNumberFromString(str: string) {
-    return str.split(" ")[0].replace(/-/g, "");
+    return str
+        .split(" ")[0]
+        .replace(/-/g, "")
+        .replace(/(?<=\d\d\d) /, "");
 }
 
 export function formatNumberToJID(str: string) {
