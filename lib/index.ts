@@ -46,7 +46,7 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
             if (selectedRowId && selectedRowId?.startsWith("HELP_COMMAND")) {
                 let splitAtNewLine = selectedRowId.split("\n");
                 splitAtNewLine.shift();
-                let data = splitAtNewLine.join('\n').split('\n\r');
+                let data = splitAtNewLine.join("\n").split("\n\r");
                 const commandAliases = data[0].split("\n");
                 const commandDescription = data[1];
                 let id = 0;
@@ -56,7 +56,7 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
 
                 return await messagingService.replyAdvanced(
                     msg,
-                    {text: `*${aliasesButtons[0].buttonText?.displayText ?? ''}*\n\n${commandDescription}`, buttons: aliasesButtons},
+                    {text: `*${aliasesButtons[0].buttonText?.displayText ?? ""}*\n\n${commandDescription}`, buttons: aliasesButtons},
                     true,
                 );
             }
@@ -77,6 +77,21 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
 
             if (!chat) {
                 return console.error(`Failed to get a chat for JID(${jid}).`);
+            }
+
+            if (!chat.model.sendDisclaimer) {
+                if (msg.raw?.key.remoteJid != "120363041344515310@g.us" && msg.raw?.key.remoteJid != "972585551784@s.whatsapp.net") break;
+                const joinMessage =
+                    "**Disclaimer**\
+                \nThis bot is handled and managed by Ori Harel.\
+                \nAs such, he poses the ability to see the messages in this chat.\
+                \nHe does not plan to but the possibility is there.\
+                \nIf you are not keen with this, do not send the bot messages.\
+                \nEnjoy my bot! Get started using: >>help\n\nP.S You can DM the bot.";
+                await messagingService.reply(msg, joinMessage, false);
+                await chatRepository.update(jid, {
+                    $set: {sendDisclaimer: true},
+                });
             }
 
             // const [isExecutableCommand, commands] = await chat.isExecutableCommand(msg);

@@ -85,9 +85,9 @@ export default class ChatRepository {
     public async create(jid: string): Promise<Chat | undefined> {
         let model: ChatModel | undefined;
         if (isJidGroup(jid)) {
-            model = new ChatModel(jid, ChatType.Group, ">>");
+            model = new ChatModel(jid, ChatType.Group, ">>", false);
         } else if (isJidUser(jid)) {
-            model = new ChatModel(jid, ChatType.DM, '>>');
+            model = new ChatModel(jid, ChatType.DM, '>>', false);
         }
 
         const chat = model ? this.initializeChatInstance(model) : undefined;
