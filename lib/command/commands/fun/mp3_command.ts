@@ -47,7 +47,7 @@ export default class MP3Command extends Command {
         const downloadMessage = `Downloading MP3 of "${video.title}" from YouTube...`;
         let downloadData = this.downloading_list[video.title];
         if (downloadData && downloadData["messages"] && fs.existsSync(downloadData["path"])) {
-            this.downloading_list[video.title]["messages"].push(message);
+            downloadData["messages"].push(message);
             return await messagingService.reply(message, downloadMessage, true);
         } else if (downloadData && downloadData["path"] && !fs.existsSync(downloadData["path"])) {
             return await messagingService.reply(message, "Please try again in a few moments", true);
@@ -63,19 +63,19 @@ export default class MP3Command extends Command {
             .pipe(fs.createWriteStream(path))
             .addListener("finish", async () => {
                 if (!downloadData) {
-                    console.log("intriguingly, downloadData is null");
                     this.deleteFiles(video.title, path);
                     delete this.downloading_list[video.title];
                 } else if (downloadData["messages"].length == 0) {
-                    console.log("why thoooo");
+                    // await wait(5000)
                     if (downloadData["messages"].length == 0) this.deleteFiles(video.title, path);
                 }
 
                 const fileBuffer = fs.readFileSync(path);
-                while (downloadData["messages"]?.length ?? 0 > 0) {
+                const messages = downloadData["messages"] ?? [];
+                while (messages.length > 0) {
                     console.log("huh");
-                    this.sendRoutine(downloadData["messages"], fileBuffer, video.title);
-                    delete downloadData["messages"];
+                    await this.sendRoutine(downloadData["messages"], fileBuffer, video.title);
+                    console.log('finished send routine')
                 }
 
                 console.log("out!");
@@ -87,12 +87,19 @@ export default class MP3Command extends Command {
 
     private async sendRoutine(messages: Array<Message>, file: Buffer, title: string) {
         while (messages.length > 0) {
-            console.log('oh 1')
+            console.log("oh 1");
+            console.log(messages)
             const message: Message | undefined = messages.shift();
-            if (!message) continue;
+            if (!message) {
+                console.log('continue 1')
+                continue;
+            }
 
             const jid = message.raw?.key?.remoteJid ?? "";
-            if (!isJidUser(jid) && !isJidGroup(jid)) continue;
+            if (!isJidUser(jid) && !isJidGroup(jid)) {
+                console.log('continue 2')
+                continue;
+            }
 
             await messagingService.sendMessage(
                 jid,
@@ -103,8 +110,10 @@ export default class MP3Command extends Command {
                 },
                 {quoted: message.raw ?? undefined},
             );
-            console.log('oh')
+            console.log("send audio!");
         }
+
+        console.log("DONE!");
     }
 
     onBlocked(data: Message, blockedReason: BlockedReason) {}
