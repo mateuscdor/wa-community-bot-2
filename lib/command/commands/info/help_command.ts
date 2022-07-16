@@ -59,7 +59,7 @@ export default class HelpCommand extends Command {
             section?.rows?.push({
                 title: command.usage.replace(/{prefix}/gi, prefix).replace(/{command}/gi, command.mainTrigger.command),
                 description: command.description,
-                rowId: `HELP_COMMAND-${id}\n${prefix}${command.mainTrigger.command}\n${formattedDescription}`,
+                rowId: `HELP_COMMAND-${id}\n${command.triggers.map((e) => prefix + e.command).join("\n")}\n\r${formattedDescription}`,
             });
 
             id++;

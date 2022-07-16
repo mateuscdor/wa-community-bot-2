@@ -46,11 +46,17 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
             if (selectedRowId && selectedRowId?.startsWith("HELP_COMMAND")) {
                 let splitAtNewLine = selectedRowId.split("\n");
                 splitAtNewLine.shift();
-                const commandName = splitAtNewLine.shift();
-                const commandDescription = splitAtNewLine.join("\n");
+                let data = splitAtNewLine.join('\n').split('\n\r');
+                const commandAliases = data[0].split("\n");
+                const commandDescription = data[1];
+                let id = 0;
+                const aliasesButtons: proto.IButton[] = commandAliases.map((alias) => {
+                    return {buttonId: (id++).toString(), buttonText: {displayText: alias}};
+                });
+
                 return await messagingService.replyAdvanced(
                     msg,
-                    {text: commandDescription, buttons: [{buttonId: "0", buttonText: {displayText: commandName}}], title: commandName},
+                    {text: `*${aliasesButtons[0].buttonText?.displayText ?? ''}*\n${commandDescription}`, buttons: aliasesButtons},
                     true,
                 );
             }
