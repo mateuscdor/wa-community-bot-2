@@ -71,7 +71,7 @@ export default class HelpCommand extends Command {
         const footer =
             "Please consider supporting the bot by donating to the Patreon!\n\nIn the future, donators will receive special perks!\nhttps://www.patreon.com/wailcommunitybot";
 
-        if (sendInGroup || message.content?.includes('here'))
+        if (sendInGroup || message.content?.toLowerCase()?.includes('here'))
             await messagingService.sendMessage(
                 message.raw?.key.remoteJid!,
                 {
