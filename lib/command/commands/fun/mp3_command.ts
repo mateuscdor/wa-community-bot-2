@@ -69,8 +69,9 @@ export default class MP3Command extends Command {
                 }
 
                 const fileBuffer = fs.readFileSync(path);
-                while (downloadData["messages"].length > 0) {
-                    await this.sendRoutine(downloadData["messages"], fileBuffer, video.title);
+                while (downloadData["messages"]?.length ?? 0 > 0) {
+                    this.sendRoutine(downloadData["messages"], fileBuffer, video.title);
+                    delete downloadData['messages']
                 }
 
                 this.deleteFiles(video.title, path);
