@@ -3,6 +3,7 @@ import Sticker, {StickerTypes} from "wa-sticker-formatter/dist";
 import {BlockedReason} from "../../../blockable";
 import {Chat} from "../../../chats";
 import {messagingService} from "../../../constants/services";
+import {MessageMetadata} from "../../../message";
 import Message from "../../../message/message";
 import Command from "../../command";
 import CommandTrigger from "../../command_trigger";
@@ -31,7 +32,7 @@ export default class StickerCommand extends Command {
             return await messagingService.reply(message, "The sticker you are trying to create is too large.", true);
         }
 
-        await messagingService.replyAdvanced(message, {sticker: stickerBuffer}, true);
+        await messagingService.replyAdvanced(message, {sticker: stickerBuffer}, true, false, new MessageMetadata(new Map([["media", false]])));
     }
 
     private createSticker(buffer: Buffer, author: string = "bot", pack: string = "bot") {

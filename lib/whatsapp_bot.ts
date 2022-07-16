@@ -106,4 +106,9 @@ export class BotClient {
       this.saveState()
     });
   }
+
+  public restart() {
+    this.client?.end(new Boom());
+    this.start();
+  }
 }
