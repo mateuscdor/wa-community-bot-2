@@ -8,10 +8,10 @@ import {fullEnumSearch} from "../../../utils/enum_utils";
 import Command from "../../command";
 import CommandTrigger from "../../command_trigger";
 
-export default class PromoteCommand extends Command {
+export default class DeveloperLevelCommand extends Command {
     constructor() {
         super({
-            triggers: [new CommandTrigger("promote")],
+            triggers: ["developer level", "dev level", "promote dev", "promote developer"].map(e => new CommandTrigger(e)),
             developerLevel: DeveloperLevel.Operator,
             usage: "{prefix}{command}",
             category: "Bot Operator",

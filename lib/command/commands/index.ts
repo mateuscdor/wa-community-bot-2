@@ -1,5 +1,5 @@
 import JIDCommand from "./admin/jid_command";
-import PromoteCommand from "./admin/promote_command";
+import DeveloperLevelCommand from "./admin/developer_level_command";
 import RawCommand from "./admin/raw_test_command";
 import AnonymousCommand from "./fun/anonymous_command";
 import LmgtfyCommand from "./fun/lmgtfy_command";
@@ -21,7 +21,7 @@ import VCardCommand from "./info/vcard_command";
 
 export {
     JIDCommand,
-    PromoteCommand,
+    DeveloperLevelCommand as PromoteCommand,
     AnonymousCommand,
     LmgtfyCommand,
     MP3Command,
