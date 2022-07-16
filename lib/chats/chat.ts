@@ -122,10 +122,10 @@ export default abstract class Chat {
     ): Promise<any> {
         if (handler instanceof CommandHandler && blockable instanceof Command && trigger instanceof CommandTrigger) {
             const body = command.slice(handler.prefix.length + trigger.command.length + 1) ?? "";
-            await blockable.execute(whatsappBot.client!, this, message, body, body, ...body.split(" "));
             const user = await userRepository.get(message.from);
             // add command cooldown to user
             await user?.addCooldown(message.raw?.key.remoteJid!, blockable);
+            await blockable.execute(whatsappBot.client!, this, message, body, body, ...body.split(" "));
         }
     }
 

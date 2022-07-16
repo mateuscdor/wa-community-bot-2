@@ -21,8 +21,6 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
         for (const rawMsg of chats.messages) {
             // if not actual message return
             if (rawMsg.message?.protocolMessage) return;
-            console.log(`Received message: `);
-            console.log(rawMsg)
 
             // mutates rawMsg key to a fixed version. current state of key has bugs.
             messageKeyFix(rawMsg);
