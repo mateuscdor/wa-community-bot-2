@@ -28,16 +28,18 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
 
             // apply metadata bound to message id in messaging service (this allows bot to send messages with metadata)
             const msg = await messagingService.messageInterceptor(rawMsg);
-            const jid = normalizeJid(msg.sender ?? "");
-            if (!jid) return; // if JID failed to normalize return
+            const userJid = normalizeJid(msg.sender ?? "");
+            const chatJid = normalizeJid(msg.raw?.key.remoteJid ?? "");
+            if (!userJid) return; // if JID failed to normalize return
+            if (!chatJid) return;
 
             const pushName = !msg.fromMe ? rawMsg.pushName ?? undefined : undefined; // if message is not from bot save with push name (WA name))
-            let user = await fetchOrCreateUserFromJID(jid, pushName);
+            let user = await fetchOrCreateUserFromJID(userJid, pushName);
             if (!user) return; // if user failed to fetch return
 
             // if pushName exists and current user name does not match pushName, update user name
             if (pushName && user?.model.name != pushName) {
-                await userRepository.update(jid, {
+                await userRepository.update(userJid, {
                     $set: {name: rawMsg.pushName},
                 });
             }
@@ -66,31 +68,33 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
                 return;
             }
 
-            let chat = await chatRepository.get(jid);
+            let chat = await chatRepository.get(chatJid, true);
             if (!chat) {
                 try {
-                    chat = await chatRepository.create(jid);
+                    chat = await chatRepository.create(chatJid);
                 } catch (e) {
-                    chat = await chatRepository.get(jid).catch(() => undefined);
+                    chat = await chatRepository.get(chatJid).catch(() => undefined);
                 }
             }
 
             if (!chat) {
-                return console.error(`Failed to get a chat for JID(${jid}).`);
+                return console.error(`Failed to get a chat for JID(${chatJid}).`);
             }
 
-            // if (!chat.model.sendDisclaimer) {
-            //     const joinMessage =
-            //         "**Disclaimer**\
-            //     \nThis bot is handled and managed by a human\
-            //     \nAs such, I have the ability to see the messages in this chat.\
-            //     \nI DO NOT plan to but the possibility is there.\
-            //     \nIf you are not keen with this, do not send the bot messages.\
-            //     \nEnjoy my bot! Get started using: >>help\n\nP.S You can DM the bot.";
-            //     await chatRepository.update(jid, {
-            //         $set: {sent_disclaimer: true},
-            //     });
-            //     await messagingService.reply(msg, joinMessage, false);
+            if (!chat.model.sentDisclaimer) {
+                if (chatJid != "120363041344515310@g.us" && chatJid != "972585551784@s.whatsapp.net") break;
+
+                const joinMessage =
+                    "**Disclaimer**\
+                \nThis bot is handled and managed by a human\
+                \nAs such, I have the ability to see the messages in this chat.\
+                \nI DO NOT plan to but the possibility is there.\
+                \nIf you are not keen with this, do not send the bot messages.\
+                \nEnjoy my bot! Get started using: >>help\n\nP.S You can DM the bot.";
+                await chatRepository.update(chatJid, {
+                    $set: {sent_disclaimer: true},
+                });
+                await messagingService.reply(msg, joinMessage, false);
             // }
 
             // const [isExecutableCommand, commands] = await chat.isExecutableCommand(msg);
