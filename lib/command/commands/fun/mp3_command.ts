@@ -59,36 +59,35 @@ export default class MP3Command extends Command {
         downloadData = this.downloading_list[video.title];
 
         console.log("initiated callback");
-        new Promise((res, rej) => {
-            ytdl.default(video.url)
-                .pipe(fs.createWriteStream(path))
-                .addListener("finish", async () => {
-                    if (!downloadData) {
-                        console.log("intriguingly, downloadData is null");
-                        this.deleteFiles(video.title, path);
-                        delete this.downloading_list[video.title];
-                    } else if (downloadData["messages"].length == 0) {
-                        console.log("why thoooo");
-                        if (downloadData["messages"].length == 0) this.deleteFiles(video.title, path);
-                    }
-
-                    const fileBuffer = fs.readFileSync(path);
-                    while (downloadData["messages"]?.length ?? 0 > 0) {
-                        console.log("huh");
-                        this.sendRoutine(downloadData["messages"], fileBuffer, video.title);
-                        delete downloadData["messages"];
-                    }
-
-                    console.log("out!");
+        ytdl.default(video.url)
+            .pipe(fs.createWriteStream(path))
+            .addListener("finish", async () => {
+                if (!downloadData) {
+                    console.log("intriguingly, downloadData is null");
                     this.deleteFiles(video.title, path);
                     delete this.downloading_list[video.title];
-                });
-        });
+                } else if (downloadData["messages"].length == 0) {
+                    console.log("why thoooo");
+                    if (downloadData["messages"].length == 0) this.deleteFiles(video.title, path);
+                }
+
+                const fileBuffer = fs.readFileSync(path);
+                while (downloadData["messages"]?.length ?? 0 > 0) {
+                    console.log("huh");
+                    this.sendRoutine(downloadData["messages"], fileBuffer, video.title);
+                    delete downloadData["messages"];
+                }
+
+                console.log("out!");
+                this.deleteFiles(video.title, path);
+                delete this.downloading_list[video.title];
+            });
         console.log("finished executing wtf");
     }
 
     private async sendRoutine(messages: Array<Message>, file: Buffer, title: string) {
         while (messages.length > 0) {
+            console.log('oh 1')
             const message: Message | undefined = messages.shift();
             if (!message) continue;
 
@@ -104,6 +103,7 @@ export default class MP3Command extends Command {
                 },
                 {quoted: message.raw ?? undefined},
             );
+            console.log('oh')
         }
     }
 
