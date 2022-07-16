@@ -1,5 +1,5 @@
 import {isJidGroup, isJidUser} from "@adiwajshing/baileys";
-import {ReturnDocument, WithId} from "mongodb";
+import {ReturnDocument, UpdateFilter, WithId} from "mongodb";
 import {Chat, GroupChat, DMChat} from ".";
 import {chatsCollection} from "../database";
 import {ChatModel, ChatType} from "../database/models";
@@ -26,7 +26,7 @@ export default class ChatRepository {
         return chat;
     }
 
-    public async update(jid: string | undefined, update: any): Promise<Chat | undefined> {
+    public async update(jid: string | undefined, update: UpdateFilter<any>): Promise<Chat | undefined> {
         if (!jid) return;
         jid = normalizeJid(jid);
 
@@ -43,7 +43,10 @@ export default class ChatRepository {
 
         const res = await chatsCollection.findOneAndUpdate({jid}, update, {returnDocument: ReturnDocument.AFTER});
         if (res.ok) {
+            console.log('updated model: ')
+            console.log(res.value)
             const model = res.value ? ChatModel.fromMap(res.value as WithId<Map<string, object>>) ?? undefined : undefined;
+            console.log(model)
             if (model) {
                 chat.model = model;
             }
