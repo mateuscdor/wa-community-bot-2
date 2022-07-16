@@ -124,7 +124,7 @@ export default abstract class Chat {
         const executables: Command[] = []
 
         for (const [trigger, blockable] of res) {
-            const isBlocked = await handler.isBlocked(message, blockable, false, trigger);
+            const isBlocked = await handler.isBlockedCheck(message, blockable, true, trigger);
             
             if (isBlocked != undefined) {
                 return [false, undefined];

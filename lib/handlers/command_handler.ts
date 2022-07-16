@@ -50,6 +50,24 @@ export default class CommandHandler extends BlockableHandler<Message> {
     }
 
     async isBlocked(
+        data: Message,
+        blockable: Blockable<Message>,
+        checkCooldown: boolean,
+        trigger?: Triggerable<Message> | undefined,
+    ): Promise<BlockedReason | undefined> {
+        const res = await this.isBlockedCheck(data, blockable, checkCooldown, trigger);
+        if (res == BlockedReason.Cooldown) {
+            const user = await userRepository.get(data.sender ?? '')
+            await messagingService.reply(
+                data,
+                `You have to wait ${user?.timeTillCooldownEnd(data.raw?.key.remoteJid!, blockable as Command) ?? 'N/A'}ms before using this command again.\nYou can avoid this by donating!`,
+            );
+        }
+        
+        return res;
+    }
+
+    async isBlockedCheck(
         message: Message,
         blockable: Blockable<Message>,
         checkCooldown: boolean = true,
@@ -106,10 +124,6 @@ export default class CommandHandler extends BlockableHandler<Message> {
 
         const timeTillCooldownEnd = user.timeTillCooldownEnd(message.raw?.key.remoteJid!, blockable);
         if (checkCooldown && user.hasCooldown(blockable) && timeTillCooldownEnd > 0) {
-            await messagingService.reply(
-                message,
-                `You have to wait ${timeTillCooldownEnd}ms before using this command again.\nYou can avoid this by donating!`,
-            );
             return BlockedReason.Cooldown;
         }
     }
