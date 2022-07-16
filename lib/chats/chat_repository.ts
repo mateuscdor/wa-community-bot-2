@@ -89,6 +89,7 @@ export default class ChatRepository {
         else chat.model = model;
 
         if (chat) this.updateLocal(chat);
+        else this.repository.delete(jid ?? '');
         return chat;
     }
 
@@ -98,6 +99,8 @@ export default class ChatRepository {
         if (!jid) return;
 
         let doc = await chatsCollection.findOne<Map<string, object>>({jid});
+        console.log('maybe this why???')
+        console.log(doc)
         return doc ?? undefined;
     }
 
