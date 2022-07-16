@@ -75,7 +75,7 @@ export default class AddCommand extends Command {
         const numbers = [
             ...body
                 .replace(/-/g, "")
-                .replace(/(?<=\d\d\d) /, "")
+                .replace(/(?<=\d\d\d) /g, "")
                 .replace("+", "")
                 .matchAll(/\d+/gim),
         ]
