@@ -17,7 +17,7 @@ export default class HelpCommand extends Command {
 
     constructor(commandHandler: CommandHandler) {
         super({
-            triggers: ["help", "עזרה"].map(e => new CommandTrigger(e)),
+            triggers: ["help", "עזרה"].map((e) => new CommandTrigger(e)),
             usage: "{prefix}{command}",
             category: "Info",
             description: "This message",
@@ -51,14 +51,15 @@ export default class HelpCommand extends Command {
             }
 
             const section = sections.get(sectionKey);
+            const formattedDescription = `*Description:*\n${command.description}\n\n*Aliases:*\n${command.triggers
+                .map((e) => e.command)
+                .join(", ")}\n\n*Cooldowns:*\n${Array.from(command.cooldowns.entries())
+                .map((e) => `${ChatLevel[e[0]]}: ${e[1] / 1000}s`)
+                .join("\n")}`;
             section?.rows?.push({
                 title: command.usage.replace(/{prefix}/gi, prefix).replace(/{command}/gi, command.mainTrigger.command),
-                description: `*Description:*\n${command.description}\n\n*Aliases:*\n${command.triggers
-                    .map((e) => e.command)
-                    .join(", ")}\n\n*Cooldowns:*\n${Array.from(command.cooldowns.entries())
-                    .map((e) => `${ChatLevel[e[0]]}: ${e[1] / 1000}s`)
-                    .join("\n")}`,
-                rowId: "HELP_COMMAND-" + id,
+                description: command.description,
+                rowId: `HELP_COMMAND-${id}\n${prefix}${command.mainTrigger.command}\n${formattedDescription}`,
             });
 
             id++;

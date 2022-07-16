@@ -42,8 +42,17 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
                 });
             }
 
-            if (rawMsg.message?.listResponseMessage?.singleSelectReply?.selectedRowId?.startsWith("HELP_COMMAND")) {
-                return await messagingService.reply(msg, "Please type the command in yourself.", true);
+            const selectedRowId = rawMsg.message?.listResponseMessage?.singleSelectReply?.selectedRowId;
+            if (selectedRowId && selectedRowId?.startsWith("HELP_COMMAND")) {
+                let splitAtNewLine = selectedRowId.split("\n");
+                splitAtNewLine.shift();
+                const commandName = splitAtNewLine.shift();
+                const commandDescription = splitAtNewLine.join("\n");
+                return await messagingService.replyAdvanced(
+                    msg,
+                    {text: commandDescription, buttons: [{buttonId: "0", buttonText: {displayText: commandName}}], title: commandName},
+                    true,
+                );
             }
 
             // if ignore flag is set, return
