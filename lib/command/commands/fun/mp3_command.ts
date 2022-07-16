@@ -74,19 +74,19 @@ export default class MP3Command extends Command {
                 const messages = downloadData["messages"] ?? [];
                 while (messages.length > 0) {
                     console.log("huh");
-                    await this.sendRoutine(client, downloadData["messages"], fileBuffer, video.title);
+                    await this.sendRoutine(downloadData["messages"], fileBuffer, video.title);
                     console.log("finished send routine");
                 }
 
                 console.log("out!");
                 this.deleteFiles(video.title, path);
                 delete this.downloading_list[video.title];
-                console.log("finished executing this");
+                console.log('finished executing')
             });
         console.log("finished executing wtf");
     }
 
-    private async sendRoutine(client: WASocket, messages: Array<Message>, file: Buffer, title: string) {
+    private async sendRoutine(messages: Array<Message>, file: Buffer, title: string) {
         while (messages.length > 0) {
             console.log("oh 1");
             console.log(messages);
@@ -103,7 +103,8 @@ export default class MP3Command extends Command {
             }
 
             console.log("sending message");
-            await client.sendMessage(
+            messagingService.setIgnoreMode(true)
+            await messagingService.sendMessage(
                 jid,
                 {
                     audio: file as WAMediaUpload,
@@ -112,7 +113,8 @@ export default class MP3Command extends Command {
                 },
                 {quoted: message.raw ?? undefined},
             );
-
+            messagingService.setIgnoreMode(false)
+            
             console.log("send audio!");
         }
 
