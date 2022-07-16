@@ -32,7 +32,10 @@ export default class ChatRepository {
         jid = normalizeJid(jid);
         console.log(`exit: ${jid}`)
 
-        if (!jid || (!isJidUser(jid) && !isJidGroup(jid))) return;
+        if (!jid || (!isJidUser(jid) && !isJidGroup(jid))) {
+            console.log(`invalid JID`)
+            return;
+        }
 
         if (!this.repository.has(jid)) {
             const chat = await this.fetch(jid);
@@ -40,7 +43,10 @@ export default class ChatRepository {
         }
 
         let chat = this.repository.get(jid);
-        if (!chat) return;
+        if (!chat) {
+            console.log("COULDNT FIND CHAT")
+            return;
+        }
         if (!update || update.size === 0) return chat;
 
         const updateRes = await chatsCollection.updateOne({jid}, update);
