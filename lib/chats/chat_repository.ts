@@ -18,6 +18,8 @@ export default class ChatRepository {
 
         if (update || !chat) {
             chat = await this.fetch(jid);
+            console.log('FETCHED')
+            console.log(chat)
         }
 
         if (chat) this.repository.set(jid, chat);
@@ -43,11 +45,11 @@ export default class ChatRepository {
             if (chat) this.updateLocal(chat);
         }
 
-        // let chat = await this.get(jid, true);
-        // if (!chat) {
-        //     console.log("COULDNT FIND CHAT");
-        //     return;
-        // }
+        let chat = await this.get(jid, true);
+        if (!chat) {
+            console.log("COULDNT FIND CHAT");
+            return;
+        }
         if (!update || update.size === 0) {
             console.log("NO UPDATE");
             return;
