@@ -80,7 +80,6 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
             }
 
             if (!chat.model.sendDisclaimer) {
-                if (msg.raw?.key.remoteJid != "120363041344515310@g.us" && msg.raw?.key.remoteJid != "972585551784@s.whatsapp.net") break;
                 const joinMessage =
                     "**Disclaimer**\
                 \nThis bot is handled and managed by a human\
