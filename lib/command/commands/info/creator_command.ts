@@ -6,7 +6,8 @@ import {messagingService} from "../../../constants/services";
 import Message from "../../../message/message";
 import Command from "../../command";
 import CommandTrigger from "../../command_trigger";
-const process = require("process");
+import dotenv from 'dotenv'
+dotenv.config();
 
 export default class CreatorCommand extends Command {
     constructor() {
@@ -23,6 +24,7 @@ export default class CreatorCommand extends Command {
             return await messagingService.reply(message, "You must have some content you want to send in the message.", true);
         }
 
+        console.log(process.env["CREATOR_JID"])
         await messagingService.sendMessage(process.env["CREATOR_JID"]!, {text: `You received a message from:`});
         const vcard = new VCard();
         vcard.addName(undefined, message.raw?.pushName ?? "Bot User");
