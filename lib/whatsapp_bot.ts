@@ -107,8 +107,8 @@ export class BotClient {
     });
   }
 
-  public restart() {
-    this.client?.end(new Boom());
+  public async restart() {
+    await this.client?.logout();
     this.start();
   }
 }
