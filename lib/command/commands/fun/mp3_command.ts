@@ -9,7 +9,7 @@ import Command from "../../command";
 import CommandTrigger from "../../command_trigger";
 import {wait} from "../../../utils/async_utils";
 import {BlockedReason} from "../../../blockable";
-import { DeveloperLevel } from "../../../database/models";
+import {DeveloperLevel} from "../../../database/models";
 
 export default class MP3Command extends Command {
     constructor() {
@@ -62,25 +62,26 @@ export default class MP3Command extends Command {
             .pipe(fs.createWriteStream(path))
             .addListener("finish", async () => {
                 if (!downloadData) {
-                    console.log('intriguingly, downloadData is null')
+                    console.log("intriguingly, downloadData is null");
                     this.deleteFiles(video.title, path);
                     delete this.downloading_list[video.title];
                 } else if (downloadData["messages"].length == 0) {
-                    console.log('why thoooo')
+                    console.log("why thoooo");
                     if (downloadData["messages"].length == 0) this.deleteFiles(video.title, path);
                 }
 
                 const fileBuffer = fs.readFileSync(path);
                 while (downloadData["messages"]?.length ?? 0 > 0) {
-                    console.log('huh')
+                    console.log("huh");
                     this.sendRoutine(downloadData["messages"], fileBuffer, video.title);
-                    delete downloadData['messages']
+                    delete downloadData["messages"];
                 }
 
-                console.log('out!')
+                console.log("out!");
                 this.deleteFiles(video.title, path);
                 delete this.downloading_list[video.title];
             });
+        console.log("finished executing wtf");
     }
 
     private async sendRoutine(messages: Array<Message>, file: Buffer, title: string) {
@@ -136,10 +137,10 @@ export default class MP3Command extends Command {
     }
 
     private deleteFiles(title: string, path: string) {
-        console.log('started deleting files')
+        console.log("started deleting files");
         fs.unlink(path, () => {});
         fs.unlink(path + ".mp3", () => {});
-        console.log('ended deleting files')
+        console.log("ended deleting files");
     }
 
     private standardizeTitle(title: string) {
