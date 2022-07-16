@@ -20,14 +20,15 @@ export default class VCardCommand extends Command {
     async onBlocked(msg: Message, blockedReason: BlockedReason) {}
 
     async execute(client: WASocket, chat: Chat, msg: Message, body: string) {
-        let jid = body.replace(' ', '')
+        let jid = body
+            .replace(" ", "")
             .split(" ")
             .shift()
             ?.replace("+", "")
             .replace(/-/g, "")
             .replace(/(?<=\d\d\d) /, "");
         if (jid?.startsWith("0")) {
-            jid = "972" + jid.slice(1);
+            jid = "972" + jid.slice(1) + "@s.whatsapp.net";
         }
         const vcard = jid ? await buildVCardFromJID(jid) : undefined;
         const user = jid ? await userRepository.get(jid) : undefined;
