@@ -62,18 +62,22 @@ export default class MP3Command extends Command {
             .pipe(fs.createWriteStream(path))
             .addListener("finish", async () => {
                 if (!downloadData) {
+                    console.log('intriguingly, downloadData is null')
                     this.deleteFiles(video.title, path);
                     delete this.downloading_list[video.title];
                 } else if (downloadData["messages"].length == 0) {
+                    console.log('why thoooo')
                     if (downloadData["messages"].length == 0) this.deleteFiles(video.title, path);
                 }
 
                 const fileBuffer = fs.readFileSync(path);
                 while (downloadData["messages"]?.length ?? 0 > 0) {
+                    console.log('huh')
                     this.sendRoutine(downloadData["messages"], fileBuffer, video.title);
                     delete downloadData['messages']
                 }
 
+                console.log('out!')
                 this.deleteFiles(video.title, path);
                 delete this.downloading_list[video.title];
             });
@@ -132,8 +136,10 @@ export default class MP3Command extends Command {
     }
 
     private deleteFiles(title: string, path: string) {
+        console.log('started deleting files')
         fs.unlink(path, () => {});
         fs.unlink(path + ".mp3", () => {});
+        console.log('ended deleting files')
     }
 
     private standardizeTitle(title: string) {
