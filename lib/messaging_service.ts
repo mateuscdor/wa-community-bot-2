@@ -92,6 +92,10 @@ export default class MessagingService {
                 metadata = new MessageMetadata(new Map<string, any>([["ignore", this._shouldIgnore]]));
             }
 
+            if (options?.quoted) {
+                options.quoted.key.fromMe = false;
+            }
+
             const response = await this.client!.sendMessage(recipient, content, options);
 
             if (this.metadataEnabled && metadata) {
