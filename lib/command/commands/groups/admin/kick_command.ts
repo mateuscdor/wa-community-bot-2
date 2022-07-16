@@ -12,7 +12,7 @@ import {BlockedReason} from "../../../../blockable";
 export default class KickCommand extends Command {
     constructor() {
         super({
-            triggers: [new CommandTrigger("kick")],
+            triggers: ["kick", "תעיף"].map(e => new CommandTrigger(e)),
             usage: "{prefix}{command}",
             category: "Group Admin",
             groupLevel: GroupLevel.Admin,

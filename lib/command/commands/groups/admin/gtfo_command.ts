@@ -10,7 +10,7 @@ import {BlockedReason} from "../../../../blockable";
 export default class GtfoCommand extends Command {
     constructor() {
         super({
-            triggers: [new CommandTrigger("gtfo")],
+            triggers: ["gtfo", "צא מפה"].map(e => new CommandTrigger(e)),
             usage: "{prefix}{command}",
             category: "Group Admin",
             groupLevel: GroupLevel.Admin,

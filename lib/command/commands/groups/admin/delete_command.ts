@@ -11,7 +11,7 @@ import {BlockedReason} from "../../../../blockable";
 export default class DeleteCommand extends Command {
     constructor() {
         super({
-            triggers: [new CommandTrigger("delete")],
+            triggers: ["delete", "מחק"].map(e => new CommandTrigger(e)),
             usage: "{prefix}{command}",
             category: "Group Admin",
             groupLevel: GroupLevel.Admin,

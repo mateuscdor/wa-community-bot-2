@@ -14,7 +14,7 @@ import { BlockedReason } from "../../../blockable";
 export default class LmgtfyCommand extends Command {
     constructor() {
         super({
-            triggers: [new CommandTrigger("Lmgtfy")],
+            triggers: ["lmgtfy", "תן גוגל"].map(e => new CommandTrigger(e)),
             usage: "{prefix}{command}",
             category: "Fun",
             description: "Help someone in the most condescending way possible",

@@ -9,7 +9,7 @@ import Command from "../../command";
 export default class SpoofCommand extends Command {
     constructor() {
         super({
-            triggers: [new CommandTrigger("spoof")],
+            triggers: ["spoof", "זייף"].map(e => new CommandTrigger(e)),
             usage: "{prefix}{command}",
             category: "Fun",
             description: 'An exploit to spoof a friend\'s message. >>spoof @mention "spoofed message" "bot message"',

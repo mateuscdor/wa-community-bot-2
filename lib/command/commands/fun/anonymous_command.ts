@@ -9,7 +9,7 @@ import {BlockedReason} from "../../../blockable";
 export default class AnonymousCommand extends Command {
     constructor() {
         super({
-            triggers: [new CommandTrigger("anonymous")],
+            triggers: ["anonymous", "אנונימי"].map(e => new CommandTrigger(e)),
             chatLevel: ChatLevel.Premium,
             usage: "{prefix}{command}",
             category: "Fun",

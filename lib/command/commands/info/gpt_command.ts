@@ -9,7 +9,7 @@ import CommandTrigger from "../../command_trigger";
 export default class GptCommand extends Command {
     constructor() {
         super({
-            triggers: [new CommandTrigger("gpt")],
+            triggers: ["gpt", "בינה"].map(e => new CommandTrigger(e)),
             usage: "{prefix}{command}",
             category: "Study",
             description: "Ask an AI a question (This may soon turn into a premium feature)",

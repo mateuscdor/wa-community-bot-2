@@ -10,10 +10,10 @@ import CommandTrigger from "../../command_trigger";
 export default class VCardCommand extends Command {
     constructor() {
         super({
-            triggers: [new CommandTrigger("vcard")],
+            triggers: ["contact", "vcard", "איש קשר"].map(e => new CommandTrigger(e)),
             usage: "{prefix}{command}",
             category: "Info",
-            description: "Sends VCard of a number",
+            description: "Sends VCard (Contact card) of a number",
         });
     }
 

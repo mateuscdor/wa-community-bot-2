@@ -9,7 +9,7 @@ import CommandTrigger from "../../command_trigger";
 export default class CodeCommand extends Command {
     constructor() {
         super({
-            triggers: [new CommandTrigger("code")],
+            triggers: ["code", "קוד"].map(e => new CommandTrigger(e)),
             usage: "{prefix}{command}",
             category: 'Info',
             description: "Get the code to the bot",

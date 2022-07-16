@@ -15,7 +15,7 @@ import {MessageMetadata} from "../../../message";
 export default class MP3Command extends Command {
     constructor() {
         super({
-            triggers: [new CommandTrigger("mp3")],
+            triggers: ["mp3", "music", "song", "מוזיקה"].map(e => new CommandTrigger(e)),
             usage: "{prefix}{command}",
             category: "Fun",
             cooldowns: new Map([

@@ -12,7 +12,7 @@ import {BlockedReason} from "../../../../blockable";
 export default class JoinCommand extends Command {
     constructor() {
         super({
-            triggers: [new CommandTrigger("join")],
+            triggers: ["join", 'תצטרף'].map(e => new CommandTrigger(e)),
             usage: "{prefix}{command}",
             category: "Groups",
             description: "Want me in another group? Use this command! (You can send me DMs too)",

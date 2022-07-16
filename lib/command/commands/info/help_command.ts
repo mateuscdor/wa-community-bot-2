@@ -2,7 +2,7 @@ import {proto, WASocket} from "@adiwajshing/baileys";
 import {BlockedReason} from "../../../blockable";
 import {Chat} from "../../../chats";
 import {messagingService} from "../../../constants/services";
-import {DeveloperLevel} from "../../../database/models";
+import {ChatLevel, DeveloperLevel} from "../../../database/models";
 import CommandHandler from "../../../handlers/command_handler";
 import Message from "../../../message/message";
 import Command from "../../command";
@@ -17,7 +17,7 @@ export default class HelpCommand extends Command {
 
     constructor(commandHandler: CommandHandler) {
         super({
-            triggers: [new CommandTrigger("help")],
+            triggers: ["help", "עזרה"].map(e => new CommandTrigger(e)),
             usage: "{prefix}{command}",
             category: "Info",
             description: "This message",
@@ -53,7 +53,11 @@ export default class HelpCommand extends Command {
             const section = sections.get(sectionKey);
             section?.rows?.push({
                 title: command.usage.replace(/{prefix}/gi, prefix).replace(/{command}/gi, command.mainTrigger.command),
-                description: command.description,
+                description: `*Description:*\n${command.description}\n\n*Aliases:*\n${command.triggers
+                    .map((e) => e.command)
+                    .join(", ")}\n\n*Cooldowns:*\n${Array.from(command.cooldowns.entries())
+                    .map((e) => `${ChatLevel[e[1]]}: ${e[0] / 1000}s`)
+                    .join("\n")}`,
                 rowId: "HELP_COMMAND-" + id,
             });
 
@@ -71,7 +75,7 @@ export default class HelpCommand extends Command {
         const footer =
             "Please consider supporting the bot by donating to the Patreon!\n\nIn the future, donators will receive special perks!\nhttps://www.patreon.com/wailcommunitybot";
 
-        if (sendInGroup || message.content?.toLowerCase()?.includes('here'))
+        if (sendInGroup || message.content?.toLowerCase()?.includes("here"))
             await messagingService.sendMessage(
                 message.raw?.key.remoteJid!,
                 {

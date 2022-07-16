@@ -11,7 +11,7 @@ import CommandTrigger from "../../command_trigger";
 export default class StickerCommand extends Command {
     constructor() {
         super({
-            triggers: [new CommandTrigger("sticker")],
+            triggers: ["sticker", "סטיקר"].map(e => new CommandTrigger(e)),
             usage: "{prefix}{command}",
             category: "Fun",
             description: "Send along with an image or video to create a sticker",

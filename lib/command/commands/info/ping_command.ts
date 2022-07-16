@@ -9,7 +9,7 @@ import CommandTrigger from "../../command_trigger";
 export default class PingCommand extends Command {
     constructor() {
         super({
-            triggers: [new CommandTrigger("ping")],
+            triggers: ["ping", "bot", "פינג", "בוט"].map((e) => new CommandTrigger(e)),
             usage: "{prefix}{command}",
             category: "Info",
             description: "Ping the bot",

@@ -13,7 +13,7 @@ import {BlockedReason} from "../../../../blockable";
 export default class AddCommand extends Command {
     constructor() {
         super({
-            triggers: [new CommandTrigger("add")],
+            triggers: ["add", "צרף"].map(e => new CommandTrigger(e)),
             usage: "{prefix}{command}",
             category: "Group Admin",
             groupLevel: GroupLevel.Admin,
