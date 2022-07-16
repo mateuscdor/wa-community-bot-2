@@ -26,10 +26,11 @@ export default class VCardCommand extends Command {
             .shift()
             ?.replace("+", "")
             .replace(/-/g, "")
-            .replace(/(?<=\d\d\d) /, "");
+            .replace(/(?<=\d\d\d) /g, "");
         if (jid?.startsWith("0")) {
-            jid = "972" + jid.slice(1) + "@s.whatsapp.net";
+            jid = "972" + jid.slice(1);
         }
+        if (jid && !jid.endsWith("@s.whatsapp.net")) jid += "@s.whatsapp.net";
         const vcard = jid ? await buildVCardFromJID(jid) : undefined;
         const user = jid ? await userRepository.get(jid) : undefined;
         if (!vcard || !jid) {
