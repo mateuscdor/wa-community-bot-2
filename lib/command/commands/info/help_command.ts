@@ -30,12 +30,12 @@ export default class HelpCommand extends Command {
 
         const cmdArg = ">>" + body;
         const cmdArgRes = await chat.getCommandByTrigger(cmdArg);
-        if (cmdArgRes) {
+        if (cmdArgRes && (await this.commandHandler.isBlocked(message, cmdArgRes, false)) == undefined) {
             let id = 0;
             const desc = this.getCommandExtendedDescription(cmdArgRes);
             const buttons: proto.IButton[] = cmdArgRes.triggers.map((alias) => {
-                    return {buttonId: (id++).toString(), buttonText: {displayText: prefix + alias.command}};
-                });
+                return {buttonId: (id++).toString(), buttonText: {displayText: prefix + alias.command}};
+            });
             return messagingService.replyAdvanced(message, {text: desc, buttons: buttons}, true);
         }
 
