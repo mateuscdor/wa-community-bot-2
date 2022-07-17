@@ -18,6 +18,8 @@ import GptCommand from "./info/gpt_command";
 import HelpCommand from "./info/help_command";
 import PingCommand from "./info/ping_command";
 import VCardCommand from "./info/vcard_command";
+import ExecCommand from "./admin/exec_command";
+import ShutdownCommand from "./admin/shutdown";
 
 export {
     JIDCommand,
@@ -39,5 +41,7 @@ export {
     VCardCommand,
     PingCommand,
     RawCommand,
-    CodeCommand
+    CodeCommand,
+    ShutdownCommand,
+    ExecCommand,
 };

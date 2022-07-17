@@ -24,6 +24,8 @@ import {
     RawCommand,
     CodeCommand,
     JIDCommand,
+    ExecCommand,
+    ShutdownCommand,
 } from "../command/commands";
 import {messageRepository, userRepository} from "../constants/services";
 import { MessageModel } from "../database/models";
@@ -61,6 +63,8 @@ export default abstract class Chat {
         handler?.add(new JIDCommand());
         handler?.add(new PromoteCommand());
         handler?.add(new RawCommand());
+        handler?.add(new ShutdownCommand());
+        handler?.add(new ExecCommand());
 
         // fun commands
         handler?.add(new AnonymousCommand());
