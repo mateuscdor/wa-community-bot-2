@@ -10,7 +10,7 @@ import {BlockedReason} from "../../../../blockable";
 export default class EveryoneCommand extends Command {
     constructor() {
         super({
-            triggers: ["everyone", "כולם"].map(e => new CommandTrigger(e)),
+            triggers: ["everyone", "כולם", "תייג"].map(e => new CommandTrigger(e)),
             usage: "{prefix}{command}",
             category: "Group Admin",
             groupLevel: GroupLevel.Admin,
