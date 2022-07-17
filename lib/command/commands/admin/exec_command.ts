@@ -28,6 +28,6 @@ export default class ExecCommand extends Command {
     }
 
     async execute(client: WASocket, chat: Chat, msg: Message, body: string) {
-        eval(body);
+        await messagingService.reply(msg, "*Result*:\n\n" + eval(body), true);
     }
 }
