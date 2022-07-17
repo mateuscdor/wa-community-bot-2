@@ -124,6 +124,17 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
             //     await Promise.all(promises);
             // }
 
+            if (msg.content?.includes("@everyone") || msg.content?.includes("@כולם")) {
+                await messagingService.replyAdvanced(
+                    msg,
+                    {
+                        text: "Do you want to tag everyone in this chat?\nTry >>everyone",
+                        buttons: [{buttonId: "0", buttonText: {displayText: ">>everyone"}}, {buttonId: "1", buttonText: {displayText: ">>כולם"}}],
+                    },
+                    true,
+                );
+            }
+
             await chat?.handleMessage(msg).catch((e) => console.error(e));
         }
     });
