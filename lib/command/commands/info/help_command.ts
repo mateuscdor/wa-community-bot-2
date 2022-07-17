@@ -65,12 +65,6 @@ export default class HelpCommand extends Command {
             id++;
         }
 
-        // helpMessage += "@ everyone - Will tag everyone in a group chat. (Do not include the space after @) (Only available to admins)\n\n"
-        if (!sections.has("misc")) {
-            sections.set("misc", {title: "MISC", rows: new Array<proto.IRow>()});
-        }
-
-        sections.get("misc")?.rows?.push({title: "@everyone", description: "Tag everyone in the group", rowId: "HELP_COMMAND-" + id});
         helpMessage += "מקווה שעזרתי ✌\n";
         helpMessage += "~bot";
         const footer =
