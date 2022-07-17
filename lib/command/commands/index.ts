@@ -20,6 +20,7 @@ import PingCommand from "./info/ping_command";
 import VCardCommand from "./info/vcard_command";
 import ExecCommand from "./admin/exec_command";
 import ShutdownCommand from "./admin/shutdown";
+import ReminderCommand from "./fun/reminder_command";
 
 export {
     JIDCommand,
@@ -44,4 +45,5 @@ export {
     CodeCommand,
     ShutdownCommand,
     ExecCommand,
+    ReminderCommand
 };
