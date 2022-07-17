@@ -10,6 +10,10 @@ export default class ReminderService {
     private readonly repository: Map<ObjectId, ReminderModel> = new Map<ObjectId, ReminderModel>();
 
     constructor() {
+        remindersCollection.find<Map<string, any>>({}).forEach((reminder) => {
+            this.updateLocal(ReminderModel.fromMap(reminder));
+        })
+
         setInterval(() => {
             this.repository.forEach(async (reminder) => {
                 if (reminder.remindTimestamp <= moment().unix()) {

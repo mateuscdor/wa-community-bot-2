@@ -12,7 +12,7 @@ import moment from "moment";
 export default class ReminderCommand extends Command {
     constructor() {
         super({
-            triggers: ["reminder", "תזכורת", "remind me", "תזכיר לי"].map((e) => new CommandTrigger(e)),
+            triggers: ["reminder", "remind", "תזכורת", "remind me", "תזכיר לי"].map((e) => new CommandTrigger(e)),
             usage: "{prefix}{command}",
             category: "Fun",
             description: "Set a reminder for yourself",
