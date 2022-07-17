@@ -28,7 +28,7 @@ export default class HelpCommand extends Command {
     async execute(client: WASocket, chat: Chat, message: Message, body?: string) {
         const prefix = chat.model.commandPrefix;
 
-        const cmdArg = body?.startsWith(">>") ? body : ">>" + body;
+        const cmdArg = body?.startsWith(prefix) ? body : prefix + body;
         const cmdArgRes = await chat.getCommandByTrigger(cmdArg);
         if (cmdArgRes && (await this.commandHandler.isBlocked(message, cmdArgRes, false)) == undefined) {
             let id = 0;
