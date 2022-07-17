@@ -103,13 +103,13 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
                 chat = await chatRepository.get(chatJid, true);
                 await messagingService.replyAdvanced(
                     msg,
-                    {text: joinMessage, buttons: [{buttonText: {displayText: ">>help"}}]},
+                    {text: joinMessage, buttons: [{buttonText: {displayText: ">>help"}, buttonId: "0"}]},
                     false,
                 );
 
                 await messagingService.replyAdvanced(
                     msg,
-                    {text: joinMessageHebrew, buttons: [{buttonText: {displayText: ">>עזרה"}}]},
+                    {text: joinMessageHebrew, buttons: [{buttonText: {displayText: ">>עזרה"}, buttonId: "0"}]},
                     false,
                 );
             }
