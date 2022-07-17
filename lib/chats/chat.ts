@@ -26,6 +26,7 @@ import {
     JIDCommand,
 } from "../command/commands";
 import {messageRepository, userRepository} from "../constants/services";
+import { MessageModel } from "../database/models";
 import ChatModel from "../database/models/chat/chat_model";
 import BlockableHandler from "../handlers/blockable_handler";
 import CommandHandler from "../handlers/command_handler";
@@ -140,6 +141,18 @@ export default abstract class Chat {
         }
 
         return [true, executables];
+    }
+
+    async getCommandByTrigger(trigger: string): Promise<Command | undefined> {
+        const handler = this.commandHandler;
+        if (!handler) return undefined;
+    
+        const res = await handler.findByContent(trigger);
+        for (const [, blockable] of res) {
+            if (blockable instanceof Command) {
+                return blockable;
+            }
+        }
     }
 
     public async executeBlockable(

@@ -26,6 +26,19 @@ export default class HelpCommand extends Command {
     }
 
     async execute(client: WASocket, chat: Chat, message: Message, body?: string) {
+        const prefix = chat.model.commandPrefix;
+
+        const cmdArg = ">>" + body;
+        const cmdArgRes = await chat.getCommandByTrigger(cmdArg);
+        if (cmdArgRes) {
+            let id = 0;
+            const desc = this.getCommandExtendedDescription(cmdArgRes);
+            const buttons: proto.IButton[] = cmdArgRes.triggers.map((alias) => {
+                    return {buttonId: (id++).toString(), buttonText: {displayText: prefix + alias.command}};
+                });
+            return messagingService.replyAdvanced(message, {text: desc, buttons: buttons}, true);
+        }
+
         const allCommands = this.commandHandler.blockables;
         const filteredCommands: Array<Command> = [];
         let sendInGroup = true;
@@ -40,7 +53,6 @@ export default class HelpCommand extends Command {
             filteredCommands.push(command);
         }
 
-        const prefix = chat.model.commandPrefix;
         let helpMessage = "*----- HELP ME I'M RETARDED ----*\n";
         const sections: Map<string, proto.ISection> = new Map();
         let id = 0;
@@ -51,11 +63,7 @@ export default class HelpCommand extends Command {
             }
 
             const section = sections.get(sectionKey);
-            const formattedDescription = `*Description:*\n${command.description}\n\n*Aliases:*\n${command.triggers
-                .map((e) => e.command)
-                .join(", ")}\n\n*Cooldowns:*\n${Array.from(command.cooldowns.entries())
-                .map((e) => `${ChatLevel[e[0]]}: ${e[1] / 1000}s`)
-                .join("\n")}`;
+            const formattedDescription = this.getCommandExtendedDescription(command);
             section?.rows?.push({
                 title: command.usage.replace(/{prefix}/gi, prefix).replace(/{command}/gi, command.mainTrigger.command),
                 description: command.description,
@@ -97,4 +105,12 @@ export default class HelpCommand extends Command {
     }
 
     onBlocked(data: Message, blockedReason: BlockedReason) {}
+
+    private getCommandExtendedDescription(command: Command) {
+        return `*Description:*\n${command.description}\n\n*Aliases:*\n${command.triggers
+            .map((e) => e.command)
+            .join(", ")}\n\n*Cooldowns:*\n${Array.from(command.cooldowns.entries())
+            .map((e) => `${ChatLevel[e[0]]}: ${e[1] / 1000}s`)
+            .join("\n")}`;
+    }
 }
