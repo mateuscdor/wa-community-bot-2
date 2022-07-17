@@ -10,7 +10,7 @@ import CommandTrigger from "../../command_trigger";
 
 export default class HelpCommand extends Command {
     command: string = "help";
-    help: string = "This message";
+    help: string = "This message. You can also do (>>help <command name> | e.g >>help music)";
     help_category: string = "Info";
 
     private commandHandler: CommandHandler;
