@@ -93,11 +93,11 @@ export default class ReputationCommand extends Command {
 
         await userRepository.update(message.sender, {$push: {"reputation.given": moment().unix()}});
 
-        await messagingService.reply(
+        await messagingService.replyAdvanced(
             message,
-            `You've successfully given reputation!\n\n@${jidDecode(reppedJid).user}: ${previousRep} => ${
+            {text: `You've successfully given reputation!\n\n*@${jidDecode(reppedJid).user}:* ${previousRep} => ${
                 reppedUser.model.reputation.reputation
-            } (+${repPointsToGive})\n*Points left:* ${userPointsCanGive - repPointsToGive}`,
+            } (+${repPointsToGive})\n*Points left:* ${userPointsCanGive - repPointsToGive}`, metions: [reppedJid]},
         );
     }
 
