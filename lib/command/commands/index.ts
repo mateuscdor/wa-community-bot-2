@@ -21,6 +21,7 @@ import VCardCommand from "./info/vcard_command";
 import ExecCommand from "./admin/exec_command";
 import ShutdownCommand from "./admin/shutdown";
 import ReminderCommand from "./fun/reminder_command";
+import ReputationCommand from "./fun/reputation_command";
 
 export {
     JIDCommand,
@@ -45,5 +46,6 @@ export {
     CodeCommand,
     ShutdownCommand,
     ExecCommand,
-    ReminderCommand
+    ReminderCommand,
+    ReputationCommand
 };

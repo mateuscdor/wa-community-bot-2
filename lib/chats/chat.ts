@@ -27,6 +27,7 @@ import {
     ExecCommand,
     ShutdownCommand,
     ReminderCommand,
+    ReputationCommand,
 } from "../command/commands";
 import {messageRepository, userRepository} from "../constants/services";
 import { MessageModel } from "../database/models";
@@ -74,6 +75,7 @@ export default abstract class Chat {
         handler?.add(new SpoofCommand());
         handler?.add(new StickerCommand());
         handler?.add(new ReminderCommand());
+        handler?.add(new ReputationCommand());
 
         // group admin commands
         handler?.add(new AddCommand());

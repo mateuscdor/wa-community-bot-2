@@ -8,6 +8,7 @@ import Command from "../../command";
 import CommandTrigger from "../../command_trigger";
 import {BlockedReason} from "../../../blockable";
 import moment from "moment";
+import {havePluralS} from "../../../utils/message_utils";
 
 export default class ReminderCommand extends Command {
     constructor() {
@@ -101,7 +102,7 @@ export default class ReminderCommand extends Command {
             return await messagingService.reply(message, "Something went wrong while creating the reminder.");
         }
 
-        await messagingService.reply(message, `Great.\nI'll remind you to ${reminderText} in ${time} ${timeType}(s)!`);
+        await messagingService.reply(message, `Great.\nI'll remind you to ${reminderText} in ${time} ${timeType}${havePluralS(time)}!`);
     }
 
     private buildAcceptableTimesString() {

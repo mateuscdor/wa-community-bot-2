@@ -20,7 +20,7 @@ export default class UserRepository {
         return user;
     }
 
-    public async update(jid: string | undefined, update: UpdateFilter<Document>): Promise<User | undefined> {
+    public async update(jid: string | undefined, update: any): Promise<User | undefined> {
         if (!jid) return;
         jid = normalizeJid(jid);
 
