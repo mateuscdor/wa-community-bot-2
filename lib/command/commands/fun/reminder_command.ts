@@ -173,7 +173,7 @@ export default class ReminderCommand extends Command {
         const selectedReminder = reminderMapId.get(selectedReminderId);
         if (!selectedReminder) return;
         const modificationMenuMessage =
-            "What do you want to change?\n\n*1.* Reminder text (טקסט התזכורת)\n*2.* Reminder recurring (תזכורת חוזרת)\n*3.* Delete (מחק)*4.* Cancel (ביטול)";
+            "What do you want to change?\n\n*1.* Reminder text (טקסט התזכורת)\n*2.* Reminder recurring (תזכורת חוזרת)\n*3.* Delete (מחק)\n*4.* Cancel (ביטול)";
         await messagingService.reply(message, modificationMenuMessage, true);
         recvMsg = await waitForMessage(async (msg) => {
             if (msg.sender == message.sender && msg.raw?.key.remoteJid == message.raw?.key.remoteJid) {

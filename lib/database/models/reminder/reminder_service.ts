@@ -18,10 +18,11 @@ export default class ReminderService {
             this.repository.forEach(async (reminder) => {
                 if (reminder.remindTimestamp <= moment().unix()) {
                     const timestampDifference = reminder.remindTimestamp - reminder.remindSetTimestamp;
-                    this.delete(reminder._id);
+                    const deletePromise = this.delete(reminder._id);
                     await messagingService.sendMessage(reminder.jid, {text: `*⏰Reminder*\n\n${reminder.reminder}`});
 
                     if (reminder.recurring) {
+                        await deletePromise;
                         await this.createSimple(
                             reminder.jid,
                             reminder.reminder,
