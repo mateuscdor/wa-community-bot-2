@@ -145,16 +145,19 @@ export default class ReminderCommand extends Command {
         const reminders = remindersCollection
             .find<Map<string, any>>({jid: message.sender})
             .map((e) => ReminderModel.fromMap(e));
-        let text = "*Reminders:* _(select one to modify)_\n\n";
+        let text = "*Reminders:* _(select one to modify using the number)_\n\n";
         const reminderMapId: Map<number, ReminderModel> = new Map();
         let id = 1;
 
         for await (const reminder of reminders) {
-            text += `${reminder.reminder}\n`;
+            text += `*${id}.* ${reminder.reminder}\n`;
             reminderMapId.set(id, reminder);
             id++;
         }
         text.trimEnd();
+        if (id == 1) {
+            return await messagingService.reply(message, "You have no reminders.");
+        }
 
         await messagingService.reply(message, text, true);
         let recvMsg = await waitForMessage(async (msg) => {
