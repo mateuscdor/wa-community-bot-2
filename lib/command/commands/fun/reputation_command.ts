@@ -24,25 +24,22 @@ export default class ReputationCommand extends Command {
             return await messagingService.reply(message, "An error occurred while processing this message.", true);
         }
 
-        const givingUser = await userRepository.get(message.sender, true);
+        const givingUser = await userRepository.get(message.sender);
         if (!givingUser) {
             return await messagingService.reply(message, "An error occurred while processing this message.", true);
         }
 
         const givenReps = givingUser.model.reputation.given;
-        console.log(givenReps);
 
         let userPointsCanGive = 3;
         // redact reputation point for each reputation given in the last 24 hours
         for (const rep of givenReps) {
-            console.log(`diff = ${moment().diff(moment.unix(rep), "hours", true)}`);
             if (moment().diff(moment.unix(rep), "hours") < 24) {
                 userPointsCanGive--;
             }
         }
 
         userPointsCanGive = Math.max(0, userPointsCanGive);
-        console.log(`points ${userPointsCanGive}`);
 
         if (!body) {
             // send reputation info about sender user
@@ -56,7 +53,6 @@ export default class ReputationCommand extends Command {
 
         const arg1 = body.split(" ")[0];
         const repPointsToGive = parseInt(arg1) === 0 ? 0 : parseInt(arg1) || 1;
-        console.log(`points to give ${repPointsToGive}`);
 
         const mentions = message.raw?.message?.extendedTextMessage?.contextInfo?.mentionedJid ?? [];
         if (mentions.length === 0) {
