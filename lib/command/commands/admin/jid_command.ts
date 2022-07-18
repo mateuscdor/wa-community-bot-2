@@ -1,4 +1,4 @@
-import {WASocket} from "@adiwajshing/baileys";
+import {generateMessageID, WASocket} from "@adiwajshing/baileys";
 import {BlockedReason} from "../../../blockable/blocked_reason";
 import {Chat} from "../../../chats";
 import {messagingService} from "../../../constants/services";
