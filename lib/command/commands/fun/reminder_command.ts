@@ -154,7 +154,8 @@ export default class ReminderCommand extends Command {
             reminderMapId.set(id, reminder);
             id++;
         }
-        text.trimEnd();
+        // remove last new line
+        text = text.slice(0, -1);
         if (id == 1) {
             return await messagingService.reply(message, "You have no reminders.");
         }

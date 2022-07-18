@@ -1,6 +1,6 @@
 import {isJidGroup, isJidUser} from "@adiwajshing/baileys";
 import moment from "moment";
-import {ObjectId, UpdateFilter} from "mongodb";
+import {Document, ObjectId, UpdateFilter} from "mongodb";
 import {remindersCollection} from "../..";
 import {messagingService} from "../../../constants/services";
 import {normalizeJid} from "../../../utils/group_utils";
@@ -40,12 +40,14 @@ export default class ReminderService {
         return reminder;
     }
 
-    async update(id: ObjectId | undefined, update: UpdateFilter<Map<string, any>>): Promise<ReminderModel | undefined> {
+    async update(id: ObjectId | undefined, update: UpdateFilter<Document>): Promise<ReminderModel | undefined> {
         if (!id) return;
 
+        console.log(`updating reminder ${id.toString()} with ${update}`);
         const res = await remindersCollection.updateOne({_id: id}, update);
         if (res.acknowledged) {
             const reminder = await this.get(id, true);
+            console.log(reminder)
             return reminder;
         }
         return undefined;
