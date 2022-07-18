@@ -7,6 +7,7 @@ import {Command, CommandTrigger} from "../command";
 import {chatRepository, messagingService, userRepository} from "../constants/services";
 import Message from "../message/message";
 import {getUserPrivilegeLevel} from "../utils/group_utils";
+import {havePluralS} from "../utils/message_utils";
 import BlockableHandler from "./blockable_handler";
 
 export default class CommandHandler extends BlockableHandler<Message> {
@@ -57,13 +58,14 @@ export default class CommandHandler extends BlockableHandler<Message> {
     ): Promise<BlockedReason | undefined> {
         const res = await this.isBlockedCheck(data, blockable, checkCooldown, trigger);
         if (res == BlockedReason.Cooldown) {
-            const user = await userRepository.get(data.sender ?? '')
+            const user = await userRepository.get(data.sender ?? "");
+            const timeToWait = (user?.timeTillCooldownEnd(data.raw?.key.remoteJid!, blockable as Command) ?? 0) / 1000.0
             await messagingService.reply(
                 data,
-                `You have to wait ${user?.timeTillCooldownEnd(data.raw?.key.remoteJid!, blockable as Command) ?? 'N/A'}ms before using this command again.\nYou can avoid this by donating!`,
+                `You have to wait ${timeToWait} second${havePluralS(timeToWait)} before using this command again.\nYou can avoid this by donating!`,
             );
         }
-        
+
         return res;
     }
 
