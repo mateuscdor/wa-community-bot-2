@@ -1,4 +1,4 @@
-import {isJidGroup, isJidUser} from "@adiwajshing/baileys";
+import {generateWAMessage, isJidGroup, isJidUser} from "@adiwajshing/baileys";
 import moment from "moment";
 import {Document, ObjectId, UpdateFilter} from "mongodb";
 import {remindersCollection} from "../..";

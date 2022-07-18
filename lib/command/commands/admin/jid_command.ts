@@ -32,7 +32,7 @@ export default class JIDCommand extends Command {
         if (quoted) {
             return await messagingService.reply(
                 msg,
-                `CHAT JID: ${msg.raw?.key.remoteJid ?? "N/A"}\nQUOTED MESSAGE ID: ${msg.raw?.key.id ?? "N/A"}`,
+                `CHAT JID: ${msg.raw?.key.remoteJid ?? "N/A"}\nQUOTED MESSAGE ID: ${quoted.raw?.key.id ?? "N/A"}`,
                 true,
             );
         }
