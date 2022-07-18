@@ -49,6 +49,25 @@ export default class ReputationCommand extends Command {
                 `*Total reputation received:* ${userRep}\n*Reputation points remaining:* ${userPointsCanGive}`,
                 true,
             );
+        } else if (body.toLowerCase().startsWith("stats")) {
+            const mentions = message.raw?.message?.extendedTextMessage?.contextInfo?.mentionedJid ?? [];
+            const userStatToCheck = mentions.length > 0 ? mentions[0] : message.sender;
+            let user = await userRepository.get(userStatToCheck);
+            if (!user) {
+                user = await userRepository.simpleCreate(userStatToCheck);
+                if (!user) return await messagingService.reply(message, "Failed to get reputation of user", true);
+            }
+
+            return await messagingService.replyAdvanced(
+                message,
+                {
+                    text: `*Reputation stats of @${userStatToCheck.split("@")[0]}*\n\n*Total reputation received:* ${
+                        user.model.reputation.reputation
+                    }`,
+                    mentions: [userStatToCheck],
+                },
+                true,
+            );
         }
 
         const arg1 = body.split(" ")[0];
@@ -93,12 +112,12 @@ export default class ReputationCommand extends Command {
 
         await userRepository.update(message.sender, {$push: {"reputation.given": moment().unix()}});
 
-        await messagingService.replyAdvanced(
-            message,
-            {text: `You've successfully given reputation!\n\n*@${jidDecode(reppedJid).user}:* ${previousRep} => ${
+        await messagingService.replyAdvanced(message, {
+            text: `You've successfully given reputation!\n\n*@${jidDecode(reppedJid).user}:* ${previousRep} => ${
                 reppedUser.model.reputation.reputation
-            } (+${repPointsToGive})\n*Points left:* ${userPointsCanGive - repPointsToGive}`, mentions: [reppedJid]},
-        );
+            } (+${repPointsToGive})\n*Points left:* ${userPointsCanGive - repPointsToGive}`,
+            mentions: [reppedJid],
+        });
     }
 
     onBlocked(data: Message, blockedReason: BlockedReason) {}
