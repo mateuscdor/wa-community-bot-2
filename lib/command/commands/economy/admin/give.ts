@@ -26,7 +26,7 @@ export default class GiveBalanceCommand extends EconomyCommand {
         }
 
         // extract number from body using regex
-        const number = Number((body.replace('@' + userJid.split('@')[0], '').match(/\d+/) ?? [])[0] ?? "");
+        const number = Number((body.replace('@' + userJid.split('@')[0], '').match(/(-\d+)|\d+/) ?? [])[0] ?? "");
         if (!number) {
             return await messagingService.reply(
                 message,
