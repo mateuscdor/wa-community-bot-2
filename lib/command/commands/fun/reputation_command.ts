@@ -90,7 +90,7 @@ export default class ReputationCommand extends Command {
 
         await messagingService.reply(
             message,
-            `You've successfully given reputation!\n\n*@${jidDecode(reppedJid)} reputation:* ${previousRep} => ${
+            `You've successfully given reputation!\n\n*@${jidDecode(reppedJid).user}'s reputation:* ${previousRep} => ${
                 reppedUser.model.reputation.reputation
             } (+${repPointsToGive})\n*Points left:* ${repPoints - repPointsToGive}`,
         );
