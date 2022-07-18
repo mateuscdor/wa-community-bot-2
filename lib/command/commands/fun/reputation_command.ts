@@ -35,8 +35,8 @@ export default class ReputationCommand extends Command {
         let userPointsCanGive = 3;
         // redact reputation point for each reputation given in the last 24 hours
         for (const rep of givenReps) {
-            console.log(`diff = ${moment().diff(moment.unix(rep), "hours")}`);
-            if (moment().diff(rep, "hours") < 24) {
+            console.log(`diff = ${moment().diff(moment.unix(rep), "hours", true)}`);
+            if (moment().diff(moment.unix(rep), "hours") < 24) {
                 userPointsCanGive--;
             }
         }
