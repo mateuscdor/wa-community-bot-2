@@ -35,6 +35,7 @@ export default class ReputationCommand extends Command {
         let userPointsCanGive = 3;
         // redact reputation point for each reputation given in the last 24 hours
         for (const rep of givenReps) {
+            console.log(`diff = ${moment().diff(rep, "hours")}`);
             if (moment().diff(rep, "hours") < 24) {
                 userPointsCanGive--;
             }
@@ -91,12 +92,12 @@ export default class ReputationCommand extends Command {
         if (!reppedUser) {
             return await messagingService.reply(message, "The user you are trying to give reputation to doesn't exist.", true);
         }
-        
+
         await userRepository.update(message.sender, {$push: {"reputation.given": moment().unix()}});
 
         await messagingService.reply(
             message,
-            `You've successfully given reputation!\n\n*@${jidDecode(reppedJid).user} reputation:* ${previousRep} => ${
+            `You've successfully given reputation!\n\n@${jidDecode(reppedJid).user}: ${previousRep} => ${
                 reppedUser.model.reputation.reputation
             } (+${repPointsToGive})\n*Points left:* ${userPointsCanGive - repPointsToGive}`,
         );
