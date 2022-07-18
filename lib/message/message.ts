@@ -1,10 +1,10 @@
-import { MediaType, WAMessage } from "@adiwajshing/baileys/lib/Types/Message";
-import { isJidGroup } from "@adiwajshing/baileys/lib/WABinary/jid-utils";
-import { ObjectId } from "mongodb";
+import {MediaType, WAMessage} from "@adiwajshing/baileys/lib/Types/Message";
+import {isJidGroup} from "@adiwajshing/baileys/lib/WABinary/jid-utils";
+import {ObjectId} from "mongodb";
 import MessageModel from "../database/models/message_model";
-import { getMessageMediaBuffer, getMessageMediaType } from "../utils/media_utils";
-import { getMessageBody, getQuotedMessage } from "../utils/message_utils";
-import { BotClient } from "../whatsapp_bot";
+import {getMessageMediaBuffer, getMessageMediaType} from "../utils/media_utils";
+import {getMessageBody, getQuotedMessage} from "../utils/message_utils";
+import {BotClient} from "../whatsapp_bot";
 import MessageMetadata from "./message_metadata";
 
 export default class Message {
@@ -13,11 +13,7 @@ export default class Message {
 
     public raw: WAMessage | undefined;
 
-    constructor(
-        model: MessageModel,
-        raw: WAMessage | undefined = undefined,
-        quoted: Message | undefined = undefined,
-    ) {
+    constructor(model: MessageModel, raw: WAMessage | undefined = undefined, quoted: Message | undefined = undefined) {
         this.model = model;
         this.raw = raw;
         this._quoted = quoted;
@@ -41,20 +37,32 @@ export default class Message {
         return this.fromMe ? this.to : this.from;
     }
 
-    public static async fromWAMessage(message: WAMessage, metadata: MessageMetadata | undefined = undefined): Promise<Message> {
+    public static async fromWAMessage(
+        message: WAMessage,
+        metadata: MessageMetadata | undefined = undefined,
+    ): Promise<Message> {
         const fromGroup = isJidGroup(message.key.remoteJid!);
-        const fromMe = fromGroup ? message.key.participant! == BotClient.currentClientId || message.participant! == BotClient.currentClientId || message.key.fromMe : message.key.fromMe;
-        const from = fromMe ? BotClient.currentClientId : fromGroup ? message.key.participant ?? message.participant : message.key.remoteJid!;
+        const fromMe = fromGroup
+            ? message.key.participant! == BotClient.currentClientId ||
+              message.participant! == BotClient.currentClientId ||
+              message.key.fromMe
+            : message.key.fromMe;
+        const from = fromMe
+            ? BotClient.currentClientId
+            : fromGroup
+            ? message.key.participant ?? message.participant
+            : message.key.remoteJid!;
         const to = fromGroup ? message.key.remoteJid! : fromMe ? message.key.remoteJid! : BotClient.currentClientId;
 
-        let quoted: WAMessage | undefined = getQuotedMessage(message)
+        let quoted: WAMessage | undefined = getQuotedMessage(message);
+        if (quoted) quoted.key.id = message.message?.extendedTextMessage?.contextInfo?.stanzaId ?? undefined;
 
         return new Message(
             new MessageModel(
                 message.key.id!,
                 Number(message.messageTimestamp!),
                 getMessageBody(message),
-                (metadata?.meta.get('media') ?? true) ? await getMessageMediaBuffer(message) : undefined,
+                metadata?.meta.get("media") ?? true ? await getMessageMediaBuffer(message) : undefined,
                 getMessageMediaType(message),
                 quoted?.key?.id ?? undefined,
                 from!,
@@ -62,9 +70,8 @@ export default class Message {
                 metadata,
             ),
             message,
-            quoted ?
-                await this.fromWAMessage(quoted!) : undefined,
-        )
+            quoted ? await this.fromWAMessage(quoted!) : undefined,
+        );
     }
 
     public get from() {
