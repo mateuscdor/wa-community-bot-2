@@ -1,6 +1,6 @@
-import {userRepository} from "../../../constants/services";
-import {Balance} from "../../../economy";
-import InteractableCommand from "../../interactable_command";
+import {userRepository} from "../constants/services";
+import {Balance} from "../economy";
+import InteractableCommand from "./interactable_command";
 
 export default abstract class EconomyCommand extends InteractableCommand {
     public async setBalance(jid: string, balance: Balance): Promise<boolean> {

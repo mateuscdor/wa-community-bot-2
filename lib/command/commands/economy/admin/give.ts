@@ -1,10 +1,9 @@
 import {WASocket} from "@adiwajshing/baileys";
-import {CommandTrigger} from "../../..";
+import {CommandTrigger, EconomyCommand} from "../../..";
 import {BlockedReason} from "../../../../blockable";
 import {Chat} from "../../../../chats";
 import {messagingService, userRepository} from "../../../../constants/services";
 import {Message} from "../../../../message";
-import {EconomyCommand} from "../";
 import {DeveloperLevel} from "../../../../database/models";
 import {Balance} from "../../../../economy";
 
