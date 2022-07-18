@@ -9,7 +9,7 @@ import CommandTrigger from "../../command_trigger";
 export default class GptCommand extends Command {
     constructor() {
         super({
-            triggers: ["gpt", "בינה"].map(e => new CommandTrigger(e)),
+            triggers: ["gpt", "בינה"].map((e) => new CommandTrigger(e)),
             usage: "{prefix}{command}",
             category: "Study",
             description: "Ask an AI a question (This may soon turn into a premium feature)",
@@ -42,8 +42,8 @@ export default class GptCommand extends Command {
             return await messagingService.reply(message, "You must ask something.");
         }
 
-        // if body doesnt contain only english return
-        if (!/^[a-zA-Z0-9\s]+$/.test(body)) {
+        // body can only contain english and special characters
+        if (!/^[a-zA-Z0-9\s\.,;:!?\(\)\[\]\{\}'"-]+$/.test(body)) {
             return await messagingService.reply(message, "You must ask something in english!\nהשאלה חייבת להיות מנוסחת באנגלית בלבד.", true);
         }
 
