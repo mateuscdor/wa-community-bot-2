@@ -73,7 +73,7 @@ export default class UserModel {
             map["balance"] ? Balance.fromMap(map["balance"]) : new Balance(0, 0),
             map["inventory"] ? map["inventory"].map((item) => InventoryItem.fromMap(item)) : [],
             map["bank_capacity"] ?? 0,
-            new Map(Object.entries(map["metadata"])) ?? new Map(),
+            new Map(Object.entries(map["metadata"] ?? {})) ?? new Map(),
         );
     }
 }
