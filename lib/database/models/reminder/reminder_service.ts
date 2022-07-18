@@ -22,7 +22,7 @@ export default class ReminderService {
                     await this.delete(ObjectId.createFromHexString(id));
                 }
             }
-        }, 1000 * 1);
+        }, 1000 * 5);
     }
 
     public async get(id: ObjectId | undefined, update: boolean = false): Promise<ReminderModel | undefined> {
