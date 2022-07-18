@@ -22,7 +22,13 @@ export default class ReminderService {
                     await messagingService.sendMessage(reminder.jid, {text: `*⏰Reminder*\n\n${reminder.reminder}`});
 
                     if (reminder.recurring) {
-                        await this.createSimple(reminder.jid, reminder.reminder, moment().unix() + timestampDifference, true);
+                        await this.createSimple(
+                            reminder.jid,
+                            reminder.reminder,
+                            moment().unix() + timestampDifference,
+                            true,
+                            reminder._id,
+                        );
                     }
                 }
             });
@@ -69,6 +75,7 @@ export default class ReminderService {
         reminderText: string,
         remindTimestamp: number,
         recurring: boolean,
+        id?: ObjectId,
     ): Promise<ReminderModel | undefined> {
         if (!jid) return;
         jid = normalizeJid(jid);
@@ -77,7 +84,14 @@ export default class ReminderService {
             return;
         }
 
-        const reminder = new ReminderModel(new ObjectId(), jid, reminderText, moment().unix(), remindTimestamp, recurring);
+        const reminder = new ReminderModel(
+            id ?? new ObjectId(),
+            jid,
+            reminderText,
+            moment().unix(),
+            remindTimestamp,
+            recurring,
+        );
         return this.create(reminder);
     }
 
