@@ -40,8 +40,9 @@ export default class ReputationCommand extends Command {
                 userPointsCanGive--;
             }
         }
-        
-        console.log(`points ${userPointsCanGive}`)
+
+        userPointsCanGive = Math.max(0, userPointsCanGive);
+        console.log(`points ${userPointsCanGive}`);
 
         if (!body) {
             // send reputation info about sender user
@@ -55,7 +56,7 @@ export default class ReputationCommand extends Command {
 
         const arg1 = body.split(" ")[0];
         const repPointsToGive = parseInt(arg1) === 0 ? 0 : parseInt(arg1) || 1;
-        console.log(`points to give ${repPointsToGive}`)
+        console.log(`points to give ${repPointsToGive}`);
 
         const mentions = message.raw?.message?.extendedTextMessage?.contextInfo?.mentionedJid ?? [];
         if (mentions.length === 0) {
@@ -72,8 +73,9 @@ export default class ReputationCommand extends Command {
         if (userPointsCanGive <= 0 || repPointsToGive > userPointsCanGive) {
             return await messagingService.reply(
                 message,
-                `You can not give ${repPointsToGive} reputation point${havePluralS(repPointsToGive)}\
-                while you only have ${userPointsCanGive} point${havePluralS(userPointsCanGive)} left`,
+                `You can not give ${repPointsToGive} reputation point${havePluralS(
+                    repPointsToGive,
+                )} while you only have ${userPointsCanGive} point${havePluralS(userPointsCanGive)} left`,
                 true,
             );
         }

@@ -25,7 +25,7 @@ export function getQuotedMessage(message?: WAMessage) {
 }
 
 export function havePluralS(number: number) {
-    return number > 1 || number == 0 ? "s" : "";
+    return number != 1 && number != -1 ? "s" : "";
 }
 
 export function getContextInfo(message?: WAMessage) {
