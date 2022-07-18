@@ -18,6 +18,6 @@ export default class Reputation {
     }
 
     public static fromMap(map: Map<string, any>): Reputation {
-        return new Reputation(map["reputation"], map["given"]);
+        return new Reputation(map["reputation"] ?? 0, map["given"] ?? []);
     }
 }
