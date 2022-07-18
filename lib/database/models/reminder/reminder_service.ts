@@ -50,8 +50,6 @@ export default class ReminderService {
         const res = await remindersCollection.updateOne({_id: id}, update);
         if (res.acknowledged) {
             const reminder = await this.get(id, true);
-            if (reminder) this.repository.set(id, reminder);
-            else this.repository.delete(id);
             return reminder;
         }
         return undefined;

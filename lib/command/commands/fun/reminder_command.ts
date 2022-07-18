@@ -111,7 +111,6 @@ export default class ReminderCommand extends Command {
             return await messagingService.reply(message, "You must be a user to set a reminder.");
         }
 
-        
         const isRecurring = await this.getShouldRecurRoutine(message);
         if (isRecurring == undefined) return;
         const res = await reminderService.createSimple(message.sender, reminderText, remindTime, isRecurring);
@@ -206,9 +205,10 @@ export default class ReminderCommand extends Command {
         } else if (receivedContent.startsWith("2")) {
             const isRecurring = await this.getShouldRecurRoutine(message);
             if (isRecurring == undefined) return;
-            await reminderService.update(selectedReminder._id, {$set: {'recurring': isRecurring}});
+            await reminderService.update(selectedReminder._id, {$set: {recurring: isRecurring}});
             return await messagingService.reply(message, "Updated reminder.");
         } else if (receivedContent.startsWith("3")) {
+            await reminderService.delete(selectedReminder._id);
             return await messagingService.reply(message, "Reminder deleted.");
         } else if (receivedContent.startsWith("4")) {
             return await messagingService.reply(message, "Reminder modification cancelled.");
