@@ -105,6 +105,10 @@ export default class Message {
         return this.model.timestamp;
     }
 
+    public get mentions() {
+        return this.raw?.message?.extendedTextMessage?.contextInfo?.mentionedJid ?? [];
+    }
+
     public async getQuoted(): Promise<Message | undefined> {
         if (this.model.quoted) {
             //  TODO: get quoted message from message repository.

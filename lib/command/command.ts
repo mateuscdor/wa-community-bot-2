@@ -83,9 +83,10 @@ export default abstract class Command implements Blockable<Message> {
         this.extendedDescription = extendedDescription;
     }
 
-    abstract onBlocked(data: Message, blockedReason: BlockedReason): Promise<any> | any;
 
     abstract execute(client: WASocket, chat: Chat, data: Message, body: string, ...args: string[]): Promise<any> | any;
+    
+    abstract onBlocked(data: Message, blockedReason: BlockedReason): Promise<any> | any;
 
     public get mainTrigger() {
         return this.triggers[0];

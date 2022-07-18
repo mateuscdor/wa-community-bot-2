@@ -3,7 +3,8 @@ import {Document, ObjectId, ReturnDocument, UpdateFilter, WithId} from "mongodb"
 import {ChatLevel} from "../chats";
 import {usersCollection} from "../database";
 import {DeveloperLevel, UserModel} from "../database/models";
-import { Reputation } from "../database/models/user";
+import {Reputation} from "../database/models/user";
+import {Balance} from "../economy";
 import {normalizeJid} from "../utils/group_utils";
 import User from "./user";
 
@@ -38,7 +39,9 @@ export default class UserRepository {
 
         const res = await usersCollection.findOneAndUpdate({jid}, update, {returnDocument: ReturnDocument.AFTER});
         if (res.ok) {
-            const model = res.value ? UserModel.fromMap(res.value as WithId<Map<string, object>>) ?? undefined : undefined;
+            const model = res.value
+                ? UserModel.fromMap(res.value as WithId<Map<string, object>>) ?? undefined
+                : undefined;
             if (model) {
                 user.model = model;
             }
@@ -68,8 +71,10 @@ export default class UserRepository {
         if (!doc) return;
         const model = UserModel.fromMap(doc);
         let user = this.repository.get(jid);
-        if (!user) user = new User(model);
-        else user.model = model;
+        if (!user) {
+            user = new User(model);
+            await user.init();
+        } else user.model = model;
 
         this.updateLocal(user);
         return user;
@@ -81,11 +86,15 @@ export default class UserRepository {
         const result: Array<User> = [];
 
         const repository: Map<string, User> = new Map<string, User>();
+        const promises: Promise<any>[] = [];
         for await (const doc of docs) {
             const user = new User(UserModel.fromMap(doc));
+            promises.push(user.init());
             repository.set(user.model.jid, user);
             result.push(user);
         }
+
+        await Promise.all(promises);
 
         this.repository = repository;
         return result;
@@ -96,6 +105,7 @@ export default class UserRepository {
             await usersCollection.insertOne(model.toMap());
 
             const user = new User(model);
+            await user.init();
             this.updateLocal(user);
             return user;
         } catch (err) {
@@ -105,7 +115,17 @@ export default class UserRepository {
     }
 
     public async simpleCreate(jid: string, pushName?: string) {
-        const model = new UserModel(new ObjectId(), jid, pushName, ChatLevel.Free, DeveloperLevel.None, new Map(), new Reputation(0, []));
+        const model = new UserModel(
+            new ObjectId(),
+            jid,
+            pushName,
+            ChatLevel.Free,
+            DeveloperLevel.None,
+            new Map(),
+            new Reputation(0, []),
+            new Balance(0, 0),
+            [],
+        );
 
         return await this.create(model);
     }

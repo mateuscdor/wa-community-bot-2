@@ -11,8 +11,9 @@ import moment from "moment";
 import {havePluralS, waitForMessage} from "../../../utils/message_utils";
 import {remindersCollection} from "../../../database";
 import {ReminderModel} from "../../../database/models";
+import InteractableCommand from "../../interactable_command";
 
-export default class ReminderCommand extends Command {
+export default class ReminderCommand extends InteractableCommand {
     constructor() {
         super({
             triggers: ["reminder", "remind", "תזכורת", "remind me", "תזכיר לי"].map((e) => new CommandTrigger(e)),
@@ -161,12 +162,7 @@ export default class ReminderCommand extends Command {
         }
 
         await messagingService.reply(message, text, true);
-        let recvMsg = await waitForMessage(async (msg) => {
-            if (msg.sender == message.sender && msg.raw?.key.remoteJid == message.raw?.key.remoteJid) {
-                return true;
-            }
-            return false;
-        });
+        let recvMsg = await this.waitForInteractionWith(message);
         if (!recvMsg.content) return;
         const selectedReminderId = Number(recvMsg.content);
         if (!selectedReminderId) return;
@@ -181,38 +177,29 @@ export default class ReminderCommand extends Command {
                 ? "*2.* Delete (מחק)\n*3.* Cancel (ביטול)"
                 : "*2.* Remind in DM (תזכורת פרטית)\n*3.* Delete (מחק)\n*4.* Cancel (ביטול)");
         await messagingService.reply(message, modificationMenuMessage, true);
-        recvMsg = await waitForMessage(async (msg) => {
-            if (msg.sender == message.sender && msg.raw?.key.remoteJid == message.raw?.key.remoteJid) {
-                const content = msg.content?.toLowerCase() ?? "";
-                if (
-                    ["1", "2", "3", isDMChat ? undefined : "4", "cancel", "ביטול"].some((e) =>
-                        e ? content.startsWith(e) : false,
-                    )
-                )
-                    return true;
-                await messagingService.reply(
+        recvMsg = await this.validatedWaitForInteractionWith(
+            message,
+            (msg) =>
+                messagingService.reply(
                     message,
                     isDMChat
                         ? "You must answer with either `1`, `2` or `3`.\nבבקשה תענה עם `1`, `2` או `3`."
                         : "You must answer with either `1`, `2`, `3` or '4'.\nבבקשה תענה עם `1`, `2`, `3` או `4`.",
-                );
-                return false;
-            }
-            return false;
-        });
+                ),
+            "1",
+            "2",
+            "3",
+            isDMChat ? undefined : "4",
+            "cancel",
+            "ביטול",
+        );
 
         const receivedContent = recvMsg.content!.toLowerCase().replace("ביטול", "cancel").replace("cancel", "3");
         if (receivedContent.startsWith("1")) {
             await messagingService.reply(message, "What should the reminder be?");
-            recvMsg = await waitForMessage(
-                async (msg) =>
-                    msg.sender == message.sender &&
-                    msg.raw?.key.remoteJid == message.raw?.key.remoteJid &&
-                    (msg.content?.length ?? 0) > 0,
-            );
+            recvMsg = await this.waitForInteractionWith(message);
 
-            if (!recvMsg.content) return;
-            const newReminderText = recvMsg.content;
+            const newReminderText = recvMsg.content!;
             await reminderService.update(selectedReminder._id, {$set: {reminder: newReminderText}});
             await messagingService.reply(message, `Great.\nI'll remind you to ${newReminderText}`);
         } else if (receivedContent.startsWith("2") && !isDMChat) {
@@ -233,19 +220,23 @@ export default class ReminderCommand extends Command {
         const shouldRecurMessage =
             "האם לשלוח את התזכורת בהודעה פרטית?\nDo you want this reminder to be sent to you privately?\n\n*1.* Yes (כן)\n*2.* No (לא)\n*3.* Cancel (ביטול)";
         await messagingService.reply(message, shouldRecurMessage, true);
-        let recvMsg = await waitForMessage(async (msg) => {
-            if (msg.sender == message.sender && msg.raw?.key.remoteJid == message.raw?.key.remoteJid) {
-                const content = msg.content?.toLowerCase() ?? "";
-                if (["1", "2", "3", "yes", "no", "כן", "לא", "cancel", "ביטול"].some((e) => content.startsWith(e)))
-                    return true;
-                await messagingService.reply(
+        let recvMsg = await this.validatedWaitForInteractionWith(
+            message,
+            (msg) =>
+                messagingService.reply(
                     message,
                     "You must answer with either `1`, `2` or `3`.\nבבקשה תענה עם `1`, `2` או `3`.",
-                );
-                return false;
-            }
-            return false;
-        });
+                ),
+            "1",
+            "2",
+            "3",
+            "yes",
+            "no",
+            "כן",
+            "לא",
+            "cancel",
+            "ביטול",
+        );
 
         const receivedContent = recvMsg
             .content!.toLowerCase()

@@ -29,8 +29,9 @@ import {
     ReminderCommand,
     ReputationCommand,
 } from "../command/commands";
+import {BalanceCommand, GiveBalanceCommand} from "../command/commands/economy";
 import {messageRepository, userRepository} from "../constants/services";
-import { MessageModel } from "../database/models";
+import {MessageModel} from "../database/models";
 import ChatModel from "../database/models/chat/chat_model";
 import BlockableHandler from "../handlers/blockable_handler";
 import CommandHandler from "../handlers/command_handler";
@@ -94,6 +95,10 @@ export default abstract class Chat {
         handler?.add(new VCardCommand());
         handler?.add(new PingCommand());
         handler?.add(new CodeCommand());
+
+        // bot eco commands
+        handler?.add(new BalanceCommand());
+        handler?.add(new GiveBalanceCommand());
     }
 
     async getHandlers<J>(data: J) {
@@ -154,7 +159,7 @@ export default abstract class Chat {
     async getCommandByTrigger(trigger: string): Promise<Command | undefined> {
         const handler = this.commandHandler;
         if (!handler) return undefined;
-    
+
         const res = await handler.findByContent(trigger);
         for (const [, blockable] of res) {
             if (blockable instanceof Command) {

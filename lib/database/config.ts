@@ -5,3 +5,4 @@ export const usersCollectionName = 'users';
 export const chatsCollectionName = 'chats';
 export const messagesCollectionName = 'messages';
 export const remindersCollectionName = 'reminders';
+export const itemsCollectionName = 'items';
