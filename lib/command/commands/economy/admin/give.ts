@@ -26,10 +26,7 @@ export default class GiveBalanceCommand extends EconomyCommand {
         }
 
         // extract number from body using regex
-        console.log('user jid: ', userJid);
-        console.log(`matched body ${body.replace(userJid, '')}`);
-        console.log('found', body.replace(userJid, '').match(/\d+/) ?? [])
-        const number = Number((body.replace(userJid, '').match(/\d+/) ?? [])[0] ?? "");
+        const number = Number((body.replace('@' + userJid.split('@')[0], '').match(/\d+/) ?? [])[0] ?? "");
         if (!number) {
             return await messagingService.reply(
                 message,
