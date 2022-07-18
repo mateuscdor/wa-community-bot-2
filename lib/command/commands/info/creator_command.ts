@@ -15,7 +15,8 @@ export default class CreatorCommand extends Command {
             triggers: ["feature", "רעיון"].map(e => new CommandTrigger(e)),
             usage: "{prefix}{command}",
             category: "Info",
-            description: "Contact the creator of the bot (Reporting bugs)",
+            description: "Have an idea or a feature suggestion?",
+            extendedDescription: "This command will forward your message to the creator of the bot.\nUse it to report bugs or suggest new features.",
         });
     }
 

@@ -107,7 +107,7 @@ export default class HelpCommand extends Command {
     onBlocked(data: Message, blockedReason: BlockedReason) {}
 
     private getCommandExtendedDescription(command: Command) {
-        return `*Description:*\n${command.description}\n\n${command.extendedDescription}\n\n*Aliases:*\n${command.triggers
+        return `*Description:*\n${command.description}${command.extendedDescription ? '\n\n' : ''}${command.extendedDescription}\n\n*Aliases:*\n${command.triggers
             .map((e) => e.command)
             .join(", ")}\n\n*Cooldowns:*\n${Array.from(command.cooldowns.entries())
             .map((e) => `${ChatLevel[e[0]]}: ${e[1] / 1000}s`)
