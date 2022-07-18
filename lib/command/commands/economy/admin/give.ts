@@ -26,6 +26,8 @@ export default class GiveBalanceCommand extends EconomyCommand {
         }
 
         // extract number from body using regex
+        console.log(`matched body ${body.replace(userJid, '')}`);
+        console.log('found', body.replace(userJid, '').match(/\d+/) ?? [])
         const number = Number((body.replace(userJid, '').match(/\d+/) ?? [])[0] ?? "");
         if (!number) {
             return await messagingService.reply(
@@ -71,7 +73,7 @@ export default class GiveBalanceCommand extends EconomyCommand {
 
         const reply = `*@${
             userJid.split("@")[0]
-        }'s balance*\n\n${walletText}\n*Bank:* ${bankText}\n*Net:* ${previousNet} => ${currentNet} (${
+        }'s balance*\n\n${walletText}\n${bankText}\n*Net:* ${previousNet} => ${currentNet} (${
             netDiff > 0 ? "+" : "-"
         }${netDiff})`;
         return await messagingService.replyAdvanced(message, {text: reply, mentions: [userJid]}, true);
