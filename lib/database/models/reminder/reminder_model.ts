@@ -25,6 +25,6 @@ export default class ReminderModel {
     }
 
     public static fromMap(map: Map<string, any>) {
-        return new ReminderModel(map["_id"], map["jid"], map["reminder"], map["remind_set_timestamp"]);
+        return new ReminderModel(map["_id"], map["jid"], map["reminder"], map["remind_timestamp"]);
     }
 }
