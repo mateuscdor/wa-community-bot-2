@@ -111,7 +111,8 @@ export default class ReminderCommand extends Command {
             return await messagingService.reply(message, "You must be a user to set a reminder.");
         }
 
-        const isDMReminder = await this.isDMReminder(message);
+        const isDMChat = isJidUser(chat.model.jid);
+        const isDMReminder = isDMChat ? true : await this.isDMReminder(message);
         if (isDMReminder == undefined) return;
         const res = await reminderService.createSimple(message.sender, reminderText, remindTime);
         if (!res) {
