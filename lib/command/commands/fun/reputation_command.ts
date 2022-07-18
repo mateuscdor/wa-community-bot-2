@@ -8,6 +8,7 @@ import CommandTrigger from "../../command_trigger";
 import {BlockedReason} from "../../../blockable";
 import moment from "moment";
 import {havePluralS} from "../../../utils/message_utils";
+import Lyrics from 'song-lyrics-api'
 
 export default class ReputationCommand extends Command {
     constructor() {

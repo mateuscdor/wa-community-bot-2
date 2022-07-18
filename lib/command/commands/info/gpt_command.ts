@@ -42,6 +42,11 @@ export default class GptCommand extends Command {
             return await messagingService.reply(message, "You must ask something.");
         }
 
+        // if body doesnt contain only english return
+        if (!/^[a-zA-Z0-9\s]+$/.test(body)) {
+            return await messagingService.reply(message, "You must ask something in english!\nהשאלה חייבת להיות מנוסחת באנגלית בלבד.", true);
+        }
+
         messagingService.reply(message, this.texts[Math.floor(Math.random() * this.texts.length)], true);
 
         this.openai

@@ -23,6 +23,7 @@
     "openai": "^3.0.0",
     "qrcode-terminal": "^0.12.0",
     "sharp": "0.29.3",
+    "song-lyrics-api": "^1.1.0",
     "typescript": "^4.7.3",
     "vcard-creator": "^0.4.2",
     "vcard-parser": "^1.0.0",
