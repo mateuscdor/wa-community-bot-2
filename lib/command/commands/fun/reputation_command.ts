@@ -13,7 +13,7 @@ export default class ReputationCommand extends Command {
     constructor() {
         super({
             triggers: ["rep", "reputation", "כבוד"].map((e) => new CommandTrigger(e)),
-            usage: "{prefix}{command}",
+            usage: "{prefix}{command} @mention",
             category: "Fun",
             description: "Give someone reputation for being such a good person!",
         });
