@@ -97,7 +97,7 @@ export default class ReputationCommand extends Command {
             message,
             {text: `You've successfully given reputation!\n\n*@${jidDecode(reppedJid).user}:* ${previousRep} => ${
                 reppedUser.model.reputation.reputation
-            } (+${repPointsToGive})\n*Points left:* ${userPointsCanGive - repPointsToGive}`, metions: [reppedJid]},
+            } (+${repPointsToGive})\n*Points left:* ${userPointsCanGive - repPointsToGive}`, mentions: [reppedJid]},
         );
     }
 
