@@ -10,7 +10,7 @@ import CommandTrigger from "../../command_trigger";
 export default class CreatorCommand extends Command {
     constructor() {
         super({
-            triggers: ["feature", "idea", "creator", "רעיון", "פיצר", "יוצר"].map(e => new CommandTrigger(e)),
+            triggers: ["feature", "רעיון"].map(e => new CommandTrigger(e)),
             usage: "{prefix}{command}",
             category: "Info",
             description: "Contact the creator of the bot (Reporting bugs)",
