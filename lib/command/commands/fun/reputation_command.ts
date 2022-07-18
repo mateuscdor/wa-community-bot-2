@@ -49,7 +49,11 @@ export default class ReputationCommand extends Command {
                 `*Total reputation received:* ${userRep}\n*Reputation points remaining:* ${userPointsCanGive}`,
                 true,
             );
-        } else if (body.toLowerCase().startsWith("stats")) {
+        } else if (
+            body.toLowerCase().startsWith("stats") ||
+            body.toLowerCase().startsWith("סטטיסטיקה") ||
+            body.toLowerCase().startsWith("statistics")
+        ) {
             const mentions = message.raw?.message?.extendedTextMessage?.contextInfo?.mentionedJid ?? [];
             const userStatToCheck = mentions.length > 0 ? mentions[0] : message.sender;
             let user = await userRepository.get(userStatToCheck);
@@ -71,7 +75,10 @@ export default class ReputationCommand extends Command {
         }
 
         const arg1 = body.split(" ")[0];
-        const repPointsToGive = parseInt(arg1) === 0 ? 0 : parseInt(arg1) || 1;
+        const repPointsToGive = parseInt(arg1) === 0 ? 0 : parseInt(arg1);
+        if (repPointsToGive != 0 && !repPointsToGive) {
+            return await messagingService.reply(message, `${repPointsToGive} is not a valid amount of reputation to give`, true);
+        }
 
         const mentions = message.raw?.message?.extendedTextMessage?.contextInfo?.mentionedJid ?? [];
         if (mentions.length === 0) {
