@@ -28,8 +28,8 @@ export default class UserRepository {
         if (!jid || !isJidUser(jid)) return;
 
         if (!this.repository.has(jid)) {
-            const chat = await this.fetch(jid);
-            if (chat) this.updateLocal(chat);
+            const user = await this.fetch(jid);
+            if (user) this.updateLocal(user);
         }
 
         let user = this.repository.get(jid);

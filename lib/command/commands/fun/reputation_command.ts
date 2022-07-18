@@ -24,33 +24,37 @@ export default class ReputationCommand extends Command {
             return await messagingService.reply(message, "An error occurred while processing this message.", true);
         }
 
-        const givingUser = await userRepository.get(message.sender);
+        const givingUser = await userRepository.get(message.sender, true);
         if (!givingUser) {
             return await messagingService.reply(message, "An error occurred while processing this message.", true);
         }
 
         const givenReps = givingUser.model.reputation.given;
+        console.log(givenReps);
 
-        let repPoints = 3;
+        let userPointsCanGive = 3;
         // redact reputation point for each reputation given in the last 24 hours
         for (const rep of givenReps) {
             if (moment().diff(rep, "hours") < 24) {
-                repPoints--;
+                userPointsCanGive--;
             }
         }
+        
+        console.log(`points ${userPointsCanGive}`)
 
         if (!body) {
             // send reputation info about sender user
             const userRep = givingUser.model.reputation.reputation;
             return await messagingService.reply(
                 message,
-                `*Total reputation received:* ${userRep}\n*Reputation points remaining:* ${repPoints}`,
+                `*Total reputation received:* ${userRep}\n*Reputation points remaining:* ${userPointsCanGive}`,
                 true,
             );
         }
 
         const arg1 = body.split(" ")[0];
         const repPointsToGive = parseInt(arg1) === 0 ? 0 : parseInt(arg1) || 1;
+        console.log(`points to give ${repPointsToGive}`)
 
         const mentions = message.raw?.message?.extendedTextMessage?.contextInfo?.mentionedJid ?? [];
         if (mentions.length === 0) {
@@ -64,11 +68,11 @@ export default class ReputationCommand extends Command {
         }
 
         // if rep points is less than or equal to 0, don't give any reputation
-        if (repPoints <= 0 || repPointsToGive > repPoints) {
+        if (userPointsCanGive <= 0 || repPointsToGive > userPointsCanGive) {
             return await messagingService.reply(
                 message,
                 `You can not give ${repPointsToGive} reputation point${havePluralS(repPointsToGive)}\
-                while you only have ${repPoints} point${havePluralS(repPoints)} left`,
+                while you only have ${userPointsCanGive} point${havePluralS(userPointsCanGive)} left`,
                 true,
             );
         }
@@ -82,17 +86,19 @@ export default class ReputationCommand extends Command {
         }
         const previousRep = reppedUser.model.reputation.reputation;
 
-        reppedUser = await userRepository.update(reppedJid, {$set: {"reputation.reputation": reppedUser.model.reputation.reputation + 1}});
+        await userRepository.update(reppedJid, {$set: {"reputation.reputation": reppedUser.model.reputation.reputation + 1}});
+        reppedUser = await userRepository.get(reppedJid);
         if (!reppedUser) {
             return await messagingService.reply(message, "The user you are trying to give reputation to doesn't exist.", true);
         }
+        
         await userRepository.update(message.sender, {$push: {"reputation.given": moment().unix()}});
 
         await messagingService.reply(
             message,
-            `You've successfully given reputation!\n\n*@${jidDecode(reppedJid).user}'s reputation:* ${previousRep} => ${
+            `You've successfully given reputation!\n\n*@${jidDecode(reppedJid).user} reputation:* ${previousRep} => ${
                 reppedUser.model.reputation.reputation
-            } (+${repPointsToGive})\n*Points left:* ${repPoints - repPointsToGive}`,
+            } (+${repPointsToGive})\n*Points left:* ${userPointsCanGive - repPointsToGive}`,
         );
     }
 
