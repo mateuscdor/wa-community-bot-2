@@ -218,7 +218,7 @@ export default class ReminderCommand extends Command {
     private async getShouldRecurRoutine(message: Message) {
         let recurring = false;
         const shouldRecurMessage =
-            "Do you want to set this reminder to be recurring?\nהאם להגדיר את התזכורת הזו כתזכורת חוזרת?\n\n*1.* Yes (כן)\n*2.* No (לא)\n*3.* Cancel (ביטול)";
+            "האם להגדיר את התזכורת הזו כתזכורת חוזרת?\nDo you want to set this reminder to be recurring?\n\n*1.* Yes (כן)\n*2.* No (לא)\n*3.* Cancel (ביטול)";
         await messagingService.reply(message, shouldRecurMessage, true);
         let recvMsg = await waitForMessage(async (msg) => {
             if (msg.sender == message.sender && msg.raw?.key.remoteJid == message.raw?.key.remoteJid) {
