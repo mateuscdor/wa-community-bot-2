@@ -3,6 +3,7 @@ import {Document, ObjectId, ReturnDocument, UpdateFilter, WithId} from "mongodb"
 import {ChatLevel} from "../chats";
 import {usersCollection} from "../database";
 import {DeveloperLevel, UserModel} from "../database/models";
+import { Reputation } from "../database/models/user";
 import {normalizeJid} from "../utils/group_utils";
 import User from "./user";
 
@@ -104,7 +105,7 @@ export default class UserRepository {
     }
 
     public async simpleCreate(jid: string, pushName?: string) {
-        const model = new UserModel(new ObjectId(), jid, pushName, ChatLevel.Free, DeveloperLevel.None, new Map());
+        const model = new UserModel(new ObjectId(), jid, pushName, ChatLevel.Free, DeveloperLevel.None, new Map(), new Reputation(0, []));
 
         return await this.create(model);
     }
