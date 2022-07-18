@@ -52,7 +52,8 @@ export default class ReputationCommand extends Command {
         } else if (
             body.toLowerCase().startsWith("stats") ||
             body.toLowerCase().startsWith("סטטיסטיקה") ||
-            body.toLowerCase().startsWith("statistics")
+            body.toLowerCase().startsWith("statistics") ||
+            body.toLowerCase().startsWith("stat")
         ) {
             const mentions = message.raw?.message?.extendedTextMessage?.contextInfo?.mentionedJid ?? [];
             const userStatToCheck = mentions.length > 0 ? mentions[0] : message.sender;
