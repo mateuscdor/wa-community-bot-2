@@ -74,7 +74,7 @@ export default class GiveBalanceCommand extends EconomyCommand {
         }'s balance*\n\n${walletText}\n*Bank:* ${bankText}\n*Net:* ${previousNet} => ${currentNet} (${
             netDiff > 0 ? "+" : "-"
         }${netDiff})`;
-        return await messagingService.reply(message, reply, true);
+        return await messagingService.replyAdvanced(message, {text: reply, mentions: [userJid]}, true);
     }
 
     onBlocked(data: Message, blockedReason: BlockedReason) {}

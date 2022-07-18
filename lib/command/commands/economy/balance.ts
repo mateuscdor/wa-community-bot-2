@@ -32,7 +32,7 @@ export default class BalanceCommand extends EconomyCommand {
         const reply = `*@${userJid.split("@")[0]}'s balance*\n\n*Wallet:* ${balance.wallet}\n*Bank:* ${
             balance.bank
         }\n*Net:* ${await user.calculateNetBalance()}`;
-        return await messagingService.reply(message, reply, true);
+        return await messagingService.replyAdvanced(message, {text: reply, mentions: [userJid]}, true);
     }
 
     onBlocked(data: Message, blockedReason: BlockedReason) {}
