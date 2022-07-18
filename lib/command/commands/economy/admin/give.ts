@@ -62,12 +62,12 @@ export default class GiveBalanceCommand extends EconomyCommand {
             "*Wallet:* " +
             (bankOrWallet === "bank"
                 ? `${currentBalance.wallet}`
-                : `${previousBalance.wallet} => ${currentBalance.wallet} (${walletDiff > 0 ? "+" : "-"}${walletDiff})`);
+                : `${previousBalance.wallet} => ${currentBalance.wallet} (${walletDiff > 0 ? "+" : ""}${walletDiff})`);
         const bankText =
             "*Bank:* " +
             (bankOrWallet === "wallet"
                 ? `${currentBalance.bank}`
-                : `${previousBalance.bank} => ${currentBalance.bank} (${bankDiff > 0 ? "+" : "-"}${bankDiff})`);
+                : `${previousBalance.bank} => ${currentBalance.bank} (${bankDiff > 0 ? "+" : ""}${bankDiff})`);
 
         const reply = `*@${
             userJid.split("@")[0]
