@@ -1,9 +1,9 @@
-import { WASocket } from "@adiwajshing/baileys";
-import { BlockedReason } from "../../../blockable/blocked_reason";
-import { Chat } from "../../../chats";
-import { messagingService } from "../../../constants/services";
+import {WASocket} from "@adiwajshing/baileys";
+import {BlockedReason} from "../../../blockable/blocked_reason";
+import {Chat} from "../../../chats";
+import {messagingService} from "../../../constants/services";
 import Message from "../../../message/message";
-import { DeveloperLevel } from "../../../database/models/user/developer_level";
+import {DeveloperLevel} from "../../../database/models/user/developer_level";
 import Command from "../../command";
 import CommandTrigger from "../../command_trigger";
 
@@ -13,7 +13,7 @@ export default class JIDCommand extends Command {
             triggers: [new CommandTrigger("jid")],
             developerLevel: DeveloperLevel.Moderator,
             usage: "{prefix}{command}",
-            category: 'Bot Operator',
+            category: "Bot Operator",
             description: "Gives you the JID of the chat the command was sent in.",
         });
     }
@@ -28,6 +28,15 @@ export default class JIDCommand extends Command {
     }
 
     async execute(client: WASocket, chat: Chat, msg: Message, body: string) {
-        await messagingService.reply(msg, `JID: ${msg.raw?.key.remoteJid ?? 'N/A'}`, true);
+        const quoted = await msg.getQuoted();
+        if (quoted) {
+            return await messagingService.reply(
+                msg,
+                `CHAT JID: ${msg.raw?.key.remoteJid ?? "N/A"}\nQUOTED MESSAGE ID: ${msg.raw?.key.id ?? "N/A"}`,
+                true,
+            );
+        }
+
+        await messagingService.reply(msg, `JID: ${msg.raw?.key.remoteJid ?? "N/A"}`, true);
     }
 }

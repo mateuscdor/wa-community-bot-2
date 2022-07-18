@@ -1,4 +1,4 @@
-import {proto, WASocket} from "@adiwajshing/baileys";
+import {isJidUser, proto, WASocket} from "@adiwajshing/baileys";
 import url from "node:url";
 import {Chat} from "../../../chats";
 import {messagingService, reminderService, userRepository} from "../../../constants/services";
@@ -111,9 +111,9 @@ export default class ReminderCommand extends Command {
             return await messagingService.reply(message, "You must be a user to set a reminder.");
         }
 
-        const isRecurring = await this.getShouldRecurRoutine(message);
-        if (isRecurring == undefined) return;
-        const res = await reminderService.createSimple(message.sender, reminderText, remindTime, isRecurring);
+        const isDMReminder = await this.isDMReminder(message);
+        if (isDMReminder == undefined) return;
+        const res = await reminderService.createSimple(message.sender, reminderText, remindTime);
         if (!res) {
             return await messagingService.reply(message, "Something went wrong while creating the reminder.");
         }
@@ -172,16 +172,26 @@ export default class ReminderCommand extends Command {
 
         const selectedReminder = reminderMapId.get(selectedReminderId);
         if (!selectedReminder) return;
+        const haveDMChangeOption = !isJidUser(chat.model.jid);
         const modificationMenuMessage =
-            "What do you want to change?\n\n*1.* Reminder text (טקסט התזכורת)\n*2.* Reminder recurring (תזכורת חוזרת)\n*3.* Delete (מחק)\n*4.* Cancel (ביטול)";
+            "What do you want to change?\n\n*1.* Reminder text (טקסט התזכורת)\n" + haveDMChangeOption
+                ? "*2.* Remind in DM (תזכורת פרטית)\n*3.* Delete (מחק)\n*4.* Cancel (ביטול)"
+                : "*2.* Delete (מחק)\n*3.* Cancel (ביטול)";
         await messagingService.reply(message, modificationMenuMessage, true);
         recvMsg = await waitForMessage(async (msg) => {
             if (msg.sender == message.sender && msg.raw?.key.remoteJid == message.raw?.key.remoteJid) {
                 const content = msg.content?.toLowerCase() ?? "";
-                if (["1", "2", "3", "4", "cancel", "ביטול"].some((e) => content.startsWith(e))) return true;
+                if (
+                    ["1", "2", "3", haveDMChangeOption ? "4" : undefined, "cancel", "ביטול"].some((e) =>
+                        e ? content.startsWith(e) : false,
+                    )
+                )
+                    return true;
                 await messagingService.reply(
                     message,
-                    "You must answer with either `1`, `2`, `3` or '4'.\nבבקשה תענה עם `1`, `2`, `3` או `4`.",
+                    haveDMChangeOption
+                        ? "You must answer with either `1`, `2`, `3` or '4'.\nבבקשה תענה עם `1`, `2`, `3` או `4`."
+                        : "You must answer with either `1`, `2` or `3`.\nבבקשה תענה עם `1`, `2` או `3`.",
                 );
                 return false;
             }
@@ -202,23 +212,29 @@ export default class ReminderCommand extends Command {
             const newReminderText = recvMsg.content;
             await reminderService.update(selectedReminder._id, {$set: {reminder: newReminderText}});
             await messagingService.reply(message, `Great.\nI'll remind you to ${newReminderText}`);
-        } else if (receivedContent.startsWith("2")) {
-            const isRecurring = await this.getShouldRecurRoutine(message);
-            if (isRecurring == undefined) return;
-            await reminderService.update(selectedReminder._id, {$set: {recurring: isRecurring}});
+        } else if (receivedContent.startsWith("2") && haveDMChangeOption) {
+            const isDM = await this.isDMReminder(message);
+            if (isDM == undefined) return;
+            await reminderService.update(selectedReminder._id, {$set: {jid: isDM ? message.sender : chat.model.jid}});
             return await messagingService.reply(message, "Updated reminder.");
-        } else if (receivedContent.startsWith("3")) {
+        } else if (
+            (receivedContent.startsWith("3") && haveDMChangeOption) ||
+            (receivedContent.startsWith("2") && !haveDMChangeOption)
+        ) {
             await reminderService.delete(selectedReminder._id);
             return await messagingService.reply(message, "Reminder deleted.");
-        } else if (receivedContent.startsWith("4")) {
+        } else if (
+            (receivedContent.startsWith("4") && haveDMChangeOption) ||
+            (receivedContent.startsWith("3") && !haveDMChangeOption)
+        ) {
             return await messagingService.reply(message, "Reminder modification cancelled.");
         }
     }
 
-    private async getShouldRecurRoutine(message: Message) {
-        let recurring = false;
+    private async isDMReminder(message: Message) {
+        let isDM = false;
         const shouldRecurMessage =
-            "האם להגדיר את התזכורת הזו כתזכורת חוזרת?\nDo you want to set this reminder to be recurring?\n\n*1.* Yes (כן)\n*2.* No (לא)\n*3.* Cancel (ביטול)";
+            "האם לשלוח את התזכורת בהודעה פרטית?\nDo you want this reminder to be sent to you privately?\n\n*1.* Yes (כן)\n*2.* No (לא)\n*3.* Cancel (ביטול)";
         await messagingService.reply(message, shouldRecurMessage, true);
         let recvMsg = await waitForMessage(async (msg) => {
             if (msg.sender == message.sender && msg.raw?.key.remoteJid == message.raw?.key.remoteJid) {
@@ -247,8 +263,8 @@ export default class ReminderCommand extends Command {
             return undefined;
         }
 
-        recurring = receivedContent.startsWith("1");
-        return recurring;
+        isDM = receivedContent.startsWith("1");
+        return isDM;
     }
 
     onBlocked(data: Message, blockedReason: BlockedReason) {}
