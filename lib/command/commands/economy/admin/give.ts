@@ -72,7 +72,7 @@ export default class GiveBalanceCommand extends EconomyCommand {
         const reply = `*@${
             userJid.split("@")[0]
         }'s balance*\n\n${walletText}\n${bankText}\n*Net:* ${previousNet} => ${currentNet} (${
-            netDiff > 0 ? "+" : "-"
+            netDiff > 0 ? "+" : ""
         }${netDiff})`;
         return await messagingService.replyAdvanced(message, {text: reply, mentions: [userJid]}, true);
     }
