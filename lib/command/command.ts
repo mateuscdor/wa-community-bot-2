@@ -29,6 +29,8 @@ export default abstract class Command implements Blockable<Message> {
 
     description: string;
 
+    extendedDescription: string;
+
     cooldowns: Map<ChatLevel, number>;
 
     groupLevel: GroupLevel;
@@ -50,6 +52,7 @@ export default abstract class Command implements Blockable<Message> {
         ]),
         groupLevel = GroupLevel.None,
         category = undefined,
+        extendedDescription = '',
     }: {
         triggers: CommandTrigger[];
         blockedChats?: Array<"group" | "dm">;
@@ -63,6 +66,7 @@ export default abstract class Command implements Blockable<Message> {
         cooldowns?: Map<ChatLevel, number>;
         groupLevel?: GroupLevel;
         category?: string;
+        extendedDescription?: string;
     }) {
         this.triggers = triggers;
         this.blockedChats = blockedChats;
@@ -76,6 +80,7 @@ export default abstract class Command implements Blockable<Message> {
         this.cooldowns = cooldowns;
         this.groupLevel = groupLevel;
         this.category = category;
+        this.extendedDescription = extendedDescription;
     }
 
     abstract onBlocked(data: Message, blockedReason: BlockedReason): Promise<any> | any;
