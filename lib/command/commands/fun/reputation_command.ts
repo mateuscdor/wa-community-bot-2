@@ -12,7 +12,7 @@ import {havePluralS} from "../../../utils/message_utils";
 export default class ReputationCommand extends Command {
     constructor() {
         super({
-            triggers: ["rep", "reputation", "כבוד"].map((e) => new CommandTrigger(e)),
+            triggers: ["reputation", "rep", "כבוד"].map((e) => new CommandTrigger(e)),
             usage: "{prefix}{command} @mention",
             category: "Fun",
             description: "Give someone reputation for being such a good person!",
@@ -51,7 +51,6 @@ export default class ReputationCommand extends Command {
                 true,
             );
         } else if (
-            !body.startsWith("tation") &&
             (body.toLowerCase().startsWith("stats") ||
             body.toLowerCase().startsWith("סטטיסטיקה") ||
             body.toLowerCase().startsWith("statistics") ||
