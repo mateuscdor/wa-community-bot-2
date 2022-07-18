@@ -77,7 +77,7 @@ export default class ReputationCommand extends Command {
         const arg1 = body.split(" ")[0];
         const repPointsToGive = parseInt(arg1) === 0 ? 0 : parseInt(arg1);
         if (repPointsToGive != 0 && !repPointsToGive) {
-            return await messagingService.reply(message, `${repPointsToGive} is not a valid amount of reputation to give`, true);
+            return await messagingService.reply(message, `${arg1} is not a valid amount of reputation to give`, true);
         }
 
         const mentions = message.raw?.message?.extendedTextMessage?.contextInfo?.mentionedJid ?? [];
