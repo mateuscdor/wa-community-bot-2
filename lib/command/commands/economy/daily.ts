@@ -44,9 +44,9 @@ export default class DailyCommand extends EconomyCommand {
         const hours = timeTillUTCMidnightMoment.hours();
         const minutes = timeTillUTCMidnightMoment.minutes();
         const seconds = timeTillUTCMidnightMoment.seconds();
-        const timeTillUTCMidnightFormatted = `${hours > 0 ? `${hours} hour${havePluralS(hours)}` : ""} ${
-            seconds <= 0 ? "and" : ""
-        }${minutes > 0 ? `${minutes} minute${havePluralS(minutes)}` : ""} ${
+        const timeTillUTCMidnightFormatted = `${hours > 0 ? `${hours} hour${havePluralS(hours)} ` : ""}${
+            seconds <= 0 ? "and " : ""
+        }${minutes > 0 ? `${minutes} minute${havePluralS(minutes)} ` : ""} ${
             seconds > 0 ? `and ${seconds} second${havePluralS(seconds)}` : ""
         }`;
 
