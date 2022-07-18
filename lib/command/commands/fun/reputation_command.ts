@@ -85,7 +85,7 @@ export default class ReputationCommand extends Command {
         }
         const previousRep = reppedUser.model.reputation.reputation;
 
-        await userRepository.update(reppedJid, {$set: {"reputation.reputation": reppedUser.model.reputation.reputation + 1}});
+        await userRepository.update(reppedJid, {$set: {"reputation.reputation": reppedUser.model.reputation.reputation + repPointsToGive}});
         reppedUser = await userRepository.get(reppedJid);
         if (!reppedUser) {
             return await messagingService.reply(message, "The user you are trying to give reputation to doesn't exist.", true);
