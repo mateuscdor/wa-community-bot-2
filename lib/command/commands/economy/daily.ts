@@ -26,18 +26,30 @@ export default class DailyCommand extends EconomyCommand {
             return await messagingService.reply(message, "You do not have a balance.", true);
         }
 
-        const dailyMeta =
-            user.model.metadata.get("daily_meta") ??
-            new Map([
-                ["streak", 0],
-                ["last_daily", 0],
-            ]);
+        const dailyMeta = new Map(
+            Object.entries(
+                user.model.metadata.get("daily_meta") ??
+                    new Map([
+                        ["streak", 0],
+                        ["last_daily", 0],
+                    ]),
+            ),
+        );
         let dailyStreak = dailyMeta.get("streak") as number;
         const lastDaily = moment.unix(dailyMeta.get("last_daily") as number);
         // allow only one daily per day - day resets at UTC midnight
         const timeTillUTCMidnight = moment.utc().startOf("day").diff(moment(), "seconds");
-        // format timeTillUTCMidnight to hours minutes and seconds
-        const timeTillUTCMidnightFormatted = moment.utc(timeTillUTCMidnight * 1000).format("H:mm:ss");
+        // format timeTillUTCMidnight to x hour, x minutes and x seconds and if hour or minute is 0, remove it
+        const timeTillUTCMidnightMoment = moment.utc(timeTillUTCMidnight * 1000);
+        const hours = timeTillUTCMidnightMoment.hours();
+        const minutes = timeTillUTCMidnightMoment.minutes();
+        const seconds = timeTillUTCMidnightMoment.seconds();
+        const timeTillUTCMidnightFormatted = `${hours > 0 ? `${hours} hour${havePluralS(hours)}` : ""} ${
+            seconds <= 0 ? "and" : ""
+        }${minutes > 0 ? `${minutes} minute${havePluralS(minutes)}` : ""} ${
+            seconds > 0 ? `and ${seconds} second${havePluralS(seconds)}` : ""
+        }`;
+
         if (lastDaily.isSame(moment(), "day")) {
             return await messagingService.reply(
                 message,
@@ -57,14 +69,14 @@ export default class DailyCommand extends EconomyCommand {
         dailyStreak++;
         const reply = `@${
             userJid.split("@")[0] ?? "N/A"
-        }'s Daily Coins\n\n*${dailyCoinsWithCommas}* was placed in your wallet!\n\nYour next daily is ready in:${timeTillUTCMidnightFormatted}\nStreak: ${dailyStreak} day${havePluralS(
+        }'s Daily Coins\n\n*${dailyCoinsWithCommas}* was placed in your wallet!\n\nYour next daily is ready in: ${timeTillUTCMidnightFormatted}\nStreak: ${dailyStreak} day${havePluralS(
             dailyStreak,
-        )} (+${streakCoinsWithCommas})`;
+        )} (+${streakCoinsWithCommas} coins)`;
 
         await userRepository.update(userJid, {
             $set: {"metadata.daily_meta.streak": dailyStreak, "metadata.daily_meta.last_daily": moment().unix()},
         });
-        
+
         return await messagingService.replyAdvanced(message, {text: reply}, true);
     }
 
