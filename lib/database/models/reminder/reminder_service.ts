@@ -12,13 +12,18 @@ export default class ReminderService {
     constructor() {
         remindersCollection.find<Map<string, any>>({}).forEach((reminder) => {
             this.updateLocal(ReminderModel.fromMap(reminder));
-        })
+        });
 
         setInterval(() => {
             this.repository.forEach(async (reminder) => {
                 if (reminder.remindTimestamp <= moment().unix()) {
+                    const timestampDifference = reminder.remindTimestamp - reminder.remindSetTimestamp;
                     this.delete(reminder._id);
                     await messagingService.sendMessage(reminder.jid, {text: `*⏰Reminder*\n\n${reminder.reminder}`});
+
+                    if (reminder.recurring) {
+                        await this.createSimple(reminder.jid, reminder.reminder, moment().unix() + timestampDifference, true);
+                    }
                 }
             });
         }, 1000 * 20);
@@ -39,6 +44,19 @@ export default class ReminderService {
         return reminder;
     }
 
+    async update(id: ObjectId | undefined, update: UpdateFilter<Map<string, any>>): Promise<ReminderModel | undefined> {
+        if (!id) return;
+
+        const res = await remindersCollection.updateOne({_id: id}, update);
+        if (res.acknowledged) {
+            const reminder = await this.get(id, true);
+            if (reminder) this.repository.set(id, reminder);
+            else this.repository.delete(id);
+            return reminder;
+        }
+        return undefined;
+    }
+
     async create(reminder: ReminderModel): Promise<ReminderModel | undefined> {
         const res = await remindersCollection.insertOne(reminder.toMap());
         if (res.acknowledged) {
@@ -48,7 +66,12 @@ export default class ReminderService {
         return undefined;
     }
 
-    async createSimple(jid: string | undefined, reminderText: string, remindTimestamp: number): Promise<ReminderModel | undefined> {
+    async createSimple(
+        jid: string | undefined,
+        reminderText: string,
+        remindTimestamp: number,
+        recurring: boolean,
+    ): Promise<ReminderModel | undefined> {
         if (!jid) return;
         jid = normalizeJid(jid);
 
@@ -56,7 +79,7 @@ export default class ReminderService {
             return;
         }
 
-        const reminder = new ReminderModel(new ObjectId(), jid, reminderText, remindTimestamp);
+        const reminder = new ReminderModel(new ObjectId(), jid, reminderText, moment().unix(), remindTimestamp, recurring);
         return this.create(reminder);
     }
 

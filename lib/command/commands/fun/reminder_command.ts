@@ -8,7 +8,9 @@ import Command from "../../command";
 import CommandTrigger from "../../command_trigger";
 import {BlockedReason} from "../../../blockable";
 import moment from "moment";
-import {havePluralS} from "../../../utils/message_utils";
+import {havePluralS, waitForMessage} from "../../../utils/message_utils";
+import {remindersCollection} from "../../../database";
+import {ReminderModel} from "../../../database/models";
 
 export default class ReminderCommand extends Command {
     constructor() {
@@ -17,6 +19,7 @@ export default class ReminderCommand extends Command {
             usage: "{prefix}{command}",
             category: "Fun",
             description: "Set a reminder for yourself",
+            extendedDescription: "View all the reminders you have set using `>>reminder list`",
         });
     }
 
@@ -55,6 +58,10 @@ export default class ReminderCommand extends Command {
             );
         }
 
+        if (body.toLowerCase().startsWith("list") || body.toLowerCase().startsWith("רשימה")) {
+            return await this.listReminders(chat, message);
+        }
+
         const splitBody = body.split(" ");
         const time = Number(splitBody.shift());
         let timeType = splitBody.shift();
@@ -67,17 +74,24 @@ export default class ReminderCommand extends Command {
             return await messagingService.reply(message, "I'm sorry, but I can't set a reminder for seconds.");
         } else if (!this.acceptableTimeTypes.has(timeType?.toLowerCase() ?? "") || !timeType) {
             const connectedString = this.buildAcceptableTimesString();
-            return await messagingService.reply(message, `You must provide a valid time type.\nValid time types: ${connectedString}`);
+            return await messagingService.reply(
+                message,
+                `You must provide a valid time type.\nValid time types: ${connectedString}`,
+            );
         }
 
         const acceptableTimeTypesArr = Array.from(this.acceptableTimeTypes);
         timeType =
             acceptableTimeTypesArr[
-                acceptableTimeTypesArr.indexOf(timeType.toLowerCase()) - (acceptableTimeTypesArr.indexOf(timeType.toLowerCase()) % 4)
+                acceptableTimeTypesArr.indexOf(timeType.toLowerCase()) -
+                    (acceptableTimeTypesArr.indexOf(timeType.toLowerCase()) % 4)
             ];
         if (!timeType) {
             const connectedString = this.buildAcceptableTimesString();
-            return await messagingService.reply(message, `You must provide a valid time type.\nValid time types: ${connectedString}`);
+            return await messagingService.reply(
+                message,
+                `You must provide a valid time type.\nValid time types: ${connectedString}`,
+            );
         }
 
         const reminderText = splitBody.join(" ");
@@ -97,12 +111,18 @@ export default class ReminderCommand extends Command {
             return await messagingService.reply(message, "You must be a user to set a reminder.");
         }
 
-        const res = await reminderService.createSimple(message.sender, reminderText, remindTime);
+        
+        const isRecurring = await this.getShouldRecurRoutine(message);
+        if (isRecurring == undefined) return;
+        const res = await reminderService.createSimple(message.sender, reminderText, remindTime, isRecurring);
         if (!res) {
             return await messagingService.reply(message, "Something went wrong while creating the reminder.");
         }
 
-        await messagingService.reply(message, `Great.\nI'll remind you to ${reminderText} in ${time} ${timeType}${havePluralS(time)}!`);
+        await messagingService.reply(
+            message,
+            `Great.\nI'll remind you to ${reminderText} in ${time} ${timeType}${havePluralS(time)}!`,
+        );
     }
 
     private buildAcceptableTimesString() {
@@ -119,6 +139,113 @@ export default class ReminderCommand extends Command {
         // remove last comma and space
         connectedString = connectedString.slice(0, -2);
         return connectedString;
+    }
+
+    private async listReminders(chat: Chat, message: Message) {
+        const reminders = remindersCollection
+            .find<Map<string, any>>({jid: message.sender})
+            .map((e) => ReminderModel.fromMap(e));
+        let text = "*Reminders:* _(select one to modify)_\n\n";
+        const reminderMapId: Map<number, ReminderModel> = new Map();
+        let id = 1;
+
+        for await (const reminder of reminders) {
+            text += `${reminder.reminder}\n`;
+            reminderMapId.set(id, reminder);
+            id++;
+        }
+        text.trimEnd();
+
+        await messagingService.reply(message, text, true);
+        let recvMsg = await waitForMessage(async (msg) => {
+            if (msg.sender == message.sender && msg.raw?.key.remoteJid == message.raw?.key.remoteJid) {
+                return true;
+            }
+            return false;
+        });
+        if (!recvMsg.content) return;
+        const selectedReminderId = Number(recvMsg.content);
+        if (!selectedReminderId) return;
+        if (!reminderMapId.has(selectedReminderId)) return;
+
+        const selectedReminder = reminderMapId.get(selectedReminderId);
+        if (!selectedReminder) return;
+        const modificationMenuMessage =
+            "What do you want to change?\n\n*1.* Reminder text (טקסט התזכורת)\n*2.* Reminder recurring (תזכורת חוזרת)\n*3.* Delete (מחק)*4.* Cancel (ביטול)";
+        await messagingService.reply(message, modificationMenuMessage, true);
+        recvMsg = await waitForMessage(async (msg) => {
+            if (msg.sender == message.sender && msg.raw?.key.remoteJid == message.raw?.key.remoteJid) {
+                const content = msg.content?.toLowerCase() ?? "";
+                if (["1", "2", "3", "4", "cancel", "ביטול"].some((e) => content.startsWith(e))) return true;
+                await messagingService.reply(
+                    message,
+                    "You must answer with either `1`, `2`, `3` or '4'.\nבבקשה תענה עם `1`, `2`, `3` או `4`.",
+                );
+                return false;
+            }
+            return false;
+        });
+
+        const receivedContent = recvMsg.content!.toLowerCase().replace("ביטול", "cancel").replace("cancel", "3");
+        if (receivedContent.startsWith("1")) {
+            await messagingService.reply(message, "What should the reminder be?");
+            recvMsg = await waitForMessage(
+                async (msg) =>
+                    msg.sender == message.sender &&
+                    msg.raw?.key.remoteJid == message.raw?.key.remoteJid &&
+                    (msg.content?.length ?? 0) > 0,
+            );
+
+            if (!recvMsg.content) return;
+            const newReminderText = recvMsg.content;
+            await reminderService.update(selectedReminder._id, {$set: {reminder: newReminderText}});
+            await messagingService.reply(message, `Great.\nI'll remind you to ${newReminderText}`);
+        } else if (receivedContent.startsWith("2")) {
+            const isRecurring = await this.getShouldRecurRoutine(message);
+            if (isRecurring == undefined) return;
+            await reminderService.update(selectedReminder._id, {$set: {'recurring': isRecurring}});
+            return await messagingService.reply(message, "Updated reminder.");
+        } else if (receivedContent.startsWith("3")) {
+            return await messagingService.reply(message, "Reminder deleted.");
+        } else if (receivedContent.startsWith("4")) {
+            return await messagingService.reply(message, "Reminder modification cancelled.");
+        }
+    }
+
+    private async getShouldRecurRoutine(message: Message) {
+        let recurring = false;
+        const shouldRecurMessage =
+            "Do you want to set this reminder to be recurring?\nהאם להגדיר את התזכורת הזו כתזכורת חוזרת?\n\n*1.* Yes (כן)\n*2.* No (לא)\n*3.* Cancel (ביטול)";
+        await messagingService.reply(message, shouldRecurMessage, true);
+        let recvMsg = await waitForMessage(async (msg) => {
+            if (msg.sender == message.sender && msg.raw?.key.remoteJid == message.raw?.key.remoteJid) {
+                const content = msg.content?.toLowerCase() ?? "";
+                if (["1", "2", "3", "yes", "no", "כן", "לא", "cancel", "ביטול"].some((e) => content.startsWith(e)))
+                    return true;
+                await messagingService.reply(
+                    message,
+                    "You must answer with either `1`, `2` or `3`.\nבבקשה תענה עם `1`, `2` או `3`.",
+                );
+                return false;
+            }
+            return false;
+        });
+
+        const receivedContent = recvMsg
+            .content!.toLowerCase()
+            .replace("לא", "no")
+            .replace("no", "2")
+            .replace("כן", "yes")
+            .replace("yes", "1")
+            .replace("ביטול", "cancel")
+            .replace("cancel", "3");
+        if (receivedContent.startsWith("3")) {
+            await messagingService.reply(message, "Reminder creation cancelled.");
+            return undefined;
+        }
+
+        recurring = receivedContent.startsWith("1");
+        return recurring;
     }
 
     onBlocked(data: Message, blockedReason: BlockedReason) {}
