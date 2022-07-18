@@ -58,6 +58,10 @@ export default class ReputationCommand extends Command {
         } else if (mentions.length != 1) {
             return await messagingService.reply(message, "You must mention *one person* to give them reputation!", true);
         }
+        const reppedJid = mentions[0];
+        if (reppedJid == message.sender) {
+            return await messagingService.reply(message, "You can't give yourself reputation!", true);
+        }
 
         // if rep points is less than or equal to 0, don't give any reputation
         if (repPoints <= 0 || repPointsToGive > repPoints) {
@@ -69,7 +73,6 @@ export default class ReputationCommand extends Command {
             );
         }
 
-        const reppedJid = mentions[0];
         let reppedUser = await userRepository.get(reppedJid);
         if (!reppedUser) {
             reppedUser = await userRepository.simpleCreate(reppedJid);
