@@ -66,7 +66,9 @@ export default class DailyCommand extends EconomyCommand {
 
         const dailyCoinsWithCommas = dailyCoins.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         const streakCoinsWithCommas = streakBonus.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        dailyStreak++;
+        if (isStreakBroken) dailyStreak = 0;
+        else dailyStreak++;
+        
         const reply = `@${
             userJid.split("@")[0] ?? "N/A"
         }'s Daily Coins\n\n*${dailyCoinsWithCommas}* was placed in your wallet!\n\nYour next daily is ready in: ${timeTillUTCMidnightFormatted}\nStreak: ${dailyStreak} day${havePluralS(
