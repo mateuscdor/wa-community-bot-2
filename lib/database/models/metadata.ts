@@ -1,4 +1,4 @@
-export default class MessageMetadata {
+export default class Metadata {
     public meta: Map<string, any>;
 
     constructor(meta: Map<string, any>) {
@@ -7,13 +7,11 @@ export default class MessageMetadata {
 
     public toMap() {
         return {
-            'meta': this.meta,
-        }
+            meta: this.meta,
+        };
     }
 
     public static fromMap(map: Map<string, any>) {
-        return new MessageMetadata(
-            map['meta']
-        );
+        return new Metadata(new Map(Object.entries(map["meta"])));
     }
 }

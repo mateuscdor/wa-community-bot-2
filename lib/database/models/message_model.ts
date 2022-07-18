@@ -1,5 +1,5 @@
 import { MediaType } from "@adiwajshing/baileys/lib/Types/Message";
-import MessageMetadata from "../../message/message_metadata";
+import Metadata from "./metadata";
 
 export default class MessageModel {
     public id: string;
@@ -10,7 +10,7 @@ export default class MessageModel {
     public quoted: string | undefined;
     public from: string;
     public to: string;
-    public metadata: MessageMetadata | undefined;
+    public metadata: Metadata | undefined;
 
     constructor(
         id: string,
@@ -21,7 +21,7 @@ export default class MessageModel {
         quoted: string | undefined,
         from: string,
         to: string,
-        metadata: MessageMetadata | undefined = undefined,
+        metadata: Metadata | undefined = undefined,
     ) {
         this.id = id;
         this.timestamp = timestamp;
@@ -58,7 +58,7 @@ export default class MessageModel {
             map['quoted'],
             map['from'],
             map['to'],
-            map['metadata'] ? MessageMetadata.fromMap(map['metadata']) : undefined
+            map['metadata'] ? Metadata.fromMap(map['metadata']) : undefined
         );
     }
 }

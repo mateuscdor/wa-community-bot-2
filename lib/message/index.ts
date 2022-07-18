@@ -1,9 +1,9 @@
 import Message from "./message";
-import MessageMetadata from "./message_metadata";
+import Metadata from "../database/models/metadata";
 import MessageRepository from "./message_repository";
 
 export {
-    MessageMetadata,
+    Metadata as MessageMetadata,
     Message,
     MessageRepository
 }

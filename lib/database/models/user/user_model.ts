@@ -17,6 +17,7 @@ export default class UserModel {
     public readonly balance: Balance;
     public readonly inventory: InventoryItem[];
     public readonly bankCapacity: number;
+    public readonly metadata: Map<string, any>;
 
     constructor(
         _id: ObjectId,
@@ -29,6 +30,7 @@ export default class UserModel {
         balance: Balance,
         inventory: InventoryItem[],
         bankCapacity: number,
+        metadata: Map<string, any>,
     ) {
         this._id = _id;
         this.jid = jid;
@@ -40,6 +42,7 @@ export default class UserModel {
         this.inventory = inventory;
         this.balance = balance;
         this.bankCapacity = bankCapacity;
+        this.metadata = metadata;
     }
 
     public toMap() {
@@ -54,6 +57,7 @@ export default class UserModel {
             balance: this.balance.toMap(),
             inventory: this.inventory.map((item) => item.toMap()),
             bank_capacity: this.bankCapacity,
+            metadata: this.metadata,
         };
     }
 
@@ -69,6 +73,7 @@ export default class UserModel {
             map["balance"] ? Balance.fromMap(map["balance"]) : new Balance(0, 0),
             map["inventory"] ? map["inventory"].map((item) => InventoryItem.fromMap(item)) : [],
             map["bank_capacity"] ?? 0,
+            new Map(Object.entries(map["metadata"])) ?? new Map(),
         );
     }
 }

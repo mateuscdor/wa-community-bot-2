@@ -3,12 +3,12 @@ import {assert} from "console";
 import {ObjectId} from "mongodb";
 import {createImportSpecifier} from "typescript";
 import Message from "./message/message";
-import MessageMetadata from "./message/message_metadata";
+import Metadata from "./database/models/metadata";
 
 export default class MessagingService {
     private client: WASocket | undefined;
     private metadataEnabled: boolean;
-    private metadataAssignment: Map<string, MessageMetadata>;
+    private metadataAssignment: Map<string, Metadata>;
     private messageCallbacks: [
         callbackId: ObjectId,
         filter: (message: Message) => Promise<boolean> | boolean,
@@ -30,7 +30,7 @@ export default class MessagingService {
      * @returns message model with metadata
      */
     public async messageInterceptor(message: WAMessage): Promise<Message> {
-        let metadata: MessageMetadata | undefined;
+        let metadata: Metadata | undefined;
         if (this.metadataEnabled) {
             metadata = this.metadataAssignment.get(message.key.id!);
             this.metadataAssignment.delete(message.key.id!);
@@ -48,7 +48,7 @@ export default class MessagingService {
         return msg;
     }
 
-    public async reply(message: Message, content: string, quote: boolean = false, privateReply: boolean = false, metadata?: MessageMetadata) {
+    public async reply(message: Message, content: string, quote: boolean = false, privateReply: boolean = false, metadata?: Metadata) {
         await this.replyAdvanced(message, {text: content}, quote, privateReply, metadata);
     }
 
@@ -57,7 +57,7 @@ export default class MessagingService {
         content: AnyMessageContent,
         quote: boolean = false,
         privateReply: boolean = false,
-        metadata?: MessageMetadata,
+        metadata?: Metadata,
     ) {
         if (quote) {
             message.raw!.key.fromMe = false;
@@ -73,7 +73,7 @@ export default class MessagingService {
         return this._internalSendMessage(recipient, content, {quoted: quote ? message.raw ?? undefined : undefined}, metadata);
     }
 
-    public async sendMessage(recipient: string, content: AnyMessageContent, options?: MiscMessageGenerationOptions, metadata?: MessageMetadata) {
+    public async sendMessage(recipient: string, content: AnyMessageContent, options?: MiscMessageGenerationOptions, metadata?: Metadata) {
         return this._internalSendMessage(recipient, content, options, metadata);
     }
 
@@ -81,7 +81,7 @@ export default class MessagingService {
         recipient: string,
         content: AnyMessageContent,
         options?: MiscMessageGenerationOptions,
-        metadata?: MessageMetadata,
+        metadata?: Metadata,
     ): Promise<Message> {
         try {
             assert(this.client, "Client must be set using setClient() method!");
@@ -89,7 +89,7 @@ export default class MessagingService {
             if (metadata) {
                 metadata.meta.set("ignore", this._shouldIgnore);
             } else {
-                metadata = new MessageMetadata(new Map<string, any>([["ignore", this._shouldIgnore]]));
+                metadata = new Metadata(new Map<string, any>([["ignore", this._shouldIgnore]]));
             }
 
             if (options?.quoted) {

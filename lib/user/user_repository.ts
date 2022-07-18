@@ -127,6 +127,7 @@ export default class UserRepository {
             new Balance(0, 0),
             [],
             config.bank_start_capacity,
+            new Map(),
         );
 
         return await this.create(model);

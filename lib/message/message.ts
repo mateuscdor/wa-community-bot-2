@@ -5,7 +5,7 @@ import MessageModel from "../database/models/message_model";
 import {getMessageMediaBuffer, getMessageMediaType} from "../utils/media_utils";
 import {getMessageBody, getQuotedMessage} from "../utils/message_utils";
 import {BotClient} from "../whatsapp_bot";
-import MessageMetadata from "./message_metadata";
+import Metadata from "../database/models/metadata";
 
 export default class Message {
     public model: MessageModel;
@@ -39,7 +39,7 @@ export default class Message {
 
     public static async fromWAMessage(
         message: WAMessage,
-        metadata: MessageMetadata | undefined = undefined,
+        metadata: Metadata | undefined = undefined,
     ): Promise<Message> {
         const fromGroup = isJidGroup(message.key.remoteJid!);
         const fromMe = fromGroup
