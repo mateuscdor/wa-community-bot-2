@@ -55,7 +55,6 @@ export default class Message {
         const to = fromGroup ? message.key.remoteJid! : fromMe ? message.key.remoteJid! : BotClient.currentClientId;
 
         let quoted: WAMessage | undefined = getQuotedMessage(message);
-        if (quoted) quoted.key.id = message.message?.extendedTextMessage?.contextInfo?.stanzaId ?? undefined;
 
         return new Message(
             new MessageModel(

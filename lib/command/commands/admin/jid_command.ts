@@ -28,11 +28,11 @@ export default class JIDCommand extends Command {
     }
 
     async execute(client: WASocket, chat: Chat, msg: Message, body: string) {
-        const quoted = await msg.getQuoted();
+        const quoted = msg.raw?.message?.extendedTextMessage?.contextInfo?.stanzaId;
         if (quoted) {
             return await messagingService.reply(
                 msg,
-                `CHAT JID: ${msg.raw?.key.remoteJid ?? "N/A"}\nQUOTED MESSAGE ID: ${quoted.raw?.key.id ?? "N/A"}`,
+                `CHAT JID: ${msg.raw?.key.remoteJid ?? "N/A"}\nQUOTED MESSAGE ID: ${quoted ?? "N/A"}`,
                 true,
             );
         }
