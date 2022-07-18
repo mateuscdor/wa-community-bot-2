@@ -62,3 +62,7 @@ export async function buildVCardFromJID(jid: string) {
     return vcard;
 }
 
+export function formatNumberCommas(number: number) {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+

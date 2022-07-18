@@ -4,6 +4,7 @@ import {BlockedReason} from "../../../blockable";
 import {Chat} from "../../../chats";
 import {messagingService, userRepository} from "../../../constants/services";
 import {Message} from "../../../message";
+import {formatNumberCommas} from "../../../utils/utils";
 
 export default class BalanceCommand extends EconomyCommand {
     constructor() {
@@ -29,9 +30,11 @@ export default class BalanceCommand extends EconomyCommand {
             return await messagingService.reply(message, "User does not have a balance.", true);
         }
 
-        const reply = `*@${userJid.split("@")[0]}'s balance*\n\n*Wallet:* ${balance.wallet}\n*Bank:* ${
-            balance.bank
-        }\n*Net:* ${await user.calculateNetBalance()}`;
+        const reply = `*@${userJid.split("@")[0]}'s balance*\n\n*Wallet:* ${formatNumberCommas(
+            balance.wallet,
+        )}\n*Bank:* ${formatNumberCommas(balance.bank)}\n*Net:* ${formatNumberCommas(
+            await user.calculateNetBalance(),
+        )}`;
         return await messagingService.replyAdvanced(message, {text: reply, mentions: [userJid]}, true);
     }
 

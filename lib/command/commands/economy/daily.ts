@@ -7,6 +7,7 @@ import {messagingService, userRepository} from "../../../constants/services";
 import {Balance} from "../../../economy";
 import {Message} from "../../../message";
 import {havePluralS} from "../../../utils/message_utils";
+import {formatNumberCommas} from "../../../utils/utils";
 
 export default class DailyCommand extends EconomyCommand {
     constructor() {
@@ -61,14 +62,14 @@ export default class DailyCommand extends EconomyCommand {
         const isStreakBroken = dailyStreak > 0 && lastDaily.isBefore(moment().subtract(1, "day"));
         if (isStreakBroken) dailyStreak = 1;
         else dailyStreak++;
-        
+
         const rand = user.random;
         const streakBonus = !isStreakBroken ? dailyStreak * rand.intBetween(500, 1000) : 0;
         const dailyCoins = rand.intBetween(2000, 30000) + streakBonus;
         await this.addBalance(userJid, new Balance(dailyCoins, 0));
 
-        const dailyCoinsWithCommas = dailyCoins.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        const streakCoinsWithCommas = streakBonus.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        const dailyCoinsWithCommas = formatNumberCommas(dailyCoins);
+        const streakCoinsWithCommas = formatNumberCommas(streakBonus);
 
         const reply = `@${
             userJid.split("@")[0] ?? "N/A"

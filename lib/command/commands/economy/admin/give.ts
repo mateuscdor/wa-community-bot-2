@@ -6,6 +6,7 @@ import {messagingService, userRepository} from "../../../../constants/services";
 import {Message} from "../../../../message";
 import {DeveloperLevel} from "../../../../database/models";
 import {Balance} from "../../../../economy";
+import {formatNumberCommas} from "../../../../utils/utils";
 
 export default class GiveBalanceCommand extends EconomyCommand {
     constructor() {
@@ -26,7 +27,7 @@ export default class GiveBalanceCommand extends EconomyCommand {
         }
 
         // extract number from body using regex
-        const number = Number((body.replace('@' + userJid.split('@')[0], '').match(/(-\d+)|\d+/) ?? [])[0] ?? "");
+        const number = Number((body.replace("@" + userJid.split("@")[0], "").match(/(-\d+)|\d+/) ?? [])[0] ?? "");
         if (!number) {
             return await messagingService.reply(
                 message,
@@ -61,19 +62,21 @@ export default class GiveBalanceCommand extends EconomyCommand {
         const walletText =
             "*Wallet:* " +
             (bankOrWallet === "bank"
-                ? `${currentBalance.wallet}`
-                : `${previousBalance.wallet} => ${currentBalance.wallet} (${walletDiff > 0 ? "+" : ""}${walletDiff})`);
+                ? `${formatNumberCommas(currentBalance.wallet)}`
+                : `${formatNumberCommas(previousBalance.wallet)} => ${formatNumberCommas(currentBalance.wallet)} (${
+                      walletDiff > 0 ? "+" : ""
+                  }${formatNumberCommas(walletDiff)})`);
         const bankText =
             "*Bank:* " +
             (bankOrWallet === "wallet"
-                ? `${currentBalance.bank}`
-                : `${previousBalance.bank} => ${currentBalance.bank} (${bankDiff > 0 ? "+" : ""}${bankDiff})`);
+                ? `${formatNumberCommas(currentBalance.bank)}`
+                : `${formatNumberCommas(previousBalance.bank)} => ${formatNumberCommas(currentBalance.bank)} (${
+                      bankDiff > 0 ? "+" : ""
+                  }${formatNumberCommas(bankDiff)})`);
 
-        const reply = `*@${
-            userJid.split("@")[0]
-        }'s balance*\n\n${walletText}\n${bankText}\n*Net:* ${previousNet} => ${currentNet} (${
-            netDiff > 0 ? "+" : ""
-        }${netDiff})`;
+        const reply = `*@${userJid.split("@")[0]}'s balance*\n\n${walletText}\n${bankText}\n*Net:* ${formatNumberCommas(
+            previousNet,
+        )} => ${formatNumberCommas(currentNet)} (${netDiff > 0 ? "+" : ""}${formatNumberCommas(netDiff)})`;
         return await messagingService.replyAdvanced(message, {text: reply, mentions: [userJid]}, true);
     }
 
