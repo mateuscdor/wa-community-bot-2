@@ -77,7 +77,7 @@ export default class DailyCommand extends EconomyCommand {
             $set: {"metadata.daily_meta.streak": dailyStreak, "metadata.daily_meta.last_daily": moment().unix()},
         });
 
-        return await messagingService.replyAdvanced(message, {text: reply}, true);
+        return await messagingService.replyAdvanced(message, {text: reply, mentions: [userJid]}, true);
     }
 
     onBlocked(data: Message, blockedReason: BlockedReason) {}
