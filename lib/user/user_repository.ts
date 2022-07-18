@@ -7,6 +7,7 @@ import {Reputation} from "../database/models/user";
 import {Balance} from "../economy";
 import {normalizeJid} from "../utils/group_utils";
 import User from "./user";
+import config from "../config.json";
 
 export default class UserRepository {
     private repository: Map<string, User> = new Map<string, User>();
@@ -125,6 +126,7 @@ export default class UserRepository {
             new Reputation(0, []),
             new Balance(0, 0),
             [],
+            config.bank_start_capacity,
         );
 
         return await this.create(model);

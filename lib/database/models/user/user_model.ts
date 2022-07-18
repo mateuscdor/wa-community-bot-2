@@ -16,6 +16,7 @@ export default class UserModel {
     public readonly reputation: Reputation;
     public readonly balance: Balance;
     public readonly inventory: InventoryItem[];
+    public readonly bankCapacity: number;
 
     constructor(
         _id: ObjectId,
@@ -27,6 +28,7 @@ export default class UserModel {
         reputation: Reputation,
         balance: Balance,
         inventory: InventoryItem[],
+        bankCapacity: number,
     ) {
         this._id = _id;
         this.jid = jid;
@@ -37,6 +39,7 @@ export default class UserModel {
         this.reputation = reputation;
         this.inventory = inventory;
         this.balance = balance;
+        this.bankCapacity = bankCapacity;
     }
 
     public toMap() {
@@ -50,6 +53,7 @@ export default class UserModel {
             reputation: this.reputation.toMap(),
             balance: this.balance.toMap(),
             inventory: this.inventory.map((item) => item.toMap()),
+            bank_capacity: this.bankCapacity,
         };
     }
 
@@ -64,6 +68,7 @@ export default class UserModel {
             map["reputation"] ? Reputation.fromMap(map["reputation"]) : new Reputation(0, []),
             map["balance"] ? Balance.fromMap(map["balance"]) : new Balance(0, 0),
             map["inventory"] ? map["inventory"].map((item) => InventoryItem.fromMap(item)) : [],
+            map["bank_capacity"] ?? 0,
         );
     }
 }
