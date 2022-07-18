@@ -173,26 +173,27 @@ export default class ReminderCommand extends Command {
 
         const selectedReminder = reminderMapId.get(selectedReminderId);
         if (!selectedReminder) return;
-        const haveDMChangeOption = !isJidUser(chat.model.jid);
+        const isDMChat = isJidUser(chat.model.jid);
         const modificationMenuMessage =
-            "What do you want to change?\n\n*1.* Reminder text (טקסט התזכורת)\n" + haveDMChangeOption
-                ? "*2.* Remind in DM (תזכורת פרטית)\n*3.* Delete (מחק)\n*4.* Cancel (ביטול)"
-                : "*2.* Delete (מחק)\n*3.* Cancel (ביטול)";
+            "What do you want to change?\n\n*1.* Reminder text (טקסט התזכורת)\n" +
+            (isDMChat
+                ? "*2.* Delete (מחק)\n*3.* Cancel (ביטול)"
+                : "*2.* Remind in DM (תזכורת פרטית)\n*3.* Delete (מחק)\n*4.* Cancel (ביטול)");
         await messagingService.reply(message, modificationMenuMessage, true);
         recvMsg = await waitForMessage(async (msg) => {
             if (msg.sender == message.sender && msg.raw?.key.remoteJid == message.raw?.key.remoteJid) {
                 const content = msg.content?.toLowerCase() ?? "";
                 if (
-                    ["1", "2", "3", haveDMChangeOption ? "4" : undefined, "cancel", "ביטול"].some((e) =>
+                    ["1", "2", "3", isDMChat ? undefined : "4", "cancel", "ביטול"].some((e) =>
                         e ? content.startsWith(e) : false,
                     )
                 )
                     return true;
                 await messagingService.reply(
                     message,
-                    haveDMChangeOption
-                        ? "You must answer with either `1`, `2`, `3` or '4'.\nבבקשה תענה עם `1`, `2`, `3` או `4`."
-                        : "You must answer with either `1`, `2` or `3`.\nבבקשה תענה עם `1`, `2` או `3`.",
+                    isDMChat
+                        ? "You must answer with either `1`, `2` or `3`.\nבבקשה תענה עם `1`, `2` או `3`."
+                        : "You must answer with either `1`, `2`, `3` or '4'.\nבבקשה תענה עם `1`, `2`, `3` או `4`.",
                 );
                 return false;
             }
@@ -213,21 +214,15 @@ export default class ReminderCommand extends Command {
             const newReminderText = recvMsg.content;
             await reminderService.update(selectedReminder._id, {$set: {reminder: newReminderText}});
             await messagingService.reply(message, `Great.\nI'll remind you to ${newReminderText}`);
-        } else if (receivedContent.startsWith("2") && haveDMChangeOption) {
+        } else if (receivedContent.startsWith("2") && !isDMChat) {
             const isDM = await this.isDMReminder(message);
             if (isDM == undefined) return;
             await reminderService.update(selectedReminder._id, {$set: {jid: isDM ? message.sender : chat.model.jid}});
             return await messagingService.reply(message, "Updated reminder.");
-        } else if (
-            (receivedContent.startsWith("3") && haveDMChangeOption) ||
-            (receivedContent.startsWith("2") && !haveDMChangeOption)
-        ) {
+        } else if ((receivedContent.startsWith("3") && !isDMChat) || (receivedContent.startsWith("2") && isDMChat)) {
             await reminderService.delete(selectedReminder._id);
             return await messagingService.reply(message, "Reminder deleted.");
-        } else if (
-            (receivedContent.startsWith("4") && haveDMChangeOption) ||
-            (receivedContent.startsWith("3") && !haveDMChangeOption)
-        ) {
+        } else if ((receivedContent.startsWith("4") && !isDMChat) || (receivedContent.startsWith("3") && isDMChat)) {
             return await messagingService.reply(message, "Reminder modification cancelled.");
         }
     }
