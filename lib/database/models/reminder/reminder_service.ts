@@ -7,7 +7,7 @@ import {normalizeJid} from "../../../utils/group_utils";
 import ReminderModel from "./reminder_model";
 
 export default class ReminderService {
-    private readonly repository: Map<ObjectId, ReminderModel> = new Map<ObjectId, ReminderModel>();
+    private readonly repository: Map<string, ReminderModel> = new Map<string, ReminderModel>();
 
     constructor() {
         remindersCollection.find<Map<string, any>>({}).forEach((reminder) => {
@@ -19,7 +19,7 @@ export default class ReminderService {
             for (const [id, reminder] of this.repository) {
                 if (reminder.remindTimestamp <= checkTime) {
                     await messagingService.sendMessage(reminder.jid, {text: `*⏰Reminder*\n\n${reminder.reminder}`});
-                    await this.delete(id);
+                    await this.delete(ObjectId.createFromHexString(id));
                 }
             }
         }, 1000 * 1);
@@ -28,14 +28,14 @@ export default class ReminderService {
     public async get(id: ObjectId | undefined, update: boolean = false): Promise<ReminderModel | undefined> {
         if (!id) return;
 
-        let reminder: ReminderModel | undefined = this.repository.get(id);
+        let reminder: ReminderModel | undefined = this.repository.get(id.toString());
 
         if (update || !reminder) {
             reminder = await this.fetch(id);
         }
 
-        if (reminder) this.repository.set(id, reminder);
-        else this.repository.delete(id);
+        if (reminder) this.repository.set(id.toString(), reminder);
+        else this.repository.delete(id.toString());
 
         return reminder;
     }
@@ -43,11 +43,9 @@ export default class ReminderService {
     async update(id: ObjectId | undefined, update: UpdateFilter<Document>): Promise<ReminderModel | undefined> {
         if (!id) return;
 
-        console.log(`updating reminder ${id.toString()} with ${update}`);
         const res = await remindersCollection.updateOne({_id: id}, update);
         if (res.acknowledged) {
             const reminder = await this.get(id, true);
-            console.log(this.repository)
             return reminder;
         }
         return undefined;
@@ -89,12 +87,12 @@ export default class ReminderService {
         if (!id) return;
         const res = await remindersCollection.deleteOne({_id: id});
         if (res.acknowledged) {
-            this.repository.delete(id);
+            this.repository.delete(id.toString());
         }
     }
 
     updateLocal(reminder: ReminderModel | undefined): void {
         if (!reminder) return;
-        this.repository.set(reminder._id, reminder);
+        this.repository.set(reminder._id.toString(), reminder);
     }
 }
