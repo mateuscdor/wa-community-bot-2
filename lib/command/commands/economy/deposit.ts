@@ -40,6 +40,9 @@ export default class DepositCommand extends EconomyCommand {
         const depositAmount = ["all", "max"].some((e) => body.startsWith(e))
             ? Math.min(allowedDeposit, balance.wallet)
             : Number(extractNumbers(body)[0] ?? "");
+        if  (depositAmount == 0) {
+            return await messagingService.reply(message, "My guy... You have 0 coins...", true);
+        }
         if (!depositAmount) {
             return await messagingService.reply(
                 message,
