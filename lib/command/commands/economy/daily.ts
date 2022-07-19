@@ -51,7 +51,7 @@ export default class DailyCommand extends EconomyCommand {
             seconds > 0 ? `and ${seconds} second${havePluralS(seconds)}` : ""
         }`;
 
-        if (lastDaily.isSame(moment(), "day")) {
+        if (lastDaily.utc().isSame(moment(), "day")) {
             return await messagingService.reply(
                 message,
                 `*You've already claimed your daily reward today:*\n\nYour next daily is ready in:\n*${timeTillUTCMidnightFormatted}*`,
