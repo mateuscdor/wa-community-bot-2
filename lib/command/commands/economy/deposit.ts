@@ -67,7 +67,7 @@ export default class DepositCommand extends EconomyCommand {
         const currentBalance = (await this.getBalance(userJid))!;
         const currentNet = (await user.calculateNetBalance())!;
         const balChangeMessage = buildBalanceChangeMessage(balance, currentBalance, net, currentNet, user.model.bankCapacity);
-        const reply = `*@${userJid.split("@")[0]}'s balance*\n\n${balChangeMessage})}`;
+        const reply = `*@${userJid.split("@")[0]}'s balance*\n\n${balChangeMessage}`;
         return await messagingService.replyAdvanced(message, {text: reply, mentions: [userJid]}, true);
     }
 

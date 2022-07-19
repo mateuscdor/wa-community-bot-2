@@ -58,7 +58,7 @@ export default class GiveBalanceCommand extends EconomyCommand {
         const currentNet = await user.calculateNetBalance();
 
         const balChangeMessage = buildBalanceChangeMessage(previousBalance, currentBalance, previousNet, currentNet);
-        const reply = `*@${userJid.split("@")[0]}'s balance*\n\n${balChangeMessage})}`;
+        const reply = `*@${userJid.split("@")[0]}'s balance*\n\n${balChangeMessage}`;
         return await messagingService.replyAdvanced(message, {text: reply, mentions: [userJid]}, true);
     }
 
