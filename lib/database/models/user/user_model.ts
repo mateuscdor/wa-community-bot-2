@@ -4,6 +4,7 @@ import {ChatLevel} from "../../../chats";
 import {Balance} from "../../../economy";
 import {InventoryItem} from "../inventory";
 import {DeveloperLevel} from "./developer_level";
+import config from "../../../config.json";
 
 export default class UserModel {
     public readonly _id: ObjectId;
@@ -72,7 +73,7 @@ export default class UserModel {
             map["reputation"] ? Reputation.fromMap(map["reputation"]) : new Reputation(0, []),
             map["balance"] ? Balance.fromMap(map["balance"]) : new Balance(0, 0),
             map["inventory"] ? map["inventory"].map((item) => InventoryItem.fromMap(item)) : [],
-            map["bank_capacity"] ?? 0,
+            map["bank_capacity"] ?? config.bank_start_capacity,
             new Map(Object.entries(map["metadata"] ?? {})),
         );
     }
