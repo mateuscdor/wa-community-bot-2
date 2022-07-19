@@ -36,8 +36,6 @@ export default class DepositCommand extends EconomyCommand {
         }
 
         const allowedDeposit = bankCapacity - balance.bank;
-        console.log(`body = ${body}`);
-        console.log(`nums: ${extractNumbers(body)}`)
         // if body starts with 'all' or 'max' then deposit max
         const depositAmount = ["all", "max"].some((e) => body.startsWith(e))
             ? Math.min(allowedDeposit, balance.wallet)
