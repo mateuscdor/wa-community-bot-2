@@ -34,7 +34,7 @@ export default class HighlowCommand extends EconomyCommand {
         const rand = user.random;
         const secretNumber = rand.intBetween(1, 100);
         const higherLowerNumber = rand.intBetween(1, 100);
-        const isHigher = higherLowerNumber > secretNumber;
+        const isHigher = secretNumber > higherLowerNumber;
 
         const optionsText = `*1.* Higher (גבוהה יותר)\n*2.* Lower (נמוך יותר)\n*3.* JACKPOT! (בול פגיעה!)`;
         const highlowMessage = `*@${
@@ -71,7 +71,7 @@ export default class HighlowCommand extends EconomyCommand {
             return;
         }
 
-        const lossText = `*@${userJid.split("@")[0]} lost high-low game*\n\n$*You lost!*\n${footer}`;
+        const lossText = `*@${userJid.split("@")[0]} lost high-low game*\n\n*You lost!*\n${footer}`;
         await messagingService.replyAdvanced(message, {text: lossText, mentions: [userJid]}, true);
     }
 
