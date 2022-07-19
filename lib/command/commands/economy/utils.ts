@@ -14,7 +14,9 @@ export function buildBalanceChangeMessage(
     const walletDiff = current.wallet - previous.wallet;
     const bankDiff = current.bank - previous.bank;
 
-    const capacityText = bankCapacity ? ` / ${commas(bankCapacity)} (${(current.bank / bankCapacity * 100).toFixed(1)}%)` : "";
+    const capacityText = bankCapacity
+        ? ` / ${commas(bankCapacity)} (${((current.bank / bankCapacity) * 100).toFixed(1)}%)`
+        : "";
     const walletText =
         walletDiff! + 0
             ? `${commas(previous.wallet)} => ${commas(current.wallet)} (${havePlus(walletDiff)}${commas(walletDiff)})`
@@ -22,7 +24,9 @@ export function buildBalanceChangeMessage(
 
     const bankText =
         bankDiff != 0
-            ? `${commas(previous.bank)} => ${commas(current.bank)}${capacityText} (${havePlus(bankDiff)}${commas(bankDiff)})`
+            ? `${commas(previous.bank)} => ${commas(current.bank)}${capacityText} (${havePlus(bankDiff)}${commas(
+                  bankDiff,
+              )})`
             : `${commas(current.bank)}${capacityText}`;
 
     const netText = `${commas(previousNet)} => ${commas(currentNet)} (${havePlus(netDiff)}${commas(netDiff)})`;
@@ -36,6 +40,7 @@ export function buildBalanceChangeMessage(
  * @returns a list of numbers that exist in the string
  */
 export function extractNumbers(str: string): number[] {
+    console.log(`general match: ${str.match(/((-\d+)|\d+)[a-zA-Z]+/g)}`);
     const numbers = (str.match(/((-\d+)|\d+)[a-zA-Z]+/g) ?? []).map((numData) => {
         const numStr = numData.match(/(-\d+)|\d+/g)?.[0] ?? "";
         console.log(`numStr: ${numStr}`);

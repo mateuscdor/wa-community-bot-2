@@ -35,8 +35,8 @@ export default class BalanceCommand extends EconomyCommand {
             (balance.bank / user.model.bankCapacity) *
             100
         ).toFixed(1)}%)`;
-        const netText = `${commas(await user.calculateNetBalance())}}`;
-        
+        const netText = `${commas(await user.calculateNetBalance())}`;
+
         const reply = `*@${
             userJid.split("@")[0]
         }'s balance*\n\n*Wallet:* ${walletText}\n*Bank:* ${bankText}\n*Net:* ${netText}`;
