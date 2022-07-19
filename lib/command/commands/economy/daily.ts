@@ -24,7 +24,6 @@ export default class DailyCommand extends EconomyCommand {
         const userJid = message.sender ?? "";
         const user = await userRepository.get(userJid);
         if (!user || !userJid) {
-            // if user is not in the database, we can't check if they have a balance
             return await messagingService.reply(message, "You do not have a balance.", true);
         }
 
@@ -36,25 +35,22 @@ export default class DailyCommand extends EconomyCommand {
                 },
             ),
         );
-
         let dailyStreak = dailyMeta.get("streak") as number;
         const lastDaily = moment.unix(dailyMeta.get("last_daily") as number);
-        const now = moment().utc(); // moment.utc() is used to make sure the time is in UTC since daily resets at UTC midnight
-
         // allow only one daily per day - day resets at UTC midnight
-        // check the difference between now and the start of the day
-        const timeTillUTCMidnight = now.startOf("day").diff(now, "seconds");
+        const timeTillUTCMidnight = moment.utc().startOf("day").diff(moment(), "seconds");
+        // format timeTillUTCMidnight to x hour, x minutes and x seconds and if hour or minute is 0, remove it
         const timeTillUTCMidnightMoment = moment.utc(timeTillUTCMidnight * 1000);
-        const hoursTillMidnight = timeTillUTCMidnightMoment.hours();
-        const minutesTillMidnight = timeTillUTCMidnightMoment.minutes();
-        const secondsTillMidnight = timeTillUTCMidnightMoment.seconds();
-        const timeTillUTCMidnightFormatted = `${
-            hoursTillMidnight > 0 ? `${hoursTillMidnight} hour${havePluralS(hoursTillMidnight)}, ` : ""
-        }${secondsTillMidnight <= 0 ? "and " : ""}${
-            minutesTillMidnight > 0 ? `${minutesTillMidnight} minute${havePluralS(minutesTillMidnight)} ` : ""
-        }${secondsTillMidnight > 0 ? `and ${secondsTillMidnight} second${havePluralS(secondsTillMidnight)}` : ""}`;
+        const hours = timeTillUTCMidnightMoment.hours();
+        const minutes = timeTillUTCMidnightMoment.minutes();
+        const seconds = timeTillUTCMidnightMoment.seconds();
+        const timeTillUTCMidnightFormatted = `${hours > 0 ? `${hours} hour${havePluralS(hours)}, ` : ""}${
+            seconds <= 0 ? "and " : ""
+        }${minutes > 0 ? `${minutes} minute${havePluralS(minutes)} ` : ""}${
+            seconds > 0 ? `and ${seconds} second${havePluralS(seconds)}` : ""
+        }`;
 
-        if (lastDaily.utc().isSame(now, "day")) {
+        if (lastDaily.utc().isSame(moment(), "day")) {
             return await messagingService.reply(
                 message,
                 `*You've already claimed your daily reward today:*\n\nYour next daily is ready in:\n*${timeTillUTCMidnightFormatted}*`,
@@ -62,7 +58,7 @@ export default class DailyCommand extends EconomyCommand {
             );
         }
 
-        const isStreakBroken = dailyStreak > 0 && lastDaily.isBefore(moment(now).subtract(1, "day"));
+        const isStreakBroken = dailyStreak > 0 && lastDaily.isBefore(moment().subtract(1, "day"));
         if (isStreakBroken) dailyStreak = 1;
         else dailyStreak++;
 
