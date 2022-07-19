@@ -36,7 +36,11 @@ export default class DepositCommand extends EconomyCommand {
             return await messagingService.reply(message, "User does not have a balance.", true);
         }
 
-        const depositAmount = Number(extractNumbers(body)[0] ?? "");
+        const allowedDeposit = bankCapacity - balance.bank;
+        // if body starts with 'all' or 'max' then deposit max
+        const depositAmount = ["all", "max"].some((e) => body.startsWith(e))
+            ? Math.min(allowedDeposit, balance.wallet)
+            : Number(extractNumbers(body)[0] ?? "");
         if (!depositAmount) {
             return await messagingService.reply(
                 message,
@@ -45,7 +49,6 @@ export default class DepositCommand extends EconomyCommand {
             );
         }
 
-        const allowedDeposit = bankCapacity - balance.bank;
         if (depositAmount > allowedDeposit) {
             const english = `You can only hold ${commas(
                 bankCapacity,
@@ -66,7 +69,13 @@ export default class DepositCommand extends EconomyCommand {
 
         const currentBalance = (await this.getBalance(userJid))!;
         const currentNet = (await user.calculateNetBalance())!;
-        const balChangeMessage = buildBalanceChangeMessage(balance, currentBalance, net, currentNet, user.model.bankCapacity);
+        const balChangeMessage = buildBalanceChangeMessage(
+            balance,
+            currentBalance,
+            net,
+            currentNet,
+            user.model.bankCapacity,
+        );
         const reply = `*@${userJid.split("@")[0]}'s balance*\n\n${balChangeMessage}`;
         return await messagingService.replyAdvanced(message, {text: reply, mentions: [userJid]}, true);
     }
