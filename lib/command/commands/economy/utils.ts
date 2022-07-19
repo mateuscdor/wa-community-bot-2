@@ -40,7 +40,7 @@ export function buildBalanceChangeMessage(
  * @returns a list of numbers that exist in the string
  */
 export function extractNumbers(str: string): number[] {
-    const numbers = (str.match(/((-\d+)|\d+)[a-zA-Z]+/g) ?? []).map((numData) => {
+    const numbers = (str.match(/((-\d+)|\d+)[a-zA-Z]*/g) ?? []).map((numData) => {
         const numStr = numData.match(/(-\d+)|\d+/g)?.[0] ?? "";
         const numPrefix = numData.match(/[a-zA-Z]+/g)?.[0] ?? "";
         const num = Number(numStr);

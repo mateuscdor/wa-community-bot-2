@@ -48,7 +48,7 @@ export default class DepositCommand extends EconomyCommand {
             );
         }
 
-        if (depositAmount > allowedDeposit) {
+        if (depositAmount > allowedDeposit || depositAmount < 0) {
             const english = `You can only hold ${commas(
                 bankCapacity,
             )} in your bank right now. To hold more, buy more bank space!`;
