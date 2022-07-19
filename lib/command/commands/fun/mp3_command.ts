@@ -139,10 +139,6 @@ export default class MP3Command extends Command {
         return hours * 60 * 60 + minutes * 60 + seconds;
     }
 
-    private handleError(client, message) {
-        client.sendMessage(message.key.remoteJid!, {text: "Failed to download the MP3 of this video."}, {quoted: message});
-    }
-
     private deleteFiles(title: string, path: string) {
         fs.unlink(path, () => {});
         fs.unlink(path + ".mp3", () => {});

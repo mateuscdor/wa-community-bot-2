@@ -56,6 +56,7 @@ export default class Message {
 
         let quoted: WAMessage | undefined = getQuotedMessage(message);
 
+        // TODO: Change media save to be local not on DB
         return new Message(
             new MessageModel(
                 message.key.id!,

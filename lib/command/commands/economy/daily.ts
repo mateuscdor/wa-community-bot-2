@@ -29,11 +29,10 @@ export default class DailyCommand extends EconomyCommand {
 
         const dailyMeta = new Map(
             Object.entries(
-                user.model.metadata.get("daily_meta") ??
-                    new Map([
-                        ["streak", 0],
-                        ["last_daily", 0],
-                    ]),
+                user.model.metadata.get("daily_meta") ?? {
+                    streak: 0,
+                    last_daily: 0,
+                },
             ),
         );
         let dailyStreak = dailyMeta.get("streak") as number;
