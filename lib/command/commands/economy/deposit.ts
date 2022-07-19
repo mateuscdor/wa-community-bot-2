@@ -17,7 +17,6 @@ export default class DepositCommand extends EconomyCommand {
             category: "Economy",
             description: "Give balance to a user",
             usage: "{prefix}{command} @mention",
-            developerLevel: DeveloperLevel.Operator,
         });
     }
 
@@ -37,6 +36,7 @@ export default class DepositCommand extends EconomyCommand {
         }
 
         const allowedDeposit = bankCapacity - balance.bank;
+        console.log(`nums: ${extractNumbers(body)}`)
         // if body starts with 'all' or 'max' then deposit max
         const depositAmount = ["all", "max"].some((e) => body.startsWith(e))
             ? Math.min(allowedDeposit, balance.wallet)
@@ -57,7 +57,7 @@ export default class DepositCommand extends EconomyCommand {
             return await messagingService.reply(message, `${english}\n${hebrew}`, true);
         }
 
-        const addBalance = new Balance(0, depositAmount);
+        const addBalance = new Balance(-depositAmount, depositAmount);
         const success = await this.addBalance(userJid, addBalance);
         if (!success) {
             return await messagingService.reply(
