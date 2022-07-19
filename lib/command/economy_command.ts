@@ -4,10 +4,18 @@ import InteractableCommand from "./interactable_command";
 
 export default abstract class EconomyCommand extends InteractableCommand {
     public async setBalance(jid: string, balance: Balance): Promise<boolean> {
+        // enforce bank capacity
+        const user = await userRepository.get(jid);
+        if (!user) return false;
+
+        const bank = Math.min(balance.bank, user.model.bankCapacity);
+        const leftOutOfBank = balance.bank - bank;
+        const wallet = balance.wallet + leftOutOfBank;
+
         const update = await userRepository.update(jid, {
             $set: {
-                "balance.wallet": balance.wallet,
-                "balance.bank": balance.bank,
+                "balance.wallet": wallet,
+                "balance.bank": bank,
             },
         });
 
