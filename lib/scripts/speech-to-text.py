@@ -29,7 +29,7 @@ def main():
             input_path.replace(".ogg", ".wav"), format="wav")
 
         # delete ogg file
-        # os.remove(input_path)
+        os.remove(input_path)
         input_path = input_path.replace(".ogg", ".wav")
 
     chunk_folder = get_chunk_folder(jid, msg_id)
@@ -52,9 +52,8 @@ def main():
         input_path = new_input
 
     os.mkdir(chunk_folder)
-    print('started')
     res = speech_to_text(input_path, chunk_folder, recognizer)
-    print("res:", res)
+    sys.stdout.buffer.write(res)
     sys.stdout.flush()
 
     shutil.rmtree(chunk_folder)
@@ -86,7 +85,7 @@ def speech_to_text(input, chunk_folder, recognizer):
         except sr.RequestError as e:
             return "Could not request results from Google Speech Recognition service; {0}".format(e)
 
-    return stt
+    return stt.encode('utf-8')
 
 
 def get_chunk_folder(jid, msg_id):

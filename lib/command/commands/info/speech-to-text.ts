@@ -59,8 +59,6 @@ export default class SpeechToTextCommand extends Command {
         ]);
 
         pythonProcess.stdout.on("data", async (data) => {
-            console.log("DATA")
-            console.log(data)
             const text = new TextDecoder("utf-8").decode(data);
             await messagingService.reply(message, `*SPEECH-TO-TEXT:*\n${text}`, true);
         });
