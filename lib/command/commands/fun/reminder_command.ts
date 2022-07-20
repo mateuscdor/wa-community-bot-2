@@ -108,8 +108,10 @@ export default class ReminderCommand extends InteractableCommand {
             });
         }
 
+        console.log(`add time ${time} ${timeType}`);
         const remindTime = moment().utc()
             .add(time, timeType as moment.unitOfTime.Base)
+        console.log(`remind time ${remindTime.unix()}`)
         if (remindTime.diff(moment().utc(), "seconds") < 60) {
             return await messagingService.reply(message, this.language.execution.too_little_time, true, {
                 placeholder: {chat: chat, command: this},
