@@ -876,7 +876,7 @@
                 "execution": {
                     "imagine_begging": "דמיין להתחנן 😹",
                     "no_balance": "משתמש זה לא קיים במערכת.",
-                    "success_give": "\"אוי, מסכן שלי אל תהיה רעב, קח {amount}\""
+                    "success_give": "אוי, מסכן שלי אל תהיה רעב, קח {amount} {coin}"
                 },
                 "responses": [
                     "חחחחחחחחחחחחחחחחחחחחחחחחחחחחחח לא.",

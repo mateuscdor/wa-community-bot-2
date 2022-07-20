@@ -7,9 +7,11 @@ import {Balance} from "../../../economy";
 import {Message} from "../../../message";
 import {commas, formatNumberCommas} from "../../../utils/utils";
 import languages from "../../../constants/language.json";
+import {pluralForm} from "../../../utils/message_utils";
 
 export default class BegCommand extends EconomyCommand {
     private language: typeof languages.commands.beg[Language];
+    private langCode: Language;
 
     constructor(language: Language) {
         const langs = languages.commands.beg;
@@ -28,6 +30,7 @@ export default class BegCommand extends EconomyCommand {
         });
 
         this.language = lang;
+        this.langCode = language;
         this.responses = lang.responses;
     }
 
@@ -95,7 +98,10 @@ export default class BegCommand extends EconomyCommand {
         await this.addBalance(userJid, new Balance(amountGiven, 0));
         await messagingService.reply(message, `*${person}*\n"${this.language.execution.success_give}"`, true, {
             placeholder: {
-                custom: new Map([["amount", commas(amountGiven)]]),
+                custom: new Map([
+                    ["amount", commas(amountGiven)],
+                    ["coin", pluralForm(amountGiven, languages.economy.coin[this.langCode])],
+                ]),
             },
         });
     }
