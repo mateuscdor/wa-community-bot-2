@@ -11,20 +11,29 @@ import {wait} from "../../../utils/async_utils";
 import {BlockedReason} from "../../../blockable";
 import {ChatLevel, DeveloperLevel} from "../../../database/models";
 import {MessageMetadata} from "../../../message";
+import languages from "../../../constants/language.json";
 
 export default class MP3Command extends Command {
-    constructor() {
+    private language: typeof languages.commands.mp3[Language];
+
+    constructor(language: Language) {
+        const langs = languages.commands.mp3;
+        const lang = langs[language];
         super({
-            triggers: ["mp3", "music", "song", "מוזיקה"].map((e) => new CommandTrigger(e)),
-            usage: "{prefix}{command}",
-            category: "Fun",
+            triggers: langs.triggers.map((e) => new CommandTrigger(e)),
+            announcedAliases: lang.triggers,
+            usage: lang.usage,
+            category: lang.category,
+            description: lang.description,
+            extendedDescription: lang.extended_description,
             cooldowns: new Map([
                 [ChatLevel.Free, 5 * 1000],
                 [ChatLevel.Premium, 3 * 1000],
                 [ChatLevel.Sponser, 2 * 1000],
             ]),
-            description: "Downloads an MP3 of a YouTube video (>>mp3 video name)",
         });
+
+        this.language = lang;
     }
 
     downloading_list = {};
@@ -32,8 +41,7 @@ export default class MP3Command extends Command {
     async execute(client: WASocket, chat: Chat, message: Message, body?: string) {
         if (!message.raw?.key.remoteJid)
             return await messagingService.reply(message, "That's... Odd... It seems like this group doesn't exist 🤨");
-        if (!body)
-            return await messagingService.reply(message, "Please specify what you want to convert to an MP3", true);
+        if (!body) return await messagingService.reply(message, this.language.execution.no_content, true);
 
         const videos = await yt.search(body);
         const video = videos.filter((vid) => {
@@ -44,23 +52,29 @@ export default class MP3Command extends Command {
         })[0];
 
         if (!video) {
-            let errorMessage = "I couldn't find a video to download.";
-            if (videos.length > 0) errorMessage += "\nI can only download videos up to 10 minutes. Maybe that's why?";
+            let errorMessage = this.language.execution.no_results;
+            if (videos.length > 0) errorMessage += "\n" + this.language.execution.too_long;
 
-            return await messagingService.reply(message, errorMessage, true);
+            return await messagingService.reply(message, errorMessage, true, {
+                placeholder: {custom: new Map([["song", body]])},
+            });
         }
 
         video.title = this.standardizeTitle(video.title);
-        const downloadMessage = `Downloading MP3 of "${video.title}" from YouTube...`;
+        const downloadMessage = this.language.execution.downloading;
         let downloadData = this.downloading_list[video.title];
         if (downloadData && downloadData["messages"] && fs.existsSync(downloadData["path"])) {
             downloadData["messages"].push(message);
-            return await messagingService.reply(message, downloadMessage, true);
+            return await messagingService.reply(message, downloadMessage, true, {
+                placeholder: {custom: new Map([["title", video.title]])},
+            });
         } else if (downloadData && downloadData["path"] && !fs.existsSync(downloadData["path"])) {
-            return await messagingService.reply(message, "Please try again in a few moments", true);
+            return await messagingService.reply(message, this.language.execution.failed, true);
         }
 
-        await messagingService.reply(message, downloadMessage, true);
+        await messagingService.reply(message, downloadMessage, true, {
+            placeholder: {custom: new Map([["title", video.title]])},
+        });
         const path = `./media/music/${video.title}.mp3`;
         this.downloading_list[video.title] = {path, messages: [message]};
         downloadData = this.downloading_list[video.title];

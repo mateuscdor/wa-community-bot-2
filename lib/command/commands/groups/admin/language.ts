@@ -28,7 +28,7 @@ export default class LanguageCommand extends InteractableCommand {
                 availableLanguages.map((e) => `{prefix}{command} ${e}`).join("\n"),
                 true,
                 {
-                    placeholderData: {command: this, chat, message},
+                    placeholder: {command: this, chat, message},
                 },
             );
         }

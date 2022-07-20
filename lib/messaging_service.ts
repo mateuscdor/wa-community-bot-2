@@ -60,11 +60,11 @@ export default class MessagingService {
         {
             privateReply = false,
             metadata,
-            placeholderData,
+            placeholder,
         }: {
             privateReply?: boolean;
             metadata?: Metadata;
-            placeholderData?: {
+            placeholder?: {
                 message?: Message;
                 user?: User;
                 command?: Command;
@@ -73,7 +73,7 @@ export default class MessagingService {
             };
         } = {},
     ) {
-        return await this.replyAdvanced(message, {text: content}, quote, {privateReply, metadata, placeholderData});
+        return await this.replyAdvanced(message, {text: content}, quote, {privateReply, metadata, placeholder});
     }
 
     public async replyAdvanced(
@@ -83,11 +83,11 @@ export default class MessagingService {
         {
             privateReply = false,
             metadata,
-            placeholderData,
+            placeholder,
         }: {
             privateReply?: boolean;
             metadata?: Metadata;
-            placeholderData?: {
+            placeholder?: {
                 message?: Message;
                 user?: User;
                 command?: Command;
@@ -112,7 +112,7 @@ export default class MessagingService {
             content,
             {quoted: quote ? message.raw ?? undefined : undefined},
             metadata,
-            placeholderData,
+            placeholder,
         );
     }
 
@@ -122,10 +122,10 @@ export default class MessagingService {
         options?: MiscMessageGenerationOptions,
         {
             metadata,
-            placeholderData,
+            placeholder,
         }: {
             metadata?: Metadata;
-            placeholderData?: {
+            placeholder?: {
                 message?: Message;
                 user?: User;
                 command?: Command;
@@ -134,7 +134,7 @@ export default class MessagingService {
             };
         } = {},
     ) {
-        return this._internalSendMessage(recipient, content, options, metadata, placeholderData);
+        return this._internalSendMessage(recipient, content, options, metadata, placeholder);
     }
 
     private async _internalSendMessage(
@@ -142,7 +142,7 @@ export default class MessagingService {
         content: AnyMessageContent,
         options?: MiscMessageGenerationOptions,
         metadata?: Metadata,
-        placeholderData?: {
+        placeholder?: {
             message?: Message;
             user?: User;
             command?: Command;
@@ -165,9 +165,9 @@ export default class MessagingService {
 
             const text = (content as any).text;
             const caption = (content as any).caption;
-            if (text != undefined && text.length > 0) (content as any).text = await applyPlaceholders(text, placeholderData);
+            if (text != undefined && text.length > 0) (content as any).text = await applyPlaceholders(text, placeholder);
             if (caption != undefined && caption.length > 0)
-                (content as any).caption = await applyPlaceholders(caption, placeholderData);
+                (content as any).caption = await applyPlaceholders(caption, placeholder);
 
             const response = await this.client!.sendMessage(recipient, content, options);
 

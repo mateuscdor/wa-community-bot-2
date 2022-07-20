@@ -81,16 +81,16 @@ export default abstract class Chat {
 
         // fun commands
         handler?.add(new AnonymousCommand(this.model.language));
-        handler?.add(new LmgtfyCommand());
-        handler?.add(new MP3Command());
+        handler?.add(new LmgtfyCommand(this.model.language));
+        handler?.add(new MP3Command(this.model.language));
         handler?.add(new SpoofCommand());
         handler?.add(new StickerCommand());
-        handler?.add(new ReminderCommand());
+        handler?.add(new ReminderCommand(this.model.language));
         handler?.add(new ReputationCommand());
 
         // group admin commands
         handler?.add(new AddCommand());
-        handler?.add(new DeleteCommand());
+        handler?.add(new DeleteCommand(this.model.language));
         handler?.add(new GtfoCommand());
         handler?.add(new KickCommand());
         handler?.add(new EveryoneCommand());

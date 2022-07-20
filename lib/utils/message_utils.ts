@@ -36,6 +36,10 @@ export function havePluralS(number: number) {
     return number != 1 && number != -1 ? "s" : "";
 }
 
+export function pluralForm(number: number, [singular, plural]: string[]) {
+    return number == 1 ? singular : plural;
+}
+
 export function getContextInfo(message?: WAMessage) {
     const content = extractMessageContent(message?.message);
     if (!content) return;

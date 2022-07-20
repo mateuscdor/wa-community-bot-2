@@ -9,7 +9,7 @@ import {getGroupPrivilegeMap} from "../../../../utils/group_utils";
 import {BotClient} from "../../../../whatsapp_bot";
 import {BlockedReason} from "../../../../blockable";
 export default class DeleteCommand extends Command {
-    constructor() {
+    constructor(language) {
         super({
             triggers: ["delete", "מחק"].map(e => new CommandTrigger(e)),
             usage: "{prefix}{command}",

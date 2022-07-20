@@ -515,7 +515,8 @@
                 "extended_description": "Can you even be more condescending?",
                 "usage": "{prefix}{command} <query>",
                 "execution": {
-                    "message": "https://lmgtfy.com/?q={query}"
+                    "message": "You couldn't Google that yourself huh?\n{link}",
+                    "no_body": "You must provide a query to search for."
                 }
             },
             "hebrew": {
@@ -527,8 +528,8 @@
                 "extended_description": "האם יש דרך להיות יותר מתנשא מזה?",
                 "usage": "{prefix}{command} <שאלה>",
                 "execution": {
-                    "message": "You couldn't Google that yourself huh?\n{link}",
-                    "no_body": "You must provide a query to search for."
+                    "message": "לא יכולת לחפש את זה בעצמך?\n{link}",
+                    "no_body": "בבקשה תספק שאלה לחיפוש."
                 }
             }
         },
@@ -594,10 +595,26 @@
                 "usage": "{prefix}{command} <time> <message>",
                 "execution": {
                     "no_body": "You must provide time and text to set a reminder.\nExample: `{prefix}{command} 1 hour Hello World`",
-                    "no_seconds_reminder": "I'm sorry, but I can't set a reminder for seconds.",
+                    "too_little_time": "I'm sorry, but I can't set a reminder for less than a minute.",
                     "valid_times": "You must provide a valid time type.\nValid time types: {list}",
                     "error": "Something went wrong while creating the reminder.",
-                    "success": "Great.\nI'll remind you to {text} in {time} {time_type}!"
+                    "success": "Great.\nI'll remind you to {text} in {time} {time_type}!",
+                    "list_title": "*Reminders:* _(select one to modify using the number)_",
+                    "list_empty": "You have no reminders set.",
+                    "change_menu": {
+                        "title": "What do you want to change?",
+                        "text": "Reminder text",
+                        "dm": "Send reminder in DM",
+                        "delete": "Delete reminder",
+                        "cancel": "Cancel change"
+                    },
+                    "text_change": "What should the reminder be?",
+                    "success_text_change": "Great.\nI'll remind you to {text}!",
+                    "success_dm_update": "Updated reminder.",
+                    "success_delete": "Deleted.",
+                    "success_cancel": "Cancelled reminder change",
+                    "where_to_send_question": "Do you want this reminder to be sent to you privately?\n\n*1.* Yes\n*2.* No\n*3.* Cancel",
+                    "creation_cancel": "Reminder creation cancelled"
                 }
             },
             "hebrew": {
@@ -614,7 +631,23 @@
                     "too_little_time": "אני לא יכול להגדיר תזכורות מתחת לדקה.",
                     "valid_times": "אתה חייב לספק זמן תקין.\nזמנים תקינים: {list}",
                     "error": "אירעה שגיאה בעת יצירת התזכורת.",
-                    "success": "מעולה.\nאני אזכיר לך לעשות {text} בעוד {time} {time_type}!"
+                    "success": "מעולה.\nאני אזכיר לך לעשות {text} בעוד {time} {time_type}!",
+                    "list_title": "*_תזכורות:* _(בחר אחד לשינוי בעזרת המספרים)_",
+                    "list_empty": "אין לך כרגע תזכורות.",
+                    "change_menu": {
+                        "title": "מה אתה רוצה לשנות?",
+                        "text": "הודעת התזכורת",
+                        "dm": "שליחת תזכורת בהודעה פרטית",
+                        "delete": "מחק תזכורת",
+                        "cancel": "בטל שינוים"
+                    },
+                    "where_to_send_question": "האם לשלוח את התזכורת בהודעה פרטית?\n\n*1.* כן\n*2.* לא\n*3.* ביטול",
+                    "text_change": "כתוב את התזכורת החדשה:",
+                    "success_text_change": "מעולה, אזכיר לך לעשות {text}!",
+                    "success_dm_update": "התעדכן בהצלחה.",
+                    "success_delete": "נמחק.",
+                    "success_cancel": "יצאתי מהתליך שינוי התזכורת.",
+                    "creation_cancel": "יצירת התזכורת התבטלה."
                 }
             }
         },
@@ -966,72 +999,96 @@
                     "jackpot_text": "*{tag} ניצח במשחק גבוה נמוך בבול פגיעה!!!*\n\n*זכית ב{prize}!*"
                 }
             }
+        }
+    },
+    "economy": {
+        "balance": {
+            "english": "Balance",
+            "hebrew": "יתרה"
         },
-        "economy": {
-            "balance": {
-                "english": "Balance",
-                "hebrew": "יתרה"
-            },
-            "bank": {
-                "english": "Bank",
-                "hebrew": "בנק"
-            },
-            "wallet": {
-                "english": "Wallet",
-                "hebrew": "ארנק"
-            },
-            "net": {
-                "english": "Net",
-                "hebrew": "שווי כולל"
-            },
-            "coin": {
-                "english": [
-                    "coin",
-                    "coins"
-                ],
-                "hebrew": [
-                    "מטבע",
-                    "מטבעות"
-                ]
-            }
+        "bank": {
+            "english": "Bank",
+            "hebrew": "בנק"
         },
-        "times": {
-            "english": {
-                "hour": [
-                    "hour",
-                    "hours"
-                ],
-                "minute": [
-                    "minute",
-                    "minutes"
-                ],
-                "second": [
-                    "second",
-                    "seconds"
-                ],
-                "day": [
-                    "day",
-                    "days"
-                ]
-            },
-            "hebrew": {
-                "hour": [
-                    "שעה",
-                    "שעות"
-                ],
-                "minute": [
-                    "דקה",
-                    "דקות"
-                ],
-                "second": [
-                    "שניה",
-                    "שניות"
-                ],
-                "day": [
-                    "יום",
-                    "ימים"
-                ]
-            }
+        "wallet": {
+            "english": "Wallet",
+            "hebrew": "ארנק"
+        },
+        "net": {
+            "english": "Net",
+            "hebrew": "שווי כולל"
+        },
+        "coin": {
+            "english": [
+                "coin",
+                "coins"
+            ],
+            "hebrew": [
+                "מטבע",
+                "מטבעות"
+            ]
+        }
+    },
+    "times": {
+        "english": {
+            "hour": [
+                "hour",
+                "hours"
+            ],
+            "minute": [
+                "minute",
+                "minutes"
+            ],
+            "second": [
+                "second",
+                "seconds"
+            ],
+            "day": [
+                "day",
+                "days"
+            ],
+            "week": [
+                "week",
+                "weeks"
+            ],
+            "month": [
+                "month",
+                "months"
+            ],
+            "year": [
+                "year",
+                "years"
+            ]
+        },
+        "hebrew": {
+            "hour": [
+                "שעה",
+                "שעות"
+            ],
+            "minute": [
+                "דקה",
+                "דקות"
+            ],
+            "second": [
+                "שניה",
+                "שניות"
+            ],
+            "day": [
+                "יום",
+                "ימים"
+            ],
+            "week": [
+                "שבוע",
+                "שבועות"
+            ],
+            "month": [
+                "חודש",
+                "חודשים"
+            ],
+            "year": [
+                "שנה",
+                "שנים"
+            ]
         }
     },
     "and": {
