@@ -41,14 +41,10 @@ import {
     WithdrawCommand,
 } from "../command/commands/economy";
 import {messageRepository, messagingService, userRepository} from "../constants/services";
-import {MessageModel} from "../database/models";
 import ChatModel from "../database/models/chat/chat_model";
-import Metadata from "../database/models/metadata";
 import BlockableHandler from "../handlers/blockable_handler";
 import CommandHandler from "../handlers/command_handler";
 import Message from "../message/message";
-import User from "../user/user";
-import config from "../config.json";
 
 export default abstract class Chat {
     public model: ChatModel;

@@ -11,6 +11,8 @@ import CommandTrigger from "./command_trigger";
 export default abstract class Command implements Blockable<Message> {
     triggers: CommandTrigger[];
 
+    announcedAliases: string[];
+
     blockedChats: Array<"group" | "dm">;
 
     chatLevel: ChatLevel;
@@ -45,7 +47,7 @@ export default abstract class Command implements Blockable<Message> {
         blacklistedJids = [],
         whitelistedJids = [],
         minArgs = 0,
-        usage = "",
+        usage = "{prefix}{command}",
         description = "",
         name,
         cooldowns = new Map([
@@ -55,7 +57,8 @@ export default abstract class Command implements Blockable<Message> {
         ]),
         groupLevel = GroupLevel.None,
         category = undefined,
-        extendedDescription = '',
+        extendedDescription = "",
+        announcedAliases,
     }: {
         triggers: CommandTrigger[];
         blockedChats?: Array<"group" | "dm">;
@@ -64,13 +67,14 @@ export default abstract class Command implements Blockable<Message> {
         blacklistedJids?: string[];
         whitelistedJids?: string[];
         minArgs?: number;
-        name?: string,
+        name?: string;
         usage?: string;
         description?: string;
         cooldowns?: Map<ChatLevel, number>;
         groupLevel?: GroupLevel;
         category?: string;
         extendedDescription?: string;
+        announcedAliases?: string[];
     }) {
         this.triggers = triggers;
         this.blockedChats = blockedChats;
@@ -85,12 +89,12 @@ export default abstract class Command implements Blockable<Message> {
         this.groupLevel = groupLevel;
         this.category = category;
         this.extendedDescription = extendedDescription;
-        this.name = name ?? this.mainTrigger.command;
+        this.announcedAliases = announcedAliases ?? this.triggers.map((e) => e.command);
+        this.name = name ?? this.announcedAliases[0] ?? this.mainTrigger.command;
     }
 
-
     abstract execute(client: WASocket, chat: Chat, data: Message, body: string, ...args: string[]): Promise<any> | any;
-    
+
     abstract onBlocked(data: Message, blockedReason: BlockedReason): Promise<any> | any;
 
     public get mainTrigger() {

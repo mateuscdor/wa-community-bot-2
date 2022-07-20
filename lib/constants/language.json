@@ -5,6 +5,10 @@
     ],
     "commands": {
         "code": {
+            "triggers": [
+                "code",
+                "קוד"
+            ],
             "english": {
                 "triggers": [
                     "code"
@@ -21,6 +25,12 @@
             }
         },
         "feature": {
+            "triggers": [
+                "feature",
+                "developer",
+                "רעיון",
+                "מפתח"
+            ],
             "english": {
                 "triggers": [
                     "feature",
@@ -53,6 +63,10 @@
             }
         },
         "gpt": {
+            "triggers": [
+                "gpt",
+                "בינה"
+            ],
             "english": {
                 "triggers": [
                     "gpt"
@@ -92,6 +106,10 @@
             }
         },
         "help": {
+            "triggers": [
+                "help",
+                "עזרה"
+            ],
             "english": {
                 "triggers": [
                     "help"
@@ -120,6 +138,12 @@
             }
         },
         "ping": {
+            "triggers": [
+                "ping",
+                "bot",
+                "פינג",
+                "בוט"
+            ],
             "english": {
                 "triggers": [
                     "ping",
@@ -146,6 +170,11 @@
             }
         },
         "speech_to_text": {
+            "triggers": [
+                "speech_to_text",
+                "stt",
+                "תמלול"
+            ],
             "english": {
                 "triggers": [
                     "speechtotext",
@@ -180,6 +209,11 @@
             }
         },
         "vcard": {
+            "triggers": [
+                "contact",
+                "vcard",
+                "איש קשר"
+            ],
             "english": {
                 "triggers": [
                     "contact",
@@ -206,6 +240,10 @@
             }
         },
         "add": {
+            "triggers": [
+                "add",
+                "הוסף"
+            ],
             "english": {
                 "triggers": [
                     "add"
@@ -236,6 +274,10 @@
             }
         },
         "delete": {
+            "triggers": [
+                "delete",
+                "מחק"
+            ],
             "english": {
                 "triggers": [
                     "delete"
@@ -266,6 +308,10 @@
             }
         },
         "everyone": {
+            "triggers": [
+                "everyone",
+                "כולם"
+            ],
             "english": {
                 "triggers": [
                     "everyone"
@@ -296,6 +342,10 @@
             }
         },
         "gtfo": {
+            "triggers": [
+                "gtfo",
+                "צא"
+            ],
             "english": {
                 "triggers": [
                     "gtfo"
@@ -324,6 +374,11 @@
             }
         },
         "kick": {
+            "triggers": [
+                "kick",
+                "תעיף",
+                "תוציא"
+            ],
             "english": {
                 "triggers": [
                     "kick"
@@ -361,6 +416,10 @@
             }
         },
         "join": {
+            "triggers": [
+                "join",
+                "הצטרף"
+            ],
             "english": {
                 "triggers": [
                     "join"
@@ -393,6 +452,10 @@
             }
         },
         "anonymous": {
+            "triggers": [
+                "anonymous",
+                "אנונימי"
+            ],
             "english": {
                 "triggers": [
                     "anonymous"
@@ -407,6 +470,7 @@
                     "not_bot_user": "As a saftety measure, I can only send anonymous messages to bot users.",
                     "no_whatsapp": "This number isn't on WhatsApp",
                     "success": "Sent! 🤫",
+                    "received_title": "*ANONYMOUS MESSAGE:*",
                     "membership": "A membership is needed to use this command. Sorry!"
                 }
             },
@@ -420,15 +484,20 @@
                 "usage": "{prefix}{command} <phone> <הודעה>",
                 "execution": {
                     "no_content": "בבקשה תכתוב מה אתה רוצה לשלוח לאחר המספר טלפון אליו אתה רוצה לשלוח",
-                    "no_number": "אתה חייב לספק מספר טלפון. '>>אנונימי {phone} {content}",
+                    "no_number": "אתה חייב לספק מספר טלפון. '{prefix}{command} {phone} {content}",
                     "not_bot_user": "כאמצעי הגנה, ניתן רק לשלוח הודעות אנונימיות למשתמשים של הבוט",
                     "no_whatsapp": "מספר זה אינו בווצאפ",
                     "success": "נשלח! 🤫",
+                    "received_title": "*הודעה אנונימית:*",
                     "membership": "עליך להיות תורם כדי להשתמש בפקודה זו. אנו מצטערים!"
                 }
             }
         },
         "lmgtfy": {
+            "triggers": [
+                "lmgtfy",
+                "תן גוגל"
+            ],
             "english": {
                 "triggers": [
                     "lmgtfy"
@@ -456,6 +525,13 @@
             }
         },
         "mp3": {
+            "triggers": [
+                "mp3",
+                "song",
+                "mp3",
+                "שיר",
+                "מוזיקה"
+            ],
             "english": {
                 "triggers": [
                     "song",
@@ -493,6 +569,12 @@
             }
         },
         "reminder": {
+            "triggers": [
+                "remind",
+                "reminder",
+                "תזכורת",
+                "תזכיר לי"
+            ],
             "english": {
                 "triggers": [
                     "remind",
@@ -529,6 +611,11 @@
             }
         },
         "reputation": {
+            "triggers": [
+                "reputation",
+                "rep",
+                "כבוד"
+            ],
             "english": {
                 "triggers": [
                     "reputation",
@@ -576,6 +663,10 @@
             }
         },
         "spoof": {
+            "triggers": [
+                "spoof",
+                "זייף"
+            ],
             "english": {
                 "triggers": [
                     "spoof"
@@ -600,6 +691,10 @@
             }
         },
         "sticker": {
+            "triggers": [
+                "sticker",
+                "סטיקר"
+            ],
             "english": {
                 "triggers": [
                     "sticker"
@@ -626,6 +721,11 @@
             }
         },
         "balance": {
+            "triggers": [
+                "balance",
+                "bal",
+                "יתרה"
+            ],
             "english": {
                 "triggers": [
                     "balance",
@@ -655,6 +755,10 @@
             }
         },
         "beg": {
+            "triggers": [
+                "beg",
+                "לחם"
+            ],
             "english": {
                 "triggers": [
                     "beg"
@@ -708,6 +812,10 @@
             }
         },
         "daily": {
+            "triggers": [
+                "daily",
+                "יומי"
+            ],
             "english": {
                 "triggers": [
                     "daily"
@@ -738,6 +846,10 @@
             }
         },
         "deposit": {
+            "triggers": [
+                "deposit",
+                "הפקד"
+            ],
             "english": {
                 "triggers": [
                     "deposit"
@@ -770,6 +882,10 @@
             }
         },
         "withdraw": {
+            "triggers": [
+                "withdraw",
+                "משוך"
+            ],
             "english": {
                 "triggers": [
                     "withdraw"
@@ -802,6 +918,12 @@
             }
         },
         "highlow": {
+            "triggers": [
+                "highlow",
+                "hl",
+                "גבוה נמוך",
+                "גבוהה נמוך"
+            ],
             "english": {
                 "triggers": [
                     "highlow",

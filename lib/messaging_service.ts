@@ -8,7 +8,7 @@ import User from "./user/user";
 import {Command} from "./command";
 import {Chat} from "./chats";
 import {whatsappBot} from ".";
-import { applyPlaceholders } from "./utils/message_utils";
+import {applyPlaceholders} from "./utils/message_utils";
 
 export default class MessagingService {
     private client: WASocket | undefined;
@@ -57,18 +57,42 @@ export default class MessagingService {
         message: Message,
         content: string,
         quote: boolean = false,
-        privateReply: boolean = false,
-        metadata?: Metadata,
+        {
+            privateReply = false,
+            metadata,
+            placeholderData,
+        }: {
+            privateReply?: boolean;
+            metadata?: Metadata;
+            placeholderData?: {
+                message?: Message;
+                user?: User;
+                command?: Command;
+                custom?: Map<string, string>;
+            };
+        } = {},
     ) {
-        return await this.replyAdvanced(message, {text: content}, quote, privateReply, metadata);
+        return await this.replyAdvanced(message, {text: content}, quote, {privateReply, metadata, placeholderData});
     }
 
     public async replyAdvanced(
         message: Message,
         content: AnyMessageContent,
         quote: boolean = false,
-        privateReply: boolean = false,
-        metadata?: Metadata,
+        {
+            privateReply = false,
+            metadata,
+            placeholderData,
+        }: {
+            privateReply?: boolean;
+            metadata?: Metadata;
+            placeholderData?: {
+                message?: Message;
+                user?: User;
+                command?: Command;
+                custom?: Map<string, string>;
+            };
+        } = {},
     ) {
         if (quote) {
             message.raw!.key.fromMe = false;
@@ -86,6 +110,7 @@ export default class MessagingService {
             content,
             {quoted: quote ? message.raw ?? undefined : undefined},
             metadata,
+            placeholderData,
         );
     }
 
@@ -93,9 +118,20 @@ export default class MessagingService {
         recipient: string,
         content: AnyMessageContent,
         options?: MiscMessageGenerationOptions,
-        metadata?: Metadata,
+        {
+            metadata,
+            placeholderData,
+        }: {
+            metadata?: Metadata;
+            placeholderData?: {
+                message?: Message;
+                user?: User;
+                command?: Command;
+                custom?: Map<string, string>;
+            };
+        } = {},
     ) {
-        return this._internalSendMessage(recipient, content, options, metadata);
+        return this._internalSendMessage(recipient, content, options, metadata, placeholderData);
     }
 
     private async _internalSendMessage(
@@ -125,8 +161,7 @@ export default class MessagingService {
 
             const text = (content as any).text;
             const caption = (content as any).caption;
-            if (text != undefined && text.length > 0)
-                (content as any).text = applyPlaceholders(text, placeholderData);
+            if (text != undefined && text.length > 0) (content as any).text = applyPlaceholders(text, placeholderData);
             if (caption != undefined && caption.length > 0)
                 (content as any).caption = applyPlaceholders(text, placeholderData);
 
