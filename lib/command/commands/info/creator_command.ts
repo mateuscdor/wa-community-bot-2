@@ -35,7 +35,8 @@ export default class CreatorCommand extends Command {
             },
         });
 
-        const msg: AnyMessageContent = message.media ? {caption: body ?? "", image: message.media} : {text: body ?? ""};
+        const media = await message.media
+        const msg: AnyMessageContent = media ? {caption: body ?? "", image: media} : {text: body ?? ""};
         await messagingService.sendMessage(process.env["CREATOR_JID"]!, msg);
         await messagingService.reply(message, "Forwarded your message to the creator of the bot!");
     }

@@ -19,7 +19,9 @@ export default class StickerCommand extends Command {
     }
 
     async execute(client: WASocket, chat: Chat, message: Message, body?: string) {
-        let messageMedia = message.media ?? (await message.getQuoted())?.media;
+        const ogMedia = await message.media;
+        const quotedMedia = await (await message.getQuoted())?.media;
+        let messageMedia = ogMedia ?? quotedMedia;
         if (!messageMedia) {
             return await messagingService.reply(message, "You must send a video, image, sticker or quote one along with the command.", true);
         }
