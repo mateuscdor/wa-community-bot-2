@@ -50,9 +50,6 @@ export default class SpeechToTextCommand extends Command {
         }
 
         await messagingService.reply(message, "Processing...", true);
-        console.log(`path ${path.resolve(__dirname, "../../../../lib/scripts/speech-to-text.py")}`)
-        console.log(`path ${audioPath}`)
-        console.log(`path ${path.resolve(audioPath)}`)
         const pythonProcess = spawn("python", [
             path.resolve(__dirname, "../../../../lib/scripts/speech-to-text.py"),
             path.resolve(audioPath),
@@ -62,7 +59,6 @@ export default class SpeechToTextCommand extends Command {
 
         pythonProcess.stdout.on("data", async (data) => {
             const text = data.toString();
-            console.log(`received: ${text}`);
             await messagingService.reply(message, `*SPEECH-TO-TEXT:*\n${text}`, true);
         });
     }

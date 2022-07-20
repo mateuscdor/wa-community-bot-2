@@ -10,12 +10,10 @@ folder_dir = os.path.join(
     os.path.dirname(__file__)) + '/'
 
 chunks_folder = f'{folder_dir}chunks'
+inputs_folder = f'{folder_dir}inputs'
 
 
 def main():
-    print("Speech to text")
-    print(sys.argv)
-    sys.stdout.flush()
     args = sys.argv[1:]
     if (len(args) < 3):
         raise Exception(
@@ -41,14 +39,25 @@ def main():
     if os.path.exists(chunk_folder):
         shutil.rmtree(chunk_folder)
 
+    if not os.path.exists(input_path):
+        print("Could not find audio file")
+        sys.stdout.flush()
+        return
+    else:
+        # copy input file to inputs folder
+        if not os.path.exists(inputs_folder):
+            os.mkdir(inputs_folder)
+        new_input = f'{inputs_folder}/{jid}-{msg_id}.wav'
+        shutil.copy(input_path, new_input)
+        input_path = new_input
+
     os.mkdir(chunk_folder)
     print('started')
-    sys.stdout.flush()
+    print(f'INPUT: {input_path}')
     print(speech_to_text(input_path, chunk_folder, recognizer))
     sys.stdout.flush()
 
     shutil.rmtree(chunk_folder)
-    # delete wav file
     os.remove(input_path)
 
 
@@ -78,6 +87,7 @@ def speech_to_text(input, chunk_folder, recognizer):
         except sr.RequestError as e:
             return "Could not request results from Google Speech Recognition service; {0}".format(e)
 
+    print("STT: " + stt)")
     return stt
 
 
