@@ -124,7 +124,7 @@ export default class ReminderCommand extends InteractableCommand {
         const isDMReminder = isDMChat ? true : await this.isDMReminder(message);
         if (isDMReminder == undefined) return;
         const res = await reminderService.createSimple(
-            message.sender,
+            isDMReminder ? message.sender : message.raw?.key.remoteJid!,
             reminderText,
             moment()
                 .utc()
