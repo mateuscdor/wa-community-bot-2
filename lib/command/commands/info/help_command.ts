@@ -31,7 +31,7 @@ export default class HelpCommand extends Command {
         const cmdArg = body?.trim().startsWith(prefix) ? body.trim() : prefix + body?.trim();
         const cmdArgRes = await chat.getCommandByTrigger(cmdArg);
         const isBlocked = cmdArgRes ? await this.commandHandler.isBlocked(message, cmdArgRes, false) : undefined;
-        if (cmdArgRes && (isBlocked == undefined || isBlocked == BlockedReason.InsufficientChatLevel)) {
+        if (cmdArgRes && (isBlocked == undefined || ![BlockedReason.InsufficientDeveloperLevel, BlockedReason.NotWhitelisted].includes(isBlocked))) {
             let id = 0;
             const desc = `*${prefix + cmdArgRes.mainTrigger.command ?? ""}*\n\n` + this.getCommandExtendedDescription(cmdArgRes);
             const buttons: proto.IButton[] = cmdArgRes.triggers.map((alias) => {
