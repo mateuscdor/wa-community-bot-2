@@ -109,7 +109,7 @@ export async function applyPlaceholders(
     res = res.replace(/\$\{name\}/g, user?.getFullDefaultingName() ?? "");
     res = res.replace(/\$\{prefix\}/g, chat?.commandHandler?.prefix ?? ">>");
     res = res.replace(/\$\{command\}/g, command?.name ?? "");
-    if (chat?.model.jid && whatsappBot.client)
+    if (chat?.model.jid && whatsappBot.client && res.includes("{group}"))
         res = res.replace(/\$\{group\}/g, (await whatsappBot.client.groupMetadata(chat.model.jid)).subject ?? "");
     for (const [key, value] of custom ?? []) {
         res = res.replace(new RegExp(`\\$\\{${key}\\}`, "g"), value);
