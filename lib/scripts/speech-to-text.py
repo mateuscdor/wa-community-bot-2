@@ -63,7 +63,7 @@ def main():
     os.remove(input_path)
 
 
-def speech_to_text(input, chunk_folder, recognizer):
+def speech_to_text(input, chunk_folder, recognizer, language):
     audio = AudioSegment.from_ogg(input)
     chunks = split_on_silence(
         audio, min_silence_len=500, silence_thresh=-50, keep_silence=500)
@@ -81,7 +81,7 @@ def speech_to_text(input, chunk_folder, recognizer):
             return "Audio file is empty"
 
         try:
-            text = recognizer.recognize_google(audio_data, language="he")
+            text = recognizer.recognize_google(audio_data, language=language)
             stt += text
         except sr.UnknownValueError:
             return "Google Speech Recognition could not understand audio"
