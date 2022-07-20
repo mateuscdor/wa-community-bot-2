@@ -35,7 +35,6 @@ export default class ReminderCommand extends InteractableCommand {
         "second",
         "seconds",
         "שניה",
-        "שנייה",
         "שניות",
         "minute",
         "minutes",
