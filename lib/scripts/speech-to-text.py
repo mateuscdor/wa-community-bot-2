@@ -81,7 +81,7 @@ def speech_to_text(input, chunk_folder, recognizer, language):
             return "Audio file is empty"
 
         try:
-            text = recognizer.recognize_google(audio_data, language=language, pfilter=0)
+            text = recognizer.recognize_google(audio_data, language=language)
             stt += text
         except sr.UnknownValueError:
             return "Google Speech Recognition could not understand audio"
