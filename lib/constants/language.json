@@ -586,8 +586,8 @@
             ],
             "english": {
                 "triggers": [
-                    "remind",
-                    "reminder"
+                    "reminder",
+                    "remind"
                 ],
                 "category": "Fun",
                 "description": "Set a reminder",
