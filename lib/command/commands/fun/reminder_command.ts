@@ -214,7 +214,7 @@ export default class ReminderCommand extends InteractableCommand {
 
         const receivedContent = recvMsg.content!.toLowerCase().replace("ביטול", "cancel").replace("cancel", "3");
         if (receivedContent.startsWith("1")) {
-            await messagingService.reply(message, "What should the reminder be?");
+            await messagingService.reply(message, this.language.execution.text_change);
             recvMsg = await this.waitForInteractionWith(message);
 
             const newReminderText = recvMsg.content!;

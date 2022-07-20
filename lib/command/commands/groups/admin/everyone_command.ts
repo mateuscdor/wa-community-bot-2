@@ -58,12 +58,9 @@ export default class EveryoneCommand extends Command {
     onBlocked(data: Message, blockedReason: BlockedReason) {
         switch (blockedReason) {
             case BlockedReason.InsufficientGroupLevel:
-                return messagingService.reply(data, "You must be a group admin to use this command.", true);
+                return messagingService.reply(data, this.language.execution.only_admin, true);
             case BlockedReason.BlockedChat:
-                return messagingService.reply(
-                    data,
-                    "There seems to be an error.\nYou can only use this command in a group chat.",
-                );
+                return messagingService.reply(data, this.language.execution.only_group);
             default:
                 return;
         }
