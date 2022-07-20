@@ -29,8 +29,10 @@ def main():
             input_path.replace(".ogg", ".wav"), format="wav")
 
         # delete ogg file
-        os.remove(input_path)
+        og_input = input_path
         input_path = input_path.replace(".ogg", ".wav")
+        if og_input != input_path:
+            os.remove(input_path)
 
     chunk_folder = get_chunk_folder(jid, msg_id)
     if not os.path.exists(chunks_folder):
