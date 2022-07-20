@@ -36,6 +36,7 @@ export default class LanguageCommand extends InteractableCommand {
         const language = body.trim().split(" ")[0];
         await chatRepository.update(chat.model.jid, {$set: {language}});
         const newChat = await chatRepository.get(chat.model.jid, true);
+        await newChat?.registerUserCommands()
         const lang = languages.language_changed[newChat?.model.language ?? "english"];
         return await messagingService.reply(message, lang, true);
     }
