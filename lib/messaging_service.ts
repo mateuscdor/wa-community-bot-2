@@ -164,10 +164,6 @@ export default class MessagingService {
             }
 
             const text = (content as any).text;
-            console.log(content)
-            console.log('Sending message:', text);
-            console.log(placeholderData)
-            console.log('placeholder mutate', await applyPlaceholders(text, placeholderData))
             const caption = (content as any).caption;
             if (text != undefined && text.length > 0) (content as any).text = await applyPlaceholders(text, placeholderData);
             if (caption != undefined && caption.length > 0)
