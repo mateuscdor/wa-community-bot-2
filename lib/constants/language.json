@@ -33,12 +33,17 @@
                 "feature",
                 "developer",
                 "רעיון",
-                "מפתח"
+                "מפתח",
+                "report",
+                "bug",
+                "דיווח",
+                "באג"
             ],
             "english": {
                 "triggers": [
                     "feature",
-                    "developer"
+                    "developer",
+                    "bug"
                 ],
                 "category": "Info",
                 "description": "Suggest a feature",
@@ -54,7 +59,7 @@
             "hebrew": {
                 "triggers": [
                     "רעיון",
-                    "מפתח"
+                    "באג"
                 ],
                 "category": "מידע",
                 "description": "הצעת רעיון או פקודה בשביל הבוט ליוצר הבוט",
@@ -145,8 +150,8 @@
                 "description": "ההודעה הזו. ניתן גם לעשות ({prefix}עזרה <שפ פקודה> | לדוגמה {prefix}עזרה מוזיקה)",
                 "usage": "{prefix}{command} <פקודה>",
                 "execution": {
-                    "suffix": "*----- עזרה אני מפגר!!! -----*",
-                    "prefix": "מקווה שעזרתי ✌",
+                    "prefix": "*----- עזרה אני מפגר!!! -----*",
+                    "suffix": "מקווה שעזרתי ✌",
                     "footer": "בבקשה תשקלו לתמוך בבוט בעזרת תרומה קטנה בפרטרון שלנו!\n\nבעתיד, תורמים יקבלו פריבילגיות מיוחדות!\nhttps://www.patreon.com/wailcommunitybot",
                     "button": "תלחץ עליי לעזרה!",
                     "dms": "תסתכל על השיחות הפרטיות שלך!",
@@ -917,9 +922,9 @@
                 "usage": "{prefix}{command}",
                 "execution": {
                     "no_balance": "משתמש זה לא קיים במערכת.",
-                    "claimed": "*אתה כבר לקחת את המתנה היומית שלך:*\n\nהמתנה היומים הבאה שלך תהיה מוכנה בעוד:\n*{text}*",
+                    "claimed": "*אתה כבר לקחת את המתנה היומית שלך:*\n\nהמתנה היומית הבאה שלך תהיה מוכנה בעוד:\n*{text}*",
                     "success_title": "המתנה היומית של {tag}",
-                    "success": "*{coins}* {coin} הוכנסו לארנק שלך!\n\nהמתנה היומים הבאה שלך תהיה מוכנה בעוד: {text}\nרצף: {streak} {days} (+{bonus} {coin})",
+                    "success": "*{coins}* {coin} הוכנסו לארנק שלך!\n\nהמתנה היומית הבאה שלך תהיה מוכנה בעוד: {text}\nרצף: {streak} {days} (+{bonus} {coin})",
                     "and": "ו"
                 }
             }
