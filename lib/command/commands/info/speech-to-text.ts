@@ -7,6 +7,7 @@ import Message from "../../../message/message";
 import Command from "../../command";
 import CommandTrigger from "../../command_trigger";
 import {spawn} from "child_process";
+import path from "path";
 
 /**
  * DEVELOPER NOTE:
@@ -49,17 +50,20 @@ export default class SpeechToTextCommand extends Command {
         }
 
         await messagingService.reply(message, "Processing...", true);
+        console.log(`path ${path.resolve(__dirname, "../../../../python/speech_to_text.py")}`)
+        console.log(`path ${audioPath}`)
+        console.log(`path ${path.resolve(audioPath)}`)
         const pythonProcess = spawn("python", [
-            "./src/command/commands/info/speech-to-text.py",
-            audioPath,
+            path.resolve(__dirname, "../../../../python/speech_to_text.py"),
+            path.resolve(audioPath),
             message.raw?.key.remoteJid ?? "jid",
             message.sender ?? "sender",
         ]);
 
         pythonProcess.stdout.on("data", async (data) => {
             const text = data.toString();
+            console.log(`received: ${text}`);
             await messagingService.reply(message, `*SPEECH-TO-TEXT:*\n${text}`, true);
-            pythonProcess.disconnect()
         });
     }
 
