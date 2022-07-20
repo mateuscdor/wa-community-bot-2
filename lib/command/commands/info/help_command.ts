@@ -98,8 +98,8 @@ export default class HelpCommand extends Command {
             section?.rows?.push({
                 title: prefix + command.name,
                 description: command.description,
-                rowId: `HELP_COMMAND-${id}\n${command.triggers
-                    .map((e) => prefix + e.command)
+                rowId: `HELP_COMMAND-${id}\n${command.announcedAliases
+                    .map((e) => prefix + e)
                     .join("\n")}\n\r${formattedDescription}`,
             });
 
@@ -139,9 +139,9 @@ export default class HelpCommand extends Command {
     private getCommandExtendedDescription(command: Command) {
         return `*${this.language.execution.description}:*\n${command.description}${
             command.extendedDescription ? "\n\n" : ""
-        }${command.extendedDescription}\n\n*${this.language.execution.aliases}:*\n${command.announcedAliases.join(
-            ", ",
-        )}\n\n*${this.language.execution.cooldowns}:*\n${Array.from(command.cooldowns.entries())
+        }${command.extendedDescription}\n\n*${this.language.execution.aliases}:*\n${command.triggers
+            .map((e) => e.command)
+            .join(", ")}\n\n*${this.language.execution.cooldowns}:*\n${Array.from(command.cooldowns.entries())
             .map((e) => `${languages.ranks[this.langCode][ChatLevel[e[0]].toLowerCase()]}: ${e[1] / 1000}s`)
             .join("\n")}`;
     }
