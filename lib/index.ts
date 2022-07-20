@@ -104,6 +104,7 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
 
             const selectedRowId = rawMsg.message?.listResponseMessage?.singleSelectReply?.selectedRowId;
             if (selectedRowId && selectedRowId?.startsWith("HELP_COMMAND")) {
+                const helpCommand = await chat?.getCommandByTrigger(">>help");
                 let splitAtNewLine = selectedRowId.split("\n");
                 splitAtNewLine.shift();
                 let data = splitAtNewLine.join("\n").split("\n\r");
@@ -119,7 +120,9 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
                     {
                         text: `*${aliasesButtons[0].buttonText?.displayText ?? ""}*\n\n${commandDescription}`,
                         buttons: aliasesButtons,
-                        footer: `(${chat?.model.commandPrefix}help ${aliasesButtons[0].buttonText?.displayText?.replace(chat?.model.commandPrefix ?? "", "")})`,
+                        footer: `(${chat?.model.commandPrefix}${
+                            helpCommand?.name ?? 'help'
+                        } ${aliasesButtons[0].buttonText?.displayText?.replace(chat?.model.commandPrefix ?? "", "")})`,
                     },
                     true,
                 );
@@ -136,7 +139,7 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
             // }
 
             if (msg.content?.includes("@everyone") || msg.content?.includes("@כולם")) {
-                const everyoneCmd = (await chat?.getCommandByTrigger("everyone")) as EveryoneCommand;
+                const everyoneCmd = (await chat?.getCommandByTrigger(">>everyone")) as EveryoneCommand;
                 if (!everyoneCmd) continue;
                 await messagingService.replyAdvanced(
                     msg,
