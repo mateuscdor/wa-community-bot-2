@@ -1,4 +1,4 @@
-import {WASocket} from "@adiwajshing/baileys";
+import {jidDecode, WASocket} from "@adiwajshing/baileys";
 import moment from "moment";
 import {CommandTrigger, EconomyCommand} from "../..";
 import {BlockedReason} from "../../../blockable";
@@ -49,6 +49,7 @@ export default class HighlowCommand extends EconomyCommand {
             placeholder: {
                 custom: {
                     number: higherLowerNumber.toString(),
+                    tag: `@${jidDecode(userJid).user}`,
                 },
             },
         });
@@ -70,9 +71,9 @@ export default class HighlowCommand extends EconomyCommand {
         const placeholder = {
             placeholder: {
                 custom: {
-                    number: secretNumber.toString(),
+                    number: higherLowerNumber.toString(),
                     secretNumber: secretNumber.toString(),
-                    tag: `@${userJid}`,
+                    tag: `@${jidDecode(userJid).user}`,
                     prize: commas(correctGuessPrize),
                 },
             },

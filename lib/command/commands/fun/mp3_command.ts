@@ -39,67 +39,68 @@ export default class MP3Command extends Command {
     downloading_list = {};
 
     async execute(client: WASocket, chat: Chat, message: Message, body?: string) {
-        if (!message.raw?.key.remoteJid)
-            return await messagingService.reply(message, "That's... Odd... It seems like this group doesn't exist 🤨");
-        if (!body) return await messagingService.reply(message, this.language.execution.no_content, true);
+        await messagingService.reply(message, "יחזור לפעולה בקרוב. סליחה.");
+        // if (!message.raw?.key.remoteJid)
+        //     return await messagingService.reply(message, "That's... Odd... It seems like this group doesn't exist 🤨");
+        // if (!body) return await messagingService.reply(message, this.language.execution.no_content, true);
 
-        const videos = await yt.search(body);
-        const video = videos.filter((vid) => {
-            if (!vid || !vid.duration_raw) return;
+        // const videos = await yt.search(body);
+        // const video = videos.filter((vid) => {
+        //     if (!vid || !vid.duration_raw) return;
 
-            const durationsSeconds = this.rawTimeToSeconds(vid.duration_raw);
-            return durationsSeconds < 60 * 10 && durationsSeconds > 0;
-        })[0];
+        //     const durationsSeconds = this.rawTimeToSeconds(vid.duration_raw);
+        //     return durationsSeconds < 60 * 10 && durationsSeconds > 0;
+        // })[0];
 
-        if (!video) {
-            let errorMessage = this.language.execution.no_results;
-            if (videos.length > 0) errorMessage += "\n" + this.language.execution.too_long;
+        // if (!video) {
+        //     let errorMessage = this.language.execution.no_results;
+        //     if (videos.length > 0) errorMessage += "\n" + this.language.execution.too_long;
 
-            return await messagingService.reply(message, errorMessage, true, {
-                placeholder: {custom: new Map([["song", body]])},
-            });
-        }
+        //     return await messagingService.reply(message, errorMessage, true, {
+        //         placeholder: {custom: new Map([["song", body]])},
+        //     });
+        // }
 
-        video.title = this.standardizeTitle(video.title);
-        const downloadMessage = this.language.execution.downloading;
-        let downloadData = this.downloading_list[video.title];
-        if (downloadData && downloadData["messages"] && fs.existsSync(downloadData["path"])) {
-            downloadData["messages"].push(message);
-            return await messagingService.reply(message, downloadMessage, true, {
-                placeholder: {custom: new Map([["title", video.title]])},
-            });
-        } else if (downloadData && downloadData["path"] && !fs.existsSync(downloadData["path"])) {
-            return await messagingService.reply(message, this.language.execution.failed, true);
-        }
+        // video.title = this.standardizeTitle(video.title);
+        // const downloadMessage = this.language.execution.downloading;
+        // let downloadData = this.downloading_list[video.title];
+        // if (downloadData && downloadData["messages"] && fs.existsSync(downloadData["path"])) {
+        //     downloadData["messages"].push(message);
+        //     return await messagingService.reply(message, downloadMessage, true, {
+        //         placeholder: {custom: new Map([["title", video.title]])},
+        //     });
+        // } else if (downloadData && downloadData["path"] && !fs.existsSync(downloadData["path"])) {
+        //     return await messagingService.reply(message, this.language.execution.failed, true);
+        // }
 
-        await messagingService.reply(message, downloadMessage, true, {
-            placeholder: {custom: new Map([["title", video.title]])},
-        });
-        const path = `./media/music/${video.title}.mp3`;
-        this.downloading_list[video.title] = {path, messages: [message]};
-        downloadData = this.downloading_list[video.title];
+        // await messagingService.reply(message, downloadMessage, true, {
+        //     placeholder: {custom: new Map([["title", video.title]])},
+        // });
+        // const path = `./media/music/${video.title}.mp3`;
+        // this.downloading_list[video.title] = {path, messages: [message]};
+        // downloadData = this.downloading_list[video.title];
 
-        ytdl.default(video.url)
-            .pipe(fs.createWriteStream(path))
-            .addListener("finish", async () => {
-                if (!downloadData) {
-                    this.deleteFiles(video.title, path);
-                    delete this.downloading_list[video.title];
-                } else if (downloadData["messages"].length == 0) {
-                    await wait(5000);
-                    if (downloadData["messages"].length == 0) this.deleteFiles(video.title, path);
-                }
+        // ytdl.default(video.url)
+        //     .pipe(fs.createWriteStream(path))
+        //     .addListener("finish", async () => {
+        //         if (!downloadData) {
+        //             this.deleteFiles(video.title, path);
+        //             delete this.downloading_list[video.title];
+        //         } else if (downloadData["messages"].length == 0) {
+        //             await wait(5000);
+        //             if (downloadData["messages"].length == 0) this.deleteFiles(video.title, path);
+        //         }
 
-                const fileBuffer = fs.readFileSync(path);
-                const messages = downloadData["messages"] ?? [];
-                while (messages.length > 0) {
-                    await this.sendRoutine(downloadData["messages"], fileBuffer, video.title);
-                    await wait(5000);
-                }
+        //         const fileBuffer = fs.readFileSync(path);
+        //         const messages = downloadData["messages"] ?? [];
+        //         while (messages.length > 0) {
+        //             await this.sendRoutine(downloadData["messages"], fileBuffer, video.title);
+        //             await wait(5000);
+        //         }
 
-                this.deleteFiles(video.title, path);
-                delete this.downloading_list[video.title];
-            });
+        //         this.deleteFiles(video.title, path);
+        //         delete this.downloading_list[video.title];
+        //     });
     }
 
     private async sendRoutine(messages: Array<Message>, file: Buffer, title: string) {
