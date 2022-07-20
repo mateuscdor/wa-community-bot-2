@@ -124,7 +124,9 @@
                 "execution": {
                     "suffix": "*----- HELP ME I'M RETARDED ----*",
                     "prefix": "Hope I helped ✌\n~bot",
-                    "footer": "Please consider supporting the bot by donating to the Patreon!\n\nIn the future, donators will receive special perks!\nhttps://www.patreon.com/wailcommunitybot"
+                    "footer": "Please consider supporting the bot by donating to the Patreon!\n\nIn the future, donators will receive special perks!\nhttps://www.patreon.com/wailcommunitybot",
+                    "button": "Click me for help!",
+                    "dms": "Check your DMs!"
                 }
             },
             "hebrew": {
@@ -137,7 +139,9 @@
                 "execution": {
                     "suffix": "*----- עזרה אני מפגר!!! -----*",
                     "prefix": "מקווה שעזרתי ✌",
-                    "footer": "בבקשה תשקלו לתמוך בבוט בעזרת תרומה קטנה בפרטרון שלנו!\n\nבעתיד, תורמים יקבלו פריבילגיות מיוחדות!\nhttps://www.patreon.com/wailcommunitybot"
+                    "footer": "בבקשה תשקלו לתמוך בבוט בעזרת תרומה קטנה בפרטרון שלנו!\n\nבעתיד, תורמים יקבלו פריבילגיות מיוחדות!\nhttps://www.patreon.com/wailcommunitybot",
+                    "button": "תלחץ עליי לעזרה!",
+                    "dms": "תסתכל על השיחות הפרטיות שלך!"
                 }
             }
         },

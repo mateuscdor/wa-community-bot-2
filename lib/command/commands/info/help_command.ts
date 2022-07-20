@@ -28,9 +28,10 @@ export default class HelpCommand extends Command {
     async execute(client: WASocket, chat: Chat, message: Message, body?: string) {
         const prefix = chat.model.commandPrefix;
 
-        const cmdArg = body?.startsWith(prefix) ? body : prefix + body;
+        const cmdArg = body?.trim().startsWith(prefix) ? body.trim() : prefix + body?.trim();
         const cmdArgRes = await chat.getCommandByTrigger(cmdArg);
-        if (cmdArgRes && (await this.commandHandler.isBlocked(message, cmdArgRes, false)) == undefined) {
+        const isBlocked = cmdArgRes ? await this.commandHandler.isBlocked(message, cmdArgRes, false) : undefined;
+        if (cmdArgRes && (isBlocked == undefined || isBlocked == BlockedReason.InsufficientChatLevel)) {
             let id = 0;
             const desc = `*${prefix + cmdArgRes.mainTrigger.command ?? ""}*\n\n` + this.getCommandExtendedDescription(cmdArgRes);
             const buttons: proto.IButton[] = cmdArgRes.triggers.map((alias) => {
