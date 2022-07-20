@@ -932,11 +932,13 @@
         "deposit": {
             "triggers": [
                 "deposit",
+                "dep",
                 "הפקד"
             ],
             "english": {
                 "triggers": [
-                    "deposit"
+                    "deposit",
+                    "dep"
                 ],
                 "category": "Economy",
                 "description": "Deposit coins into your bank",
@@ -968,11 +970,13 @@
         "withdraw": {
             "triggers": [
                 "withdraw",
+                "with",
                 "משוך"
             ],
             "english": {
                 "triggers": [
-                    "withdraw"
+                    "withdraw",
+                    "with"
                 ],
                 "category": "Economy",
                 "description": "Withdraw coins from your bank to your wallet",
