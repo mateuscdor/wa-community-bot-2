@@ -9,17 +9,24 @@ import {GroupLevel} from "../../../../models";
 import {getGroupPrivilegeMap} from "../../../../utils/group_utils";
 import {BotClient} from "../../../../whatsapp_bot";
 import {BlockedReason} from "../../../../blockable";
+import languages from "../../../../constants/language.json";
 
 export default class AddCommand extends Command {
-    constructor() {
+    private language: typeof languages.commands.add[Language];
+
+    constructor(language: Language) {
+        const langs = languages.commands.add;
+        const lang = langs[language];
         super({
-            triggers: ["add", "צרף"].map(e => new CommandTrigger(e)),
-            usage: "{prefix}{command}",
-            category: "Group Admin",
+            triggers: langs.triggers.map((e) => new CommandTrigger(e)),
+            announcedAliases: lang.triggers,
+            usage: lang.usage,
+            category: lang.category,
+            description: lang.description,
             groupLevel: GroupLevel.Admin,
-            blockedChats: ["dm"],
-            description: "Add a user to the group using a phone number or vcard (>>add 05XXXXXXXX)",
         });
+
+        this.language = lang;
     }
 
     async execute(client: WASocket, chat: Chat, message: Message, body?: string) {
@@ -27,12 +34,14 @@ export default class AddCommand extends Command {
         const iAmAdmin: boolean = adminMap[BotClient.currentClientId!] > 0;
 
         if (!iAmAdmin) {
-            return await messagingService.reply(message, "Give the bot admin access in order to use this command.", true);
+            return await messagingService.reply(message, this.language.execution.bot_no_admin, true);
         }
 
         let vcards =
             message.raw!.message?.extendedTextMessage?.contextInfo?.quotedMessage?.contactMessage?.vcard ||
-            message.raw!.message?.extendedTextMessage?.contextInfo?.quotedMessage?.contactsArrayMessage?.contacts!.map((contact) => contact.vcard) ||
+            message.raw!.message?.extendedTextMessage?.contextInfo?.quotedMessage?.contactsArrayMessage?.contacts!.map(
+                (contact) => contact.vcard,
+            ) ||
             [];
 
         if (vcards.length > 0) {
@@ -60,14 +69,16 @@ export default class AddCommand extends Command {
                 }
             }
             if (failedList.length > 0) {
-                return messagingService.reply(message, `Failed 😢\nFailed to add: ${failedList.join(", ")}`, true);
+                return messagingService.reply(message, this.language.execution.failed_add, true, {
+                    placeholder: {chat, custom: new Map([["text", failedList.join(", ")]])},
+                });
             }
 
-            return messagingService.reply(message, "Success 🎊", true);
+            return messagingService.reply(message, this.language.execution.success, true);
         }
 
         if (!body) {
-            return messagingService.reply(message, "You must either provide a body with phone numbers or contact vcards", true);
+            return messagingService.reply(message, this.language.execution.no_body, true);
         }
 
         const numbers = [
@@ -97,10 +108,12 @@ export default class AddCommand extends Command {
             }
         }
         if (failedList.length > 0) {
-            return messagingService.reply(message, `Failed 😢\nFailed to add: ${failedList.join(", ")}`, true);
+            return messagingService.reply(message, this.language.execution.failed_add, true, {
+                placeholder: {chat, custom: new Map([["text", failedList.join(", ")]])},
+            });
         }
 
-        return messagingService.reply(message, "Success 🎊", true);
+        return messagingService.reply(message, this.language.execution.success, true);
     }
 
     onBlocked(data: Message, blockedReason: BlockedReason) {}

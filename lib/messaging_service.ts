@@ -68,7 +68,7 @@ export default class MessagingService {
                 message?: Message;
                 user?: User;
                 command?: Command;
-                custom?: Map<string, string>;
+                custom?: Map<string, string> | {[key: string]: string | undefined};
                 chat?: Chat;
             };
         } = {},
@@ -91,7 +91,7 @@ export default class MessagingService {
                 message?: Message;
                 user?: User;
                 command?: Command;
-                custom?: Map<string, string>;
+                custom?: Map<string, string> | {[key: string]: string | undefined};
                 chat?: Chat;
             };
         } = {},
@@ -129,7 +129,7 @@ export default class MessagingService {
                 message?: Message;
                 user?: User;
                 command?: Command;
-                custom?: Map<string, string>;
+                custom?: Map<string, string> | {[key: string]: string | undefined};
                 chat?: Chat;
             };
         } = {},
@@ -146,7 +146,7 @@ export default class MessagingService {
             message?: Message;
             user?: User;
             command?: Command;
-            custom?: Map<string, string>;
+            custom?: Map<string, string> | {[key: string]: string | undefined};
             chat?: Chat;
         },
     ): Promise<Message> {

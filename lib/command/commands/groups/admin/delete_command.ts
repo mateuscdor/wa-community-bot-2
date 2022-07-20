@@ -1,4 +1,4 @@
-import { isJidGroup, WASocket } from "@adiwajshing/baileys";
+import {isJidGroup, WASocket} from "@adiwajshing/baileys";
 import {Chat} from "../../../../chats";
 import {messagingService} from "../../../../constants/services";
 import Message from "../../../../message/message";
@@ -8,39 +8,48 @@ import {GroupLevel} from "../../../../models";
 import {getGroupPrivilegeMap} from "../../../../utils/group_utils";
 import {BotClient} from "../../../../whatsapp_bot";
 import {BlockedReason} from "../../../../blockable";
+import languages from "../../../../constants/language.json";
+
 export default class DeleteCommand extends Command {
-    constructor(language) {
+    private language: typeof languages.commands.delete[Language];
+
+    constructor(language: Language) {
+        const langs = languages.commands.delete;
+        const lang = langs[language];
         super({
-            triggers: ["delete", "מחק"].map(e => new CommandTrigger(e)),
-            usage: "{prefix}{command}",
-            category: "Group Admin",
+            triggers: langs.triggers.map((e) => new CommandTrigger(e)),
+            announcedAliases: lang.triggers,
+            usage: lang.usage,
+            category: lang.category,
+            description: lang.description,
             groupLevel: GroupLevel.Admin,
-            description: "Delete a message by the bot.\nDon't abuse, have fun.",
         });
+
+        this.language = lang;
     }
 
     async execute(client: WASocket, chat: Chat, message: Message, body: string) {
         const raw = message.raw!;
         const quoted = await message.getQuoted();
         if (!quoted) {
-            return messagingService.reply(message, 'Please quote the message you want to delete.', true);
+            return messagingService.reply(message, this.language.execution.no_reply, true);
         }
 
         if (quoted?.from != BotClient.currentClientId) {
-            return messagingService.reply(message, 'That message isn\'t from me 🧐🤦‍♂️', true);
+            return messagingService.reply(message, this.language.execution.not_from_bot, true);
         }
 
         try {
-            await client.sendMessage(raw.key.remoteJid!, { delete: quoted.raw?.key! })
+            await client.sendMessage(raw.key.remoteJid!, {delete: quoted.raw?.key!});
         } catch (err) {
-            return messagingService.reply(message, 'An error occurred. Try again.', true);
+            return messagingService.reply(message, this.language.execution.failed, true);
         }
     }
 
     onBlocked(data: Message, blockedReason: BlockedReason) {
         switch (blockedReason) {
             case BlockedReason.InsufficientGroupLevel:
-                return messagingService.reply(data, "You must be a group admin to use this command.", true);
+                return messagingService.reply(data, this.language.execution.only_admin, true);
             default:
                 return;
         }

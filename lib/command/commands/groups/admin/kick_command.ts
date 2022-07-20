@@ -8,17 +8,26 @@ import {GroupLevel} from "../../../../models";
 import {getGroupPrivilegeMap} from "../../../../utils/group_utils";
 import {BotClient} from "../../../../whatsapp_bot";
 import {BlockedReason} from "../../../../blockable";
+import languages from "../../../../constants/language.json";
 
 export default class KickCommand extends Command {
-    constructor() {
+    private language: typeof languages.commands.kick[Language];
+
+    constructor(language: Language) {
+        const langs = languages.commands.kick;
+        const lang = langs[language];
         super({
-            triggers: ["kick", "תעיף"].map(e => new CommandTrigger(e)),
-            usage: "{prefix}{command}",
-            category: "Group Admin",
+            triggers: langs.triggers.map((e) => new CommandTrigger(e)),
+            announcedAliases: lang.triggers,
+            usage: lang.usage,
+            category: lang.category,
+            description: lang.description,
+            extendedDescription: lang.extended_description,
             groupLevel: GroupLevel.Admin,
             blockedChats: ["dm"],
-            description: "Kick someone from the group (>>kick @tag)",
         });
+
+        this.language = lang;
     }
 
     async execute(client: WASocket, chat: Chat, message: Message, body?: string) {
@@ -27,16 +36,18 @@ export default class KickCommand extends Command {
         const iAmAdmin: boolean = adminMap[BotClient.currentClientId!] > 0;
 
         if (!iAmAdmin) {
-            return await messagingService.reply(message, "Give the bot admin access in order to use this command.", true);
+            return await messagingService.reply(message, this.language.execution.bot_no_admin, true);
         } else if (!message.raw) {
             return await messagingService.reply(message, "There seems to have been an error. Please try again.", true);
         }
 
         const kickListSet = new Set<string>();
         const kickList: string[] = [];
-        (message.raw.message?.extendedTextMessage?.contextInfo?.mentionedJid ?? []).forEach((kick: string) => kickListSet.add(kick));
+        (message.raw.message?.extendedTextMessage?.contextInfo?.mentionedJid ?? []).forEach((kick: string) =>
+            kickListSet.add(kick),
+        );
         if (!kickListSet) {
-            return await messagingService.reply(message, "In order to kick someone you must tag them in this command.", true);
+            return await messagingService.reply(message, this.language.execution.no_tag, true);
         }
 
         let attemptedSameLevelKick = false;
@@ -51,14 +62,16 @@ export default class KickCommand extends Command {
         }
 
         let errorMessage = "";
-        if (kickIncludesBot) errorMessage += "I can't kick myself 😕\nTry using >>gtfo";
+        if (kickIncludesBot) errorMessage += this.language.execution.self_kick;
         if (attemptedSameLevelKick)
             errorMessage += kickIncludesBot
-                ? "\nIt also seems like you tried to kick an admin when you are an admin 🤦‍♂️"
-                : "You cannot kick an admin if you are an admin";
+                ? `\n${this.language.execution.kick_admin[0]}`
+                : this.language.execution.kick_admin[1];
 
         if (kickIncludesBot || attemptedSameLevelKick) {
-            return await messagingService.reply(message, errorMessage, true);
+            return await messagingService.reply(message, errorMessage, true, {
+                placeholder: {chat, command: this},
+            });
         }
 
         let failedList: Array<string> = [];
@@ -72,18 +85,22 @@ export default class KickCommand extends Command {
         }
 
         if (failedList.length > 0) {
-            return messagingService.reply(message, `Failed 😢\nFailed to kick: ${failedList.join(", ")}`, true);
+            return messagingService.reply(message, this.language.execution.failed, true, {
+                placeholder: {
+                    custom: new Map([["list", failedList.join(", ")]]),
+                },
+            });
         }
 
-        await messagingService.reply(message, "Success 🎉🥳🥳", true);
+        await messagingService.reply(message, this.language.execution.success, true);
     }
 
     onBlocked(data: Message, blockedReason: BlockedReason) {
         switch (blockedReason) {
             case BlockedReason.InsufficientGroupLevel:
-                return messagingService.reply(data, "You must be a group admin to use this command.", true);
+                return messagingService.reply(data, this.language.execution.not_admin, true);
             case BlockedReason.BlockedChat:
-                return messagingService.reply(data, "There seems to be an error.\nYou can only use this command in a group chat.");
+                return messagingService.reply(data, this.language.execution.not_group);
             default:
                 return;
         }

@@ -83,38 +83,38 @@ export default abstract class Chat {
         handler?.add(new AnonymousCommand(this.model.language));
         handler?.add(new LmgtfyCommand(this.model.language));
         handler?.add(new MP3Command(this.model.language));
-        handler?.add(new SpoofCommand());
-        handler?.add(new StickerCommand());
+        handler?.add(new SpoofCommand(this.model.language));
+        handler?.add(new StickerCommand(this.model.language));
         handler?.add(new ReminderCommand(this.model.language));
-        handler?.add(new ReputationCommand());
+        handler?.add(new ReputationCommand(this.model.language));
 
         // group admin commands
-        handler?.add(new AddCommand());
+        handler?.add(new AddCommand(this.model.language));
         handler?.add(new DeleteCommand(this.model.language));
-        handler?.add(new GtfoCommand());
-        handler?.add(new KickCommand());
-        handler?.add(new EveryoneCommand());
+        handler?.add(new GtfoCommand(this.model.language));
+        handler?.add(new KickCommand(this.model.language));
+        handler?.add(new EveryoneCommand(this.model.language));
 
         // bot outreach commands
-        handler?.add(new JoinCommand());
+        handler?.add(new JoinCommand(this.model.language));
 
         // bot info commands
-        handler?.add(new CreatorCommand());
-        handler?.add(new GptCommand());
-        handler?.add(new HelpCommand(this.commandHandler!));
-        handler?.add(new VCardCommand());
-        handler?.add(new PingCommand());
-        handler?.add(new CodeCommand());
-        handler?.add(new SpeechToTextCommand());
+        handler?.add(new CreatorCommand(this.model.language));
+        handler?.add(new GptCommand(this.model.language));
+        handler?.add(new HelpCommand(this.model.language, this.commandHandler!));
+        handler?.add(new VCardCommand(this.model.language));
+        handler?.add(new PingCommand(this.model.language));
+        handler?.add(new CodeCommand(this.model.language));
+        handler?.add(new SpeechToTextCommand(this.model.language));
 
         // bot eco commands
-        handler?.add(new BalanceCommand());
+        handler?.add(new BalanceCommand(this.model.language));
         handler?.add(new GiveBalanceCommand());
-        handler?.add(new DailyCommand());
-        handler?.add(new HighlowCommand());
-        handler?.add(new DepositCommand());
-        handler?.add(new BegCommand());
-        handler?.add(new WithdrawCommand());
+        handler?.add(new DailyCommand(this.model.language));
+        handler?.add(new HighlowCommand(this.model.language));
+        handler?.add(new DepositCommand(this.model.language));
+        handler?.add(new BegCommand(this.model.language));
+        handler?.add(new WithdrawCommand(this.model.language));
 
         // bot misc commands
         handler?.add(new LanguageCommand());

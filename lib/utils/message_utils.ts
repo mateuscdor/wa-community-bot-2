@@ -7,6 +7,7 @@ import Message from "../message/message";
 import User from "../user/user";
 import {BotClient} from "../whatsapp_bot";
 import {sleep} from "./utils";
+import config from "../config.json";
 
 export function getQuotedMessage(message?: WAMessage) {
     const contextInfo = getContextInfo(message);
@@ -107,11 +108,20 @@ export async function applyPlaceholders(
         command,
         custom,
         chat,
-    }: {message?: Message; user?: User; command?: Command; chat?: Chat; custom?: Map<string, string>} = {},
+    }: {
+        message?: Message;
+        user?: User;
+        command?: Command;
+        chat?: Chat;
+        custom?: Map<string, string> | {[key: string]: string | undefined};
+    } = {},
 ) {
+    if (custom && !(custom instanceof Map))
+        custom = new Map(Object.entries(custom).filter(([, value]) => value != undefined) as [string, string][]);
+
     let res = content;
     res = res.replace(/\{name\}/g, user?.getFullDefaultingName() ?? "");
-    res = res.replace(/\{prefix\}/g, chat?.commandHandler?.prefix ?? ">>");
+    res = res.replace(/\{prefix\}/g, chat?.commandHandler?.prefix ?? config.default_command_prefix);
     res = res.replace(/\{command\}/g, command?.name ?? "");
     if (chat?.model.jid && whatsappBot.client && res.includes("{group}"))
         res = res.replace(/\{group\}/g, (await whatsappBot.client.groupMetadata(chat.model.jid)).subject ?? "");

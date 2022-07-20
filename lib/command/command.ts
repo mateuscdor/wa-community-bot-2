@@ -61,7 +61,7 @@ export default abstract class Command implements Blockable<Message> {
         announcedAliases,
     }: {
         triggers: CommandTrigger[];
-        blockedChats?: Array<"group" | "dm">;
+        blockedChats?: ("group" | "dm")[];
         chatLevel?: ChatLevel;
         developerLevel?: DeveloperLevel;
         blacklistedJids?: string[];

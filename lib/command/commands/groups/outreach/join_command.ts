@@ -8,15 +8,24 @@ import {GroupLevel} from "../../../../models";
 import {getGroupPrivilegeMap} from "../../../../utils/group_utils";
 import {BotClient} from "../../../../whatsapp_bot";
 import {BlockedReason} from "../../../../blockable";
+import languages from "../../../../constants/language.json";
 
 export default class JoinCommand extends Command {
-    constructor() {
+    private language: typeof languages.commands.join[Language];
+
+    constructor(language: Language) {
+        const langs = languages.commands.join;
+        const lang = langs[language];
         super({
-            triggers: ["join", 'תצטרף'].map(e => new CommandTrigger(e)),
-            usage: "{prefix}{command}",
-            category: "Groups",
-            description: "Want me in another group? Use this command! (You can send me DMs too)",
+            triggers: langs.triggers.map((e) => new CommandTrigger(e)),
+            announcedAliases: lang.triggers,
+            usage: lang.usage,
+            category: lang.category,
+            description: lang.description,
+            extendedDescription: lang.extended_description,
         });
+
+        this.language = lang;
     }
 
     private groupInviteRegex: RegExp = RegExp(/(https?:\/\/)?chat\.whatsapp\.com\/(?:invite\/)?([a-zA-Z0-9_-]{22})/g);
@@ -24,21 +33,24 @@ export default class JoinCommand extends Command {
     async execute(client: WASocket, chat: Chat, message: Message, body: string) {
         let matches = this.groupInviteRegex.exec(body ?? "");
         const quoted = await message.getQuoted();
-        if ((!matches || (matches && matches.length == 0)) && quoted) matches = this.groupInviteRegex.exec(quoted.content ?? "");
+        if ((!matches || (matches && matches.length == 0)) && quoted)
+            matches = this.groupInviteRegex.exec(quoted.content ?? "");
 
         if (!matches || (matches && matches.length == 0)) {
-            return await messagingService.reply(message, "You must quote or send along with the command a invite link", true);
+            return await messagingService.reply(message, this.language.execution.no_invite, true);
         }
 
         const code = matches[2];
         try {
             client.groupAcceptInvite(code).then(async (res) => {
                 const meta = await client.groupMetadata(res);
-                await messagingService.reply(message, `Joined ${meta.subject}!`, true);
+                await messagingService.reply(message, this.language.execution.joined, true, {
+                    placeholder: {custom: new Map([["group", meta.subject]])},
+                });
             });
-            await messagingService.reply(message, "Joining the group...", true);
+            await messagingService.reply(message, this.language.execution.joining, true);
         } catch (e) {
-            await messagingService.reply(message, "Failed to join group.\nI might've been kicked from it.", true);
+            await messagingService.reply(message, this.language.execution.failed, true);
         }
     }
 

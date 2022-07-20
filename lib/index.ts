@@ -6,6 +6,9 @@ import dotenv from "dotenv";
 import {chatRepository, messagingService, userRepository} from "./constants/services";
 import {normalizeJid} from "./utils/group_utils";
 import moment from "moment";
+import {EveryoneCommand} from "./command/commands";
+import config from "./config.json";
+
 ffmpeg.setFfmpegPath(ffmpegPath);
 dotenv.config({path: "./"});
 export const whatsappBot: BotClient = new BotClient("./session", registerEventHandlers);
@@ -64,39 +67,44 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
             }
 
             if (!chat.model.sentDisclaimer) {
-                const joinMessage =
-                    "**Disclaimer**\
+                const joinMessage = `**Disclaimer**\
                 \nThis bot is handled and managed by a human\
                 \nAs such, I have the ability to see the messages in this chat.\
                 \nI DO NOT plan to but the possibility is there.\
                 \nIf you are not keen with this, do not send the bot messages.\
-                \nEnjoy my bot! Get started using: >>help\n\nP.S You can DM the bot.";
-                const joinMessageHebrew =
-                    "**התראה**\nהבוט מנוהל על ידי אדם.\
+                \nEnjoy my bot! Get started using: ${config.default_command_prefix}help\n\nP.S You can DM the bot.`;
+                const joinMessageHebrew = `**התראה**\nהבוט מנוהל על ידי אדם.\
                     \nבכך ברשותי האפשרות לצפות בהודעות בצ'אטים.\
                     \n*אני לא* מתכנן לעשות זאת אך האפשרות קיימת.\
                     \nאם אינך מעוניין בכך, אל תשלח לבוט הודעות.\
                     \nתהנו מהבוט שלי!\
-                    \nכתבו >>עזרה כדי להתחיל להשתמש בו!";
+                    \nכתבו ${config.default_command_prefix}עזרה כדי להתחיל להשתמש בו!`;
                 await chatRepository.update(chatJid, {
                     $set: {sent_disclaimer: true},
                 });
                 chat = await chatRepository.get(chatJid, true);
                 await messagingService.replyAdvanced(
                     msg,
-                    {text: joinMessage, buttons: [{buttonText: {displayText: ">>help"}, buttonId: "0"}]},
+                    {
+                        text: joinMessage,
+                        buttons: [{buttonText: {displayText: `${config.default_command_prefix}help`}, buttonId: "0"}],
+                    },
                     false,
                 );
 
                 await messagingService.replyAdvanced(
                     msg,
-                    {text: joinMessageHebrew, buttons: [{buttonText: {displayText: ">>עזרה"}, buttonId: "0"}]},
+                    {
+                        text: joinMessageHebrew,
+                        buttons: [{buttonText: {displayText: `${config.default_command_prefix}עזרה`}, buttonId: "0"}],
+                    },
                     false,
                 );
             }
 
             const selectedRowId = rawMsg.message?.listResponseMessage?.singleSelectReply?.selectedRowId;
             if (selectedRowId && selectedRowId?.startsWith("HELP_COMMAND")) {
+                const helpCommand = await chat?.getCommandByTrigger("help");
                 let splitAtNewLine = selectedRowId.split("\n");
                 splitAtNewLine.shift();
                 let data = splitAtNewLine.join("\n").split("\n\r");
@@ -109,7 +117,13 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
 
                 return await messagingService.replyAdvanced(
                     msg,
-                    {text: `*${aliasesButtons[0].buttonText?.displayText ?? ""}*\n\n${commandDescription}`, buttons: aliasesButtons, footer: `(>>help ${aliasesButtons[0].buttonText?.displayText?.replace(chat?.model.commandPrefix ?? '', '')})`},
+                    {
+                        text: `*${aliasesButtons[0].buttonText?.displayText ?? ""}*\n\n${commandDescription}`,
+                        buttons: aliasesButtons,
+                        footer: `(${chat?.model.commandPrefix}${
+                            helpCommand?.name
+                        } ${aliasesButtons[0].buttonText?.displayText?.replace(chat?.model.commandPrefix ?? "", "")})`,
+                    },
                     true,
                 );
             }
@@ -125,11 +139,18 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
             // }
 
             if (msg.content?.includes("@everyone") || msg.content?.includes("@כולם")) {
+                const everyoneCmd = (await chat?.getCommandByTrigger("everyone")) as EveryoneCommand;
+                if (!everyoneCmd) continue;
                 await messagingService.replyAdvanced(
                     msg,
                     {
-                        text: "Do you want to tag everyone in this chat?\nTry >>everyone",
-                        buttons: [{buttonId: "0", buttonText: {displayText: ">>everyone"}}, {buttonId: "1", buttonText: {displayText: ">>כולם"}}],
+                        text: everyoneCmd.languageData.tip[everyoneCmd.languageCode],
+                        buttons: [
+                            {
+                                buttonId: "0",
+                                buttonText: {displayText: `${chat?.model.commandPrefix}${everyoneCmd.name}`},
+                            },
+                        ],
                     },
                     true,
                 );

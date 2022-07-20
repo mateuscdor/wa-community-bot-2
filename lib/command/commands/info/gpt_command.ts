@@ -6,13 +6,21 @@ import {messagingService} from "../../../constants/services";
 import Message from "../../../message/message";
 import Command from "../../command";
 import CommandTrigger from "../../command_trigger";
+import languages from "../../../constants/language.json";
+
 export default class GptCommand extends Command {
-    constructor() {
+    private language: typeof languages.commands.gpt[Language];
+    private texts: string[];
+
+    constructor(language: Language) {
+        const langs = languages.commands.gpt;
+        const lang = langs[language];
         super({
-            triggers: ["gpt", "בינה"].map((e) => new CommandTrigger(e)),
-            usage: "{prefix}{command}",
-            category: "Study",
-            description: "Ask an AI a question (This may soon turn into a premium feature)",
+            triggers: langs.triggers.map((e) => new CommandTrigger(e)),
+            announcedAliases: lang.triggers,
+            usage: lang.usage,
+            category: lang.category,
+            description: lang.description,
             cooldowns: new Map([
                 [ChatLevel.Free, 30 * 1000],
                 [ChatLevel.Premium, 20 * 1000],
@@ -20,31 +28,28 @@ export default class GptCommand extends Command {
             ]),
         });
 
+        this.language = lang;
+
         this.configuration = new Configuration({
             apiKey: process.env.OPENAI_API_KEY,
         });
 
         this.openai = new OpenAIApi(this.configuration);
+
+        this.texts = lang.execution.thinking_texts;
     }
 
     configuration: Configuration;
     openai: OpenAIApi;
 
-    private texts = [
-        "Hmmmm, let me think about this one...",
-        "Huh.... Interesting...",
-        "I mean... I'll give it my best try.",
-        "No clue. Well I mean... Hmmmmm....",
-    ];
-
     async execute(client: WASocket, chat: Chat, message: Message, body?: string) {
         if (!body) {
-            return await messagingService.reply(message, "You must ask something.");
+            return await messagingService.reply(message, this.language.execution.no_question);
         }
 
         // body can only contain english and special characters
         if (!/^[a-zA-Z0-9\s\.,;:!?\(\)\[\]\{\}'"-]+$/.test(body)) {
-            return await messagingService.reply(message, "You must ask something in english!\nהשאלה חייבת להיות מנוסחת באנגלית בלבד.", true);
+            return await messagingService.reply(message, this.language.execution.only_english, true);
         }
 
         messagingService.reply(message, this.texts[Math.floor(Math.random() * this.texts.length)], true);
@@ -60,12 +65,12 @@ export default class GptCommand extends Command {
                 presence_penalty: 0,
             })
             .then((response) => {
-                const blank = "Couldn't think of anything\nI'm blank!";
+                const blank = this.language.execution.too_long;
                 const text = response.data.choices ? response.data.choices[0].text ?? blank : blank;
                 messagingService.reply(message, text.trim(), true);
             })
             .catch((err) => {
-                messagingService.reply(message, "That's way too long for me", true);
+                messagingService.reply(message, this.language.execution.too_long, true);
             });
     }
 

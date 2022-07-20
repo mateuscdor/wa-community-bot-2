@@ -5,15 +5,23 @@ import Message from "../../../message/message";
 import CommandTrigger from "../../command_trigger";
 import { BlockedReason } from "../../../blockable";
 import Command from "../../command";
+import languages from "../../../constants/language.json";
 
 export default class SpoofCommand extends Command {
-    constructor() {
+    private language: typeof languages.commands.spoof[Language];
+
+    constructor(language: Language) {
+        const langs = languages.commands.spoof;
+        const lang = langs[language];
         super({
-            triggers: ["spoof", "זייף"].map(e => new CommandTrigger(e)),
-            usage: "{prefix}{command}",
-            category: "Fun",
-            description: 'An exploit to spoof a friend\'s message. >>spoof @mention "spoofed message" "bot message"',
+            triggers: langs.triggers.map((e) => new CommandTrigger(e)),
+            announcedAliases: lang.triggers,
+            usage: lang.usage,
+            category: lang.category,
+            description: lang.description,
         });
+
+        this.language = lang;
     }
 
     async execute(client: WASocket, chat: Chat, message: Message, body?: string) {
@@ -47,7 +55,7 @@ export default class SpoofCommand extends Command {
     }
 
     private async error(message: Message) {
-        return await messagingService.reply(message, 'Must follow >>spoof @mention "spoofed message" "bot message"', true);
+        return await messagingService.reply(message, this.language.execution.error, true);
     }
     
     onBlocked(data: Message, blockedReason: BlockedReason) {

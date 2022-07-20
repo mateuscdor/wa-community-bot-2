@@ -6,17 +6,30 @@ import Command from "../../../command";
 import CommandTrigger from "../../../command_trigger";
 import {GroupLevel} from "../../../../models";
 import {BlockedReason} from "../../../../blockable";
+import languages from "../../../../constants/language.json";
 
 export default class EveryoneCommand extends Command {
-    constructor() {
+    private language: typeof languages.commands.everyone[Language];
+    public languageData: typeof languages.commands.everyone;
+    public languageCode: Language;
+
+    constructor(language: Language) {
+        const langs = languages.commands.everyone;
+        const lang = langs[language];
         super({
-            triggers: ["everyone", "כולם", "תייג"].map(e => new CommandTrigger(e)),
-            usage: "{prefix}{command}",
-            category: "Group Admin",
+            triggers: langs.triggers.map((e) => new CommandTrigger(e)),
+            announcedAliases: lang.triggers,
+            usage: lang.usage,
+            category: lang.category,
+            description: lang.description,
             groupLevel: GroupLevel.Admin,
             blockedChats: ["dm"],
-            description: "Tag everyone in the group",
+            extendedDescription: lang.extended_description,
         });
+
+        this.languageData = langs;
+        this.language = lang;
+        this.languageCode = language;
     }
 
     async execute(client: WASocket, chat: Chat, message: Message, body?: string) {
@@ -28,10 +41,17 @@ export default class EveryoneCommand extends Command {
         messagingService.sendMessage(
             message.to,
             {
-                text: `${group.subject}\nEveryone!\n${mentions.map((mention) => `@${mention.split("@")[0]}`).join(" ")}`,
+                text: this.language.execution.success,
                 mentions: mentions,
             },
             {quoted: quoted ?? undefined},
+            {
+                placeholder: {
+                    chat,
+                    command: this,
+                    custom: new Map([["tags", mentions.map((mention) => `@${mention.split("@")[0]}`).join(" ")]]),
+                },
+            },
         );
     }
 
@@ -40,7 +60,10 @@ export default class EveryoneCommand extends Command {
             case BlockedReason.InsufficientGroupLevel:
                 return messagingService.reply(data, "You must be a group admin to use this command.", true);
             case BlockedReason.BlockedChat:
-                return messagingService.reply(data, "There seems to be an error.\nYou can only use this command in a group chat.");
+                return messagingService.reply(
+                    data,
+                    "There seems to be an error.\nYou can only use this command in a group chat.",
+                );
             default:
                 return;
         }

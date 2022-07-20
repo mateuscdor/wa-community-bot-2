@@ -7,15 +7,23 @@ import {MessageMetadata} from "../../../message";
 import Message from "../../../message/message";
 import Command from "../../command";
 import CommandTrigger from "../../command_trigger";
+import languages from "../../../constants/language.json";
 
 export default class StickerCommand extends Command {
-    constructor() {
+    private language: typeof languages.commands.sticker[Language];
+
+    constructor(language: Language) {
+        const langs = languages.commands.sticker;
+        const lang = langs[language];
         super({
-            triggers: ["sticker", "סטיקר"].map((e) => new CommandTrigger(e)),
-            usage: "{prefix}{command}",
-            category: "Fun",
-            description: "Send along with an image or video to create a sticker",
+            triggers: langs.triggers.map((e) => new CommandTrigger(e)),
+            announcedAliases: lang.triggers,
+            usage: lang.usage,
+            category: lang.category,
+            description: lang.description,
         });
+
+        this.language = lang;
     }
 
     async execute(client: WASocket, chat: Chat, message: Message, body?: string) {
@@ -23,23 +31,15 @@ export default class StickerCommand extends Command {
         const quotedMedia = await (await message.getQuoted())?.media;
         let messageMedia = ogMedia ?? quotedMedia;
         if (!messageMedia) {
-            return await messagingService.reply(
-                message,
-                "You must send a video, image, sticker or quote one along with the command.",
-                true,
-            );
+            return await messagingService.reply(message, this.language.execution.no_media, true);
         }
 
         const stickerBuffer = await this.createSticker(messageMedia).toBuffer();
         if (stickerBuffer.length < 50) {
-            return await messagingService.reply(
-                message,
-                "You must send a video, image, sticker or quote one along with the command.",
-                true,
-            );
+            return await messagingService.reply(message, this.language.execution.no_media, true);
         } else if (stickerBuffer.length > 2 * 1000000) {
             // if bigger than 2mb error.
-            return await messagingService.reply(message, "The sticker you are trying to create is too large.", true);
+            return await messagingService.reply(message, this.language.execution.too_big, true);
         }
 
         await messagingService.replyAdvanced(message, {sticker: stickerBuffer}, true, {

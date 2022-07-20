@@ -4,6 +4,7 @@ import {Chat, GroupChat, DMChat} from ".";
 import {chatsCollection} from "../database";
 import {ChatModel, ChatType} from "../database/models";
 import {normalizeJid} from "../utils/group_utils";
+import config from '../config.json'
 
 export default class ChatRepository {
     private repository: Map<string, Chat> = new Map<string, Chat>();
@@ -91,9 +92,9 @@ export default class ChatRepository {
     public async create(jid: string): Promise<Chat | undefined> {
         let model: ChatModel | undefined;
         if (isJidGroup(jid)) {
-            model = new ChatModel(jid, ChatType.Group, ">>", false, 'hebrew');
+            model = new ChatModel(jid, ChatType.Group, config.default_command_prefix, false, 'hebrew');
         } else if (isJidUser(jid)) {
-            model = new ChatModel(jid, ChatType.DM, ">>", false, 'hebrew');
+            model = new ChatModel(jid, ChatType.DM, config.default_command_prefix, false, 'hebrew');
         }
         if (!model) {
             return;

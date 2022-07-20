@@ -1,4 +1,4 @@
-import {WASocket} from "@adiwajshing/baileys";
+import {jidDecode, WASocket} from "@adiwajshing/baileys";
 import {EconomyCommand} from "../..";
 import {BlockedReason} from "../../../blockable";
 import {Chat} from "../../../chats";
@@ -9,16 +9,25 @@ import {Message} from "../../../message";
 import {commas} from "../../../utils/utils";
 import CommandTrigger from "../../command_trigger";
 import {buildBalanceChangeMessage, extractNumbers} from "./utils";
+import languages from "../../../constants/language.json";
 
 export default class WithdrawCommand extends EconomyCommand {
-    constructor() {
+    private language: typeof languages.commands.withdraw[Language];
+    private langCode: Language;
+
+    constructor(language: Language) {
+        const langs = languages.commands.withdraw;
+        const lang = langs[language];
         super({
-            triggers: ["withdraw", "משיכה"].map((trigger) => new CommandTrigger(trigger)),
-            category: "Economy",
-            description: "Withdraw money from the bank into your wallet.",
-            extendedDescription: "משיכת כסף מהבנק לארנק",
-            usage: "{prefix}{command} @mention",
+            triggers: langs.triggers.map((e) => new CommandTrigger(e)),
+            announcedAliases: lang.triggers,
+            category: lang.category,
+            description: lang.description,
+            usage: lang.usage,
         });
+
+        this.language = lang;
+        this.langCode = language;
     }
 
     async execute(client: WASocket, chat: Chat, message: Message, body: string, ...args: string[]) {
@@ -26,14 +35,14 @@ export default class WithdrawCommand extends EconomyCommand {
         const userJid = message.sender;
         const user = await userRepository.get(userJid ?? "");
         if (!user || !userJid) {
-            return await messagingService.reply(message, "User does not have a balance.", true);
+            return await messagingService.reply(message, this.language.execution.no_balance, true);
         }
 
         const bankCapacity = user.model.bankCapacity;
         const balance = await this.getBalance(userJid);
         const net = (await user.calculateNetBalance()) ?? 0;
         if (!balance) {
-            return await messagingService.reply(message, "User does not have a balance.", true);
+            return await messagingService.reply(message, this.language.execution.no_balance, true);
         }
 
         const bankTotal = balance.bank;
@@ -42,32 +51,35 @@ export default class WithdrawCommand extends EconomyCommand {
             ? bankTotal
             : Number(extractNumbers(body)[0] ?? "");
         if (withdrawAmount == 0) {
-            return await messagingService.reply(message, "You can't withdraw any coins\nאתה לא יכול למשוך אפילו אגורה חבר", true);
+            return await messagingService.reply(message, this.language.execution.cant_withdraw, true);
         }
         if (!withdrawAmount) {
-            return await messagingService.reply(
-                message,
-                `How much do you want to withdraw?\nTry ${chat.commandHandler?.prefix}deposit <amount>`,
-                true,
-            );
+            return await messagingService.reply(message, this.language.execution.no_body, true, {
+                placeholder: {
+                    chat,
+                },
+            });
         }
 
         if (withdrawAmount > bankTotal || withdrawAmount < 0) {
-            const english = `You only have ${commas(
-                bankTotal,
-            )} in your bank right now. Can't withdraw more than that.`;
-            const hebrew = `יש לך רק ${commas(bankTotal)} בבנק כרגע. אי אפשר למשוך יותר מזה.`;
-            return await messagingService.reply(message, `${english}\n${hebrew}`, true);
+            return await messagingService.reply(message, this.language.execution.too_much, true, {
+                placeholder: {
+                    chat,
+                    custom: {
+                        max: bankTotal.toString(),
+                    },
+                },
+            });
         }
 
         const addBalance = new Balance(withdrawAmount, -withdrawAmount);
         const success = await this.addBalance(userJid, addBalance);
         if (!success) {
-            return await messagingService.reply(
-                message,
-                `Failed to withdraw.\nIf this error persists please contact an admin using ${chat.commandHandler?.prefix}feature`,
-                true,
-            );
+            return await messagingService.reply(message, this.language.execution.error, true, {
+                placeholder: {
+                    chat,
+                },
+            });
         }
 
         const currentBalance = (await this.getBalance(userJid))!;
@@ -77,10 +89,17 @@ export default class WithdrawCommand extends EconomyCommand {
             currentBalance,
             net,
             currentNet,
+            this.langCode,
             user.model.bankCapacity,
         );
-        const reply = `*@${userJid.split("@")[0]}'s balance*\n\n${balChangeMessage}`;
-        return await messagingService.replyAdvanced(message, {text: reply, mentions: [userJid]}, true);
+        const reply = `${languages.commands.balance[this.langCode].execution.title}\n\n${balChangeMessage}`;
+        return await messagingService.replyAdvanced(message, {text: reply, mentions: [userJid]}, true, {
+            placeholder: {
+                custom: {
+                    tag: `@${jidDecode(userJid).user}`,
+                },
+            },
+        });
     }
 
     onBlocked(data: Message, blockedReason: BlockedReason) {}

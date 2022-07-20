@@ -46,6 +46,7 @@
                 "usage": "{prefix}{command} <message>",
                 "execution": {
                     "creator_message_receive": "You received a message from:",
+                    "no_body": "You need to specify what you want to send to the developer.",
                     "vcard_default_name": "Bot User",
                     "success_message": "Forwarded your message to the creator of the bot!"
                 }
@@ -62,6 +63,7 @@
                 "execution": {
                     "creator_message_receive": "You received a message from:",
                     "vcard_default_name": "Bot User",
+                    "no_body": "אתה צריך שיהיה גוף הודעה בפקודה על מנת לשלוח אותה ליוצר הבוט.",
                     "success_message": "הודעתך הועברה ליוצר הבוט!"
                 }
             }
@@ -86,7 +88,8 @@
                         "No clue. Well I mean... Hmmmmm...."
                     ],
                     "no_question": "You must ask something.\nFor example: {prefix}{command} What is the meaning of life?",
-                    "only_english": "You must ask something in english!"
+                    "only_english": "You must ask something in english!",
+                    "too_long": "My brain isn't big enough for this question.\nPlease ask something shorter."
                 }
             },
             "hebrew": {
@@ -105,7 +108,8 @@
                         "אין לי שמץ.. אהה אווו רגע אחד"
                     ],
                     "no_question": "אתה חייב לשאול שאלה.\nלדוגמא: {prefix}{command} מה המשמעות של חיים?",
-                    "only_english": "בגלל מגבלות, השאלה חייבת להיות באנגלית.\nסליחה!"
+                    "only_english": "בגלל מגבלות, השאלה חייבת להיות באנגלית.\nסליחה!",
+                    "too_long": "המוח שלי לא גדול מספיק לשאלה הזאת.\nתשאל שאלה קצרה יותר."
                 }
             }
         },
@@ -119,14 +123,18 @@
                     "help"
                 ],
                 "category": "Info",
-                "description": "This message. You can also do (>>help <command name> | e.g >>help music)",
+                "description": "This message. You can also do ({prefix}help <command name> | e.g {prefix}help music)",
                 "usage": "{prefix}{command} <command>",
                 "execution": {
-                    "suffix": "*----- HELP ME I'M RETARDED ----*",
-                    "prefix": "Hope I helped ✌\n~bot",
+                    "prefix": "*----- HELP ME I'M RETARDED ----*",
+                    "suffix": "Hope I helped ✌\n~bot",
                     "footer": "Please consider supporting the bot by donating to the Patreon!\n\nIn the future, donators will receive special perks!\nhttps://www.patreon.com/wailcommunitybot",
                     "button": "Click me for help!",
-                    "dms": "Check your DMs!"
+                    "dms": "Check your DMs!",
+                    "misc": "Misc",
+                    "description": "Description",
+                    "aliases": "Aliases",
+                    "cooldowns": "Cooldowns"
                 }
             },
             "hebrew": {
@@ -141,7 +149,11 @@
                     "prefix": "מקווה שעזרתי ✌",
                     "footer": "בבקשה תשקלו לתמוך בבוט בעזרת תרומה קטנה בפרטרון שלנו!\n\nבעתיד, תורמים יקבלו פריבילגיות מיוחדות!\nhttps://www.patreon.com/wailcommunitybot",
                     "button": "תלחץ עליי לעזרה!",
-                    "dms": "תסתכל על השיחות הפרטיות שלך!"
+                    "dms": "תסתכל על השיחות הפרטיות שלך!",
+                    "misc": "אחר",
+                    "description": "תיאור",
+                    "aliases": "כינויים",
+                    "cooldowns": "פרקי מנוחה"
                 }
             }
         },
@@ -196,7 +208,8 @@
                     "no_reply": "Please reply to a message you want to speech to text",
                     "no_audio": "Please reply to an audio message",
                     "no_audio_in_storage": "Please reply to an audio message\nMaybe try sending the audio again.",
-                    "success_message": "*SPEECH TO TEXT:*\n{text}"
+                    "success_message": "*SPEECH TO TEXT:*\n{text}",
+                    "started": "Processing..."
                 }
             },
             "hebrew": {
@@ -212,7 +225,8 @@
                     "no_reply": "הגב להודעה שאתה רוצה לתמלל",
                     "no_audio": "הגב להודעה קולית כדי לתמלל אותה",
                     "no_audio_in_storage": "הגב להודעה קולית כדי לתמלל אותה\nאולי תנסה לשלוח את ההודעה הקולית שוב.",
-                    "success_message": "*תמלול:*\n{text}"
+                    "success_message": "*תמלול:*\n{text}",
+                    "started": "מעבד..."
                 }
             }
         },
@@ -320,6 +334,10 @@
                 "everyone",
                 "כולם"
             ],
+            "tip": {
+                "english": "Do you want to tag everyone in this chat?\nTry {prefix}everyone",
+                "hebrew": "אתה רוצה לתייג את כולם בקבוצה?\nתנסה {prefix}כולם"
+            },
             "english": {
                 "triggers": [
                     "everyone"
@@ -331,7 +349,7 @@
                 "execution": {
                     "only_admin": "You must be a group admin to use this command.",
                     "only_group": "You can only use this command in a group chat.",
-                    "success": "Everyone!\n{group}\n{tags}"
+                    "success": "{group}\nEveryone!\n{tags}"
                 }
             },
             "hebrew": {
@@ -399,6 +417,11 @@
                     "not_admin": "You must be a group admin to use this command.",
                     "not_group": "You can only use this command in a group chat.",
                     "no_tag": "Please tag the users you want to kick",
+                    "self_kick": "I can't kick myself 😕\nTry using {prefix}gtfo",
+                    "kick_admin": [
+                        "It also seems like you tried to kick an admin when you are an admin 🤦‍♂️",
+                        "You cannot kick an admin if you are an admin"
+                    ],
                     "bot_no_admin": "I am not a group admin. I can't kick anyone.",
                     "failed": "Failed 😢\nFailed to kick: {list}",
                     "success": "Success 🎉🥳🥳"
@@ -418,6 +441,11 @@
                     "bot_no_admin": "על מנת להשתמש בפקודה זו, עליך לתת לבוט אדמין בקבוצה",
                     "not_group": "אתה יכול להשתמש בפקודה זו רק בצ'אט קבוצתי.",
                     "no_tag": "אנא תייג את המשתמש שאתה רוצה לעיף",
+                    "self_kick": "אני לא יכול להעיף את עצמי 😕\nתנסה {prefix}צא",
+                    "kick_admin": [
+                        "נראה שאתה מנסה להעיף אדמין כאדמין 🤦‍♂️",
+                        "אתה לא יכול להעיף אדמין אם אתה אדמין"
+                    ],
                     "failed": "נכשל 😢\nנכשל לעיף: {list}",
                     "success": "הצלחה 🎉🥳🥳"
                 }
@@ -474,7 +502,7 @@
                 "usage": "{prefix}{command} <phone> <message>",
                 "execution": {
                     "no_content": "You must provide a message to send after the command",
-                    "no_number": "You must give a phone number. '>>anonymous {phone} {content}",
+                    "no_number": "You must give a phone number. '{prefix}{command} {phone} {content}",
                     "not_bot_user": "As a saftety measure, I can only send anonymous messages to bot users.",
                     "no_whatsapp": "This number isn't on WhatsApp",
                     "success": "Sent! 🤫",
@@ -591,7 +619,7 @@
                 ],
                 "category": "Fun",
                 "description": "Set a reminder",
-                "extended_description": "View all the reminders you have set using `>>reminder list`",
+                "extended_description": "View all the reminders you have set using `{prefix}{command} list`",
                 "usage": "{prefix}{command} <time> <message>",
                 "execution": {
                     "no_body": "You must provide time and text to set a reminder.\nExample: `{prefix}{command} 1 hour Hello World`",
@@ -624,7 +652,7 @@
                 ],
                 "category": "כיף",
                 "description": "הגדר תזכורת",
-                "extended_description": "ניתן לצפות בכל התזכורתים שנקבעו על ידי הפקודה `>>תזכורת רשימה`",
+                "extended_description": "ניתן לצפות בכל התזכורתים שנקבעו על ידי הפקודה `{prefix}{command} רשימה`",
                 "usage": "{prefix}{command} <הודעה> <זמן>",
                 "execution": {
                     "no_body": "אתה חייב לספק זמן והודעה בכדי להגדיר תזכורת.\nדוגמא: `{prefix}{command} 1 שעה שלום עולם`",
@@ -669,15 +697,18 @@
                 "execution": {
                     "no_body": "You must provide a user to give them reputation.\nExample: `{prefix}{command} @user`",
                     "not_reputation_amount": "\"{text}\" is not a valid amount of reputation to give",
-                    "stats": "*Reputation stats of @{tag}*\n\n*Total reputation received:* {total}",
-                    "self_stats": "*Total reputation received:* ${total}\n*Reputation points remaining:* ${left}",
+                    "stats": "*Reputation stats of {tag}*\n\n*Total reputation received:* {total}",
+                    "self_stats": "*Total reputation received:* {total}\n*Reputation points remaining:* {left}",
                     "no_user": "Failed to get this user's reputation.\nI couldn't find a user with the name",
                     "no_mention": "You must mention someone to give them reputation!",
                     "no_self_rep": "You can't give yourself reputation!",
-                    "points": "point",
+                    "point": [
+                        "point",
+                        "points"
+                    ],
                     "reputation": "reputation",
-                    "not_enough_rep": "You can not give {pointsGive} while you only have {pointsLeft} left",
-                    "success_give": "You've successfully given reputation!\n\n*@{tag}:* {previous} => {current} (+{given})\n*Points left:* {left}"
+                    "not_enough_rep": "You can not give {pointsGive} reputation point(s) while you only have {pointsLeft} point(s) left",
+                    "success_give": "You've successfully given reputation!\n\n*{tag}:* {previous} => {current} (+{given})\n*Points left:* {left}"
                 }
             },
             "hebrew": {
@@ -692,13 +723,16 @@
                     "no_body": "למי לתת כבוד?\nדוגמא: `{prefix}{command} @תיוג`",
                     "not_reputation_amount": "\"{text}\" אינו כמות תקינה של כבוד לתת.",
                     "stats": "*סטטיסטיקת הכבוד של @{tag}*\n\n*כבוד כולל:* {total}",
-                    "self_stats": "*כבוד כולל:* ${total}\n*כבוד שנותר לתת:* ${left}",
+                    "self_stats": "*כבוד כולל:* {total}\n*כבוד שנותר לתת:* {left}",
                     "no_user": "אין אפשרות לתת כבוד למשתמש הזה.\nאין משתמש עם השם הזה",
                     "no_mention": "צריך לתייג את מי שאתה רוצה לתת לו כבוד",
                     "no_self_rep": "אין כבוד בלתת לעצמך כבוד...",
-                    "points": "נקודה",
+                    "point": [
+                        "נקודה",
+                        "נקודות"
+                    ],
                     "reputation": "כבוד",
-                    "not_enough_rep": "אתה לא יכול לתת {pointsGive} כשרק נותן לך {pointsLeft}",
+                    "not_enough_rep": "אתה לא יכול לתת {pointsGive} נקודות כבוד שיש לך רק {pointsLeft}",
                     "success_give": "מתת כבוד!\n\n*@{tag}:* {previous} => {current} (+{given})\n*נקודות שנותרו:* {left}"
                 }
             }
@@ -808,9 +842,9 @@
                 "description": "Beg for money, poor bastard",
                 "usage": "{prefix}{command}",
                 "execution": {
-                    "no_user": "Must provide a user to beg for money.",
+                    "imagine_begging": "IMAGINE BEGGING 😹",
                     "no_balance": "User has no balance.",
-                    "title": "*{tag}'s balance*"
+                    "success_give": "\"oh you poor little beggar, take {amount}\""
                 },
                 "responses": [
                     "HAHAHAHA no",
@@ -835,6 +869,7 @@
                 "usage": "{prefix}{command}",
                 "execution": {
                     "imagine_begging": "דמיין להתחנן 😹",
+                    "no_balance": "משתמש זה לא קיים במערכת.",
                     "success_give": "\"אוי, מסכן שלי אל תהיה רעב, קח {amount}\""
                 },
                 "responses": [
@@ -866,9 +901,10 @@
                 "usage": "{prefix}{command}",
                 "execution": {
                     "no_balance": "User has no balance.",
-                    "claimed": "*You've already claimed your daily reward today:*\n\nYour next daily is ready in:\n*${text}*",
+                    "claimed": "*You've already claimed your daily reward today:*\n\nYour next daily is ready in:\n*{text}*",
                     "success_title": "{tag}'s Daily Coins",
-                    "success": "*${coins}* {coin} was placed in your wallet!\n\nYour next daily is ready in: ${text}\nStreak: ${streak} {days} (+{bonus} {coin})"
+                    "success": "*{coins}* {coin} was placed in your wallet!\n\nYour next daily is ready in: {text}\nStreak: {streak} {days} (+{bonus} {coin})",
+                    "and": "and "
                 }
             },
             "hebrew": {
@@ -880,9 +916,10 @@
                 "usage": "{prefix}{command}",
                 "execution": {
                     "no_balance": "משתמש זה לא קיים במערכת.",
-                    "claimed": "*אתה כבר לקחת את המתנה היומית שלך:*\n\nהמתנה היומים הבאה שלך תהיה מוכנה בעוד:\n*${text}*",
+                    "claimed": "*אתה כבר לקחת את המתנה היומית שלך:*\n\nהמתנה היומים הבאה שלך תהיה מוכנה בעוד:\n*{text}*",
                     "success_title": "המתנה היומית של {tag}",
-                    "success": "*${coins}* {coin} הוכנסו לארנק שלך!\n\nהמתנה היומים הבאה שלך תהיה מוכנה בעוד: ${text}\nרצף: ${streak} {days} (+{bonus} {coin})"
+                    "success": "*{coins}* {coin} הוכנסו לארנק שלך!\n\nהמתנה היומים הבאה שלך תהיה מוכנה בעוד: {text}\nרצף: {streak} {days} (+{bonus} {coin})",
+                    "and": "ו"
                 }
             }
         },
@@ -953,7 +990,7 @@
                     "no_balance": "משתמש זה לא קיים במערכת.",
                     "cant_withdraw": "אתה לא יכול למשוך אפס מטבעות",
                     "no_body": "כמה את רוצה למשוך?\nנסה {prefix}{command} <amount>",
-                    "capacity_error": "כרגע יש לך {max} בבנק. אתה לא יכול למשוך יותר מזה.",
+                    "too_much": "כרגע יש לך {max} בבנק. אתה לא יכול למשוך יותר מזה.",
                     "error": "משיכה נכשלה.\nאם השגיאה הזאת ממשיכה תיצור קשר עם מנהל המערכת באמצעות {prefix}developer"
                 }
             }
@@ -977,7 +1014,7 @@
                     "no_balance": "User has no balance.",
                     "options": "*1.* Higher\n*2.* Lower\n*3.* JACKPOT!",
                     "game_text": "{tag}'s high-low game*\n\nI just chose a secret number between 1 and 100.\nIs the secret number higher or lower than {number}?",
-                    "footer": "Your hint was *{number}*. The hidden number was *${secretNumber}*",
+                    "footer": "Your hint was *{number}*. The hidden number was *{secretNumber}*",
                     "win_text": "*{tag} won high-low game*\n\n*You won {prize}!*",
                     "lose_text": "*{tag} lost high-low game*\n\n*You lost!*",
                     "jackpot_text": "{tag} WON HIGH-LOW GAME JACKPOT!\n\n*You won {prize}!*"
@@ -989,11 +1026,13 @@
                     "hl"
                 ],
                 "category": "כלכלה",
+                "description": "תנחש אם המספר גבוהה או נמוך יותר, אם אתה צודק אתה מקבל כסף!",
+                "usage": "{prefix}{command}",
                 "execution": {
                     "no_balance": "משתמש זה לא קיים במערכת.",
                     "options": "*1.* גבוהה יותר\n*2.* נמוך יותר\n*3.* בול פגיעה!",
                     "game_text": "*משחק גבוה נמוך של {tag}*\n\nאני בחרת מספר סודי בין 1 ל100.\nהאם המספר הסודי גבוה יותר או נמוך יותר מ{number}?",
-                    "footer": "הרמז שלך היה *{number}*. המספר הסודי היה *${secretNumber}*",
+                    "footer": "הרמז שלך היה *{number}*. המספר הסודי היה *{secretNumber}*",
                     "win_text": "*{tag} ניצח במשחק גבוה נמוך*\n\n*זכית ב{prize}!*",
                     "lose_text": "*{tag} הפסיד במשחק גבוה נמוך*\n\n*הפסדת!*",
                     "jackpot_text": "*{tag} ניצח במשחק גבוה נמוך בבול פגיעה!!!*\n\n*זכית ב{prize}!*"
@@ -1094,5 +1133,17 @@
     "and": {
         "english": "and",
         "hebrew": "ו"
+    },
+    "ranks": {
+        "english": {
+            "free": "Free",
+            "premium": "Premium",
+            "sponsor": "Sponsor"
+        },
+        "hebrew": {
+            "free": "חינם",
+            "premium": "פרימיום",
+            "sponsor": "ספונסר"
+        }
     }
 }

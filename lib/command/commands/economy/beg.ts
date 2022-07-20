@@ -6,21 +6,29 @@ import {messagingService, userRepository} from "../../../constants/services";
 import {Balance} from "../../../economy";
 import {Message} from "../../../message";
 import {commas, formatNumberCommas} from "../../../utils/utils";
+import languages from "../../../constants/language.json";
 
 export default class BegCommand extends EconomyCommand {
-    constructor() {
+    private language: typeof languages.commands.beg[Language];
+
+    constructor(language: Language) {
+        const langs = languages.commands.beg;
+        const lang = langs[language];
         super({
-            triggers: ["beg", "תתחנן"].map((trigger) => new CommandTrigger(trigger)),
-            category: "Economy",
-            description: "Beg for money, poor bastard.",
-            extendedDescription: "תתחנן לכסף, עני מסכן.",
-            usage: "{prefix}{command}",
+            triggers: langs.triggers.map((e) => new CommandTrigger(e)),
+            announcedAliases: lang.triggers,
+            category: lang.category,
+            description: lang.description,
             cooldowns: new Map([
                 [ChatLevel.Free, 30000],
                 [ChatLevel.Premium, 15000],
                 [ChatLevel.Sponser, 10000],
             ]),
+            usage: lang.usage,
         });
+
+        this.language = lang;
+        this.responses = lang.responses;
     }
 
     private people = [
@@ -52,25 +60,13 @@ export default class BegCommand extends EconomyCommand {
         "The Rock",
     ];
 
-    private responses = [
-        "HAHAHAHA no",
-        "ew get away",
-        "Get a job you hippy",
-        "nah, would rather not feed your gambling addiction",
-        "begone thot",
-        "nope, nothing for you",
-        "ur too stanky",
-        "no u",
-        "there. is. no. coins. for. you.",
-        "get out with that begging bullcrap",
-        "can you not",
-    ];
+    private responses: string[];
 
     async execute(client: WASocket, chat: Chat, message: Message, body: string, ...args: string[]) {
         const userJid = message.sender ?? "";
         const user = await userRepository.get(userJid);
         if (!user || !userJid) {
-            return await messagingService.reply(message, "You do not have a balance.", true);
+            return await messagingService.reply(message, this.language.execution.no_balance, true);
         }
 
         const rand = user.random;
@@ -79,7 +75,11 @@ export default class BegCommand extends EconomyCommand {
 
         if (!shouldGive) {
             const response = this.responses[rand.intBetween(0, this.responses.length - 1)];
-            return await messagingService.reply(message, `*${person}*\n"${response}"\nדמיין להתחנן 😹`, true);
+            return await messagingService.reply(
+                message,
+                `*${person}*\n"${response}"\n${this.language.execution.imagine_begging}`,
+                true,
+            );
         }
 
         const weight = rand.intBetween(1, 100); // "weighted" random to determine how much to give
@@ -93,11 +93,11 @@ export default class BegCommand extends EconomyCommand {
                 : rand.intBetween(100, 500);
 
         await this.addBalance(userJid, new Balance(amountGiven, 0));
-        await messagingService.reply(
-            message,
-            `*${person}*\n"Oh you poor little beggar, take ${commas(amountGiven)}"`,
-            true,
-        );
+        await messagingService.reply(message, `*${person}*\n"${this.language.execution.success_give}"`, true, {
+            placeholder: {
+                custom: new Map([["amount", commas(amountGiven)]]),
+            },
+        });
     }
 
     onBlocked(data: Message, blockedReason: BlockedReason) {}

@@ -8,16 +8,24 @@ import CommandTrigger from "../../command_trigger";
 import {BlockedReason} from "../../../blockable";
 import moment from "moment";
 import {havePluralS} from "../../../utils/message_utils";
+import languages from "../../../constants/language.json";
 
 export default class ReputationCommand extends Command {
-    constructor() {
+    private language: typeof languages.commands.reputation[Language];
+
+    constructor(language: Language) {
+        const langs = languages.commands.reputation;
+        const lang = langs[language];
         super({
-            triggers: ["reputation", "rep", "כבוד"].map((e) => new CommandTrigger(e)),
-            usage: "{prefix}{command} @mention",
-            category: "Fun",
-            description: "Give someone reputation for being such a good person!",
-            extendedDescription: "ניתן לצפות גם בכבוד של אדם אחר בעזרת `>>כבוד סטטיסטיקה @תיוג`\nYou can also view someone's reputation using `>>rep stats @mention`\n",
+            triggers: langs.triggers.map((e) => new CommandTrigger(e)),
+            announcedAliases: lang.triggers,
+            usage: lang.usage,
+            category: lang.category,
+            description: lang.description,
+            extendedDescription: lang.extended_description,
         });
+
+        this.language = lang;
     }
 
     async execute(client: WASocket, chat: Chat, message: Message, body?: string) {
@@ -45,87 +53,116 @@ export default class ReputationCommand extends Command {
         if (!body) {
             // send reputation info about sender user
             const userRep = givingUser.model.reputation.reputation;
-            return await messagingService.reply(
-                message,
-                `*Total reputation received:* ${userRep}\n*Reputation points remaining:* ${userPointsCanGive}`,
-                true,
-            );
+            return await messagingService.reply(message, this.language.execution.self_stats, true, {
+                placeholder: {
+                    chat,
+                    custom: new Map([
+                        ["total", userRep.toString()],
+                        ["left", userPointsCanGive.toString()],
+                    ]),
+                },
+            });
         } else if (
-            (body.toLowerCase().startsWith("stats") ||
+            body.toLowerCase().startsWith("stats") ||
             body.toLowerCase().startsWith("סטטיסטיקה") ||
             body.toLowerCase().startsWith("statistics") ||
-            body.toLowerCase().startsWith("stat"))
+            body.toLowerCase().startsWith("stat")
         ) {
             const mentions = message.raw?.message?.extendedTextMessage?.contextInfo?.mentionedJid ?? [];
             const userStatToCheck = mentions.length > 0 ? mentions[0] : message.sender;
             let user = await userRepository.get(userStatToCheck);
             if (!user) {
                 user = await userRepository.simpleCreate(userStatToCheck);
-                if (!user) return await messagingService.reply(message, "Failed to get reputation of user", true);
+                if (!user) return await messagingService.reply(message, this.language.execution.no_user, true);
             }
 
             return await messagingService.replyAdvanced(
                 message,
                 {
-                    text: `*Reputation stats of @${userStatToCheck.split("@")[0]}*\n\n*Total reputation received:* ${
-                        user.model.reputation.reputation
-                    }`,
+                    text: this.language.execution.stats,
                     mentions: [userStatToCheck],
                 },
                 true,
+                {
+                    placeholder: {
+                        chat,
+                        custom: new Map([
+                            ["total", user.model.reputation.reputation.toString()],
+                            ["tag", `@${jidDecode(userStatToCheck).user}`],
+                        ]),
+                    },
+                },
             );
         }
 
         const arg1 = body.split(" ")[0];
         const repPointsToGive = parseInt(arg1) === 0 ? 0 : parseInt(arg1) || 1;
         if (repPointsToGive != 0 && !repPointsToGive) {
-            return await messagingService.reply(message, `"${arg1}" is not a valid amount of reputation to give`, true);
+            return await messagingService.reply(message, this.language.execution.not_reputation_amount, true, {
+                placeholder: {chat, custom: new Map([["text", arg1]])},
+            });
         }
 
         const mentions = message.raw?.message?.extendedTextMessage?.contextInfo?.mentionedJid ?? [];
         if (mentions.length === 0) {
-            return await messagingService.reply(message, "You must mention someone to give them reputation!", true);
+            return await messagingService.reply(message, this.language.execution.no_mention, true);
         }
-        
+
         const reppedJid = mentions[0];
         if (reppedJid == message.sender) {
-            return await messagingService.reply(message, "You can't give yourself reputation!", true);
+            return await messagingService.reply(message, this.language.execution.no_self_rep, true);
         }
 
         // if rep points is less than or equal to 0, don't give any reputation
         if (userPointsCanGive <= 0 || repPointsToGive > userPointsCanGive) {
-            return await messagingService.reply(
-                message,
-                `You can not give ${repPointsToGive} reputation point${havePluralS(
-                    repPointsToGive,
-                )} while you only have ${userPointsCanGive} point${havePluralS(userPointsCanGive)} left`,
-                true,
-            );
+            return await messagingService.reply(message, this.language.execution.not_enough_rep, true, {
+                placeholder: {
+                    custom: new Map([
+                        ["pointsGive", repPointsToGive.toString()],
+                        ["pointsLeft", userPointsCanGive.toString()],
+                    ]),
+                },
+            });
         }
 
         let reppedUser = await userRepository.get(reppedJid);
         if (!reppedUser) {
             reppedUser = await userRepository.simpleCreate(reppedJid);
             if (!reppedUser) {
-                return await messagingService.reply(message, "The user you are trying to give reputation to doesn't exist.", true);
+                return await messagingService.reply(message, this.language.execution.no_user, true);
             }
         }
         const previousRep = reppedUser.model.reputation.reputation;
 
-        await userRepository.update(reppedJid, {$set: {"reputation.reputation": reppedUser.model.reputation.reputation + repPointsToGive}});
+        await userRepository.update(reppedJid, {
+            $set: {"reputation.reputation": reppedUser.model.reputation.reputation + repPointsToGive},
+        });
         reppedUser = await userRepository.get(reppedJid);
         if (!reppedUser) {
-            return await messagingService.reply(message, "The user you are trying to give reputation to doesn't exist.", true);
+            return await messagingService.reply(message, this.language.execution.no_user, true);
         }
 
         await userRepository.update(message.sender, {$push: {"reputation.given": moment().unix()}});
 
-        await messagingService.replyAdvanced(message, {
-            text: `You've successfully given reputation!\n\n*@${jidDecode(reppedJid).user}:* ${previousRep} => ${
-                reppedUser.model.reputation.reputation
-            } (+${repPointsToGive})\n*Points left:* ${userPointsCanGive - repPointsToGive}`,
-            mentions: [reppedJid],
-        });
+        await messagingService.replyAdvanced(
+            message,
+            {
+                text: this.language.execution.success_give,
+                mentions: [reppedJid],
+            },
+            true,
+            {
+                placeholder: {
+                    custom: new Map([
+                        ["previous", previousRep.toString()],
+                        ["current", reppedUser.model.reputation.reputation.toString()],
+                        ["given", repPointsToGive.toString()],
+                        ["left", (userPointsCanGive - repPointsToGive).toString()],
+                        ["tag", `@${jidDecode(reppedJid).user}`],
+                    ]),
+                },
+            },
+        );
     }
 
     onBlocked(data: Message, blockedReason: BlockedReason) {}

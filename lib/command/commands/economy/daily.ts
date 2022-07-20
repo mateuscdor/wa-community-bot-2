@@ -1,4 +1,4 @@
-import {WASocket} from "@adiwajshing/baileys";
+import {jidDecode, WASocket} from "@adiwajshing/baileys";
 import moment from "moment";
 import {CommandTrigger, EconomyCommand} from "../..";
 import {BlockedReason} from "../../../blockable";
@@ -6,25 +6,34 @@ import {Chat} from "../../../chats";
 import {messagingService, userRepository} from "../../../constants/services";
 import {Balance} from "../../../economy";
 import {Message} from "../../../message";
-import {havePluralS} from "../../../utils/message_utils";
-import {formatNumberCommas} from "../../../utils/utils";
+import {havePluralS, pluralForm} from "../../../utils/message_utils";
+import {commas, formatNumberCommas} from "../../../utils/utils";
+import languages from "../../../constants/language.json";
 
 export default class DailyCommand extends EconomyCommand {
-    constructor() {
+    private language: typeof languages.commands.daily[Language];
+    private langCode: Language;
+
+    constructor(language: Language) {
+        const langs = languages.commands.daily;
+        const lang = langs[language];
         super({
-            triggers: ["daily", "יומי"].map((trigger) => new CommandTrigger(trigger)),
-            category: "Economy",
-            description: "Get coins daily, build a streak and get more coins!",
-            extendedDescription: "לקבל כמה מטבעות כל יום, תבנה סטריק ותקבל יותר מטבעות!",
-            usage: "{prefix}{command}",
+            triggers: langs.triggers.map((e) => new CommandTrigger(e)),
+            announcedAliases: lang.triggers,
+            category: lang.category,
+            description: lang.description,
+            usage: lang.usage,
         });
+
+        this.language = lang;
+        this.langCode = language;
     }
 
     async execute(client: WASocket, chat: Chat, message: Message, body: string, ...args: string[]) {
         const userJid = message.sender ?? "";
         const user = await userRepository.get(userJid);
         if (!user || !userJid) {
-            return await messagingService.reply(message, "You do not have a balance.", true);
+            return await messagingService.reply(message, this.language.execution.no_balance, true);
         }
 
         const dailyMeta = new Map(
@@ -44,18 +53,25 @@ export default class DailyCommand extends EconomyCommand {
         const hours = timeTillUTCMidnightMoment.hours();
         const minutes = timeTillUTCMidnightMoment.minutes();
         const seconds = timeTillUTCMidnightMoment.seconds();
-        const timeTillUTCMidnightFormatted = `${hours > 0 ? `${hours} hour${havePluralS(hours)}, ` : ""}${
-            seconds <= 0 && hours > 0 ? "and " : ""
-        }${minutes > 0 ? `${minutes} minute${havePluralS(minutes)} ` : ""}${
-            seconds > 0 ? `${minutes > 0 ? "and " : ""}${seconds} second${havePluralS(seconds)}` : ""
+        const timeTillUTCMidnightFormatted = `${
+            hours > 0 ? `${hours} ${pluralForm(hours, languages.times[this.langCode].hour)}, ` : ""
+        }${seconds <= 0 && hours > 0 ? this.language.execution.and : ""}${
+            minutes > 0 ? `${minutes} ${pluralForm(hours, languages.times[this.langCode].minute)} ` : ""
+        }${
+            seconds > 0
+                ? `${minutes > 0 ? this.language.execution.and : ""}${seconds} ${pluralForm(
+                      hours,
+                      languages.times[this.langCode].second,
+                  )}`
+                : ""
         }`;
 
         if (lastDaily.utc().isSame(moment(), "day")) {
-            return await messagingService.reply(
-                message,
-                `*You've already claimed your daily reward today:*\n\nYour next daily is ready in:\n*${timeTillUTCMidnightFormatted}*`,
-                true,
-            );
+            return await messagingService.reply(message, this.language.execution.claimed, true, {
+                placeholder: {
+                    custom: new Map([["text", timeTillUTCMidnightFormatted]]),
+                },
+            });
         }
 
         const isStreakBroken = dailyStreak > 0 && lastDaily.isBefore(moment().subtract(1, "day"));
@@ -70,17 +86,24 @@ export default class DailyCommand extends EconomyCommand {
         const dailyCoinsWithCommas = formatNumberCommas(dailyCoins);
         const streakCoinsWithCommas = formatNumberCommas(streakBonus);
 
-        const reply = `@${
-            userJid.split("@")[0] ?? "N/A"
-        }'s Daily Coins\n\n*${dailyCoinsWithCommas}* was placed in your wallet!\n\nYour next daily is ready in: ${timeTillUTCMidnightFormatted}\nStreak: ${dailyStreak} day${havePluralS(
-            dailyStreak,
-        )} (+${streakCoinsWithCommas} coins)`;
-
+        const reply = this.language.execution.success_title + "\n\n" + this.language.execution.success;
         await userRepository.update(userJid, {
             $set: {"metadata.daily_meta.streak": dailyStreak, "metadata.daily_meta.last_daily": moment().unix()},
         });
 
-        return await messagingService.replyAdvanced(message, {text: reply, mentions: [userJid]}, true);
+        return await messagingService.replyAdvanced(message, {text: reply, mentions: [userJid]}, true, {
+            placeholder: {
+                custom: {
+                    tag: `@${jidDecode(userJid).user}`,
+                    coins: dailyCoinsWithCommas, // amount placed
+                    coin: pluralForm(dailyCoins, languages.economy.coin[this.langCode]), // coin word translation
+                    text: timeTillUTCMidnightFormatted, // time till next daily
+                    streak: commas(dailyStreak), // days of unbroken streak
+                    days: pluralForm(dailyStreak, languages.times[this.langCode].day), // days word translation
+                    bonus: streakCoinsWithCommas, // streak bonus
+                },
+            },
+        });
     }
 
     onBlocked(data: Message, blockedReason: BlockedReason) {}

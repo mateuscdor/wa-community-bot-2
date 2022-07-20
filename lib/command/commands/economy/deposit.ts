@@ -1,4 +1,4 @@
-import {WASocket} from "@adiwajshing/baileys";
+import {jidDecode, WASocket} from "@adiwajshing/baileys";
 import {EconomyCommand} from "../..";
 import {BlockedReason} from "../../../blockable";
 import {Chat} from "../../../chats";
@@ -9,15 +9,25 @@ import {Message} from "../../../message";
 import {commas} from "../../../utils/utils";
 import CommandTrigger from "../../command_trigger";
 import {buildBalanceChangeMessage, extractNumbers} from "./utils";
+import languages from "../../../constants/language.json";
 
 export default class DepositCommand extends EconomyCommand {
-    constructor() {
+    private language: typeof languages.commands.deposit[Language];
+    private langCode: Language;
+
+    constructor(language: Language) {
+        const langs = languages.commands.deposit;
+        const lang = langs[language];
         super({
-            triggers: ["deposit", "dep", "הפקד"].map((trigger) => new CommandTrigger(trigger)),
-            category: "Economy",
-            description: "Give balance to a user",
-            usage: "{prefix}{command} @mention",
+            triggers: langs.triggers.map((e) => new CommandTrigger(e)),
+            announcedAliases: lang.triggers,
+            category: lang.category,
+            description: lang.description,
+            usage: lang.usage,
         });
+
+        this.language = lang;
+        this.langCode = language;
     }
 
     async execute(client: WASocket, chat: Chat, message: Message, body: string, ...args: string[]) {
@@ -25,14 +35,14 @@ export default class DepositCommand extends EconomyCommand {
         const userJid = message.sender;
         const user = await userRepository.get(userJid ?? "");
         if (!user || !userJid) {
-            return await messagingService.reply(message, "User does not have a balance.", true);
+            return await messagingService.reply(message, this.language.execution.no_balance, true);
         }
 
         const bankCapacity = user.model.bankCapacity;
         const balance = await this.getBalance(userJid);
         const net = (await user.calculateNetBalance()) ?? 0;
         if (!balance) {
-            return await messagingService.reply(message, "User does not have a balance.", true);
+            return await messagingService.reply(message, this.language.execution.no_balance, true);
         }
 
         const allowedDeposit = bankCapacity - balance.bank;
@@ -41,32 +51,35 @@ export default class DepositCommand extends EconomyCommand {
             ? Math.min(allowedDeposit, balance.wallet)
             : Number(extractNumbers(body)[0] ?? "");
         if (depositAmount == 0) {
-            return await messagingService.reply(message, "You can't deposit any coins\nאתה לא יכול להפקיד אפילו אגורה חבר", true);
+            return await messagingService.reply(message, this.language.execution.cant_deposit, true);
         }
         if (!depositAmount) {
-            return await messagingService.reply(
-                message,
-                `How much do you want to deposit?\nTry ${chat.commandHandler?.prefix}deposit <amount>`,
-                true,
-            );
+            return await messagingService.reply(message, this.language.execution.no_body, true, {
+                placeholder: {
+                    chat,
+                    command: this,
+                },
+            });
         }
 
         if (depositAmount > allowedDeposit || depositAmount < 0) {
-            const english = `You can only hold ${commas(
-                bankCapacity,
-            )} in your bank right now. To hold more, buy more bank space!`;
-            const hebrew = `כרגע אתה רק יכול להחזיק ${commas(bankCapacity)} כדי להחזיק יותר, תקנה עוד מקום!`;
-            return await messagingService.reply(message, `${english}\n${hebrew}`, true);
+            return await messagingService.reply(message, this.language.execution.capacity_error, true, {
+                placeholder: {
+                    custom: {
+                        capacity: commas(bankCapacity),
+                    },
+                },
+            });
         }
 
         const addBalance = new Balance(-depositAmount, depositAmount);
         const success = await this.addBalance(userJid, addBalance);
         if (!success) {
-            return await messagingService.reply(
-                message,
-                `Failed to deposit.\nIf this error persists please contact an admin using ${chat.commandHandler?.prefix}feature`,
-                true,
-            );
+            return await messagingService.reply(message, this.language.execution.error, true, {
+                placeholder: {
+                    chat,
+                },
+            });
         }
 
         const currentBalance = (await this.getBalance(userJid))!;
@@ -76,10 +89,17 @@ export default class DepositCommand extends EconomyCommand {
             currentBalance,
             net,
             currentNet,
+            this.langCode,
             user.model.bankCapacity,
         );
-        const reply = `*@${userJid.split("@")[0]}'s balance*\n\n${balChangeMessage}`;
-        return await messagingService.replyAdvanced(message, {text: reply, mentions: [userJid]}, true);
+        const reply = `${languages.commands.balance[this.langCode].execution.title}\n\n${balChangeMessage}`;
+        return await messagingService.replyAdvanced(message, {text: reply, mentions: [userJid]}, true, {
+            placeholder: {
+                custom: {
+                    tag: `@${jidDecode(userJid).user}`,
+                },
+            },
+        });
     }
 
     onBlocked(data: Message, blockedReason: BlockedReason) {}

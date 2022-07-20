@@ -1,43 +1,65 @@
 import {proto, WASocket} from "@adiwajshing/baileys";
 import {BlockedReason} from "../../../blockable";
 import {Chat} from "../../../chats";
-import {messagingService} from "../../../constants/services";
+import {messagingService, userRepository} from "../../../constants/services";
 import {ChatLevel, DeveloperLevel} from "../../../database/models";
 import CommandHandler from "../../../handlers/command_handler";
 import Message from "../../../message/message";
 import Command from "../../command";
 import CommandTrigger from "../../command_trigger";
+import languages from "../../../constants/language.json";
+import {applyPlaceholders} from "../../../utils/message_utils";
 
 export default class HelpCommand extends Command {
-    command: string = "help";
-    help: string = "This message. You can also do (>>help <command name> | e.g >>help music)";
-    help_category: string = "Info";
-
     private commandHandler: CommandHandler;
+    private language: typeof languages.commands.help[Language];
+    private langCode: Language;
 
-    constructor(commandHandler: CommandHandler) {
+    constructor(language: Language, commandHandler: CommandHandler) {
+        const langs = languages.commands.help;
+        const lang = langs[language];
         super({
-            triggers: ["help", "עזרה"].map((e) => new CommandTrigger(e)),
-            usage: "{prefix}{command}",
-            category: "Info",
-            description: "This message",
+            triggers: langs.triggers.map((e) => new CommandTrigger(e)),
+            announcedAliases: lang.triggers,
+            usage: lang.usage,
+            category: lang.category,
+            description: lang.description,
         });
+
+        this.language = lang;
+        this.langCode = language;
         this.commandHandler = commandHandler;
     }
 
     async execute(client: WASocket, chat: Chat, message: Message, body?: string) {
         const prefix = chat.model.commandPrefix;
 
+        const user = await userRepository.get(message.sender ?? "");
         const cmdArg = body?.trim().startsWith(prefix) ? body.trim() : prefix + body?.trim();
         const cmdArgRes = await chat.getCommandByTrigger(cmdArg);
         const isBlocked = cmdArgRes ? await this.commandHandler.isBlocked(message, cmdArgRes, false) : undefined;
-        if (cmdArgRes && (isBlocked == undefined || ![BlockedReason.InsufficientDeveloperLevel, BlockedReason.NotWhitelisted].includes(isBlocked))) {
+        if (
+            cmdArgRes &&
+            (isBlocked == undefined ||
+                ![BlockedReason.InsufficientDeveloperLevel, BlockedReason.NotWhitelisted].includes(isBlocked))
+        ) {
             let id = 0;
-            const desc = `*${prefix + cmdArgRes.mainTrigger.command ?? ""}*\n\n` + this.getCommandExtendedDescription(cmdArgRes);
-            const buttons: proto.IButton[] = cmdArgRes.triggers.map((alias) => {
-                return {buttonId: (id++).toString(), buttonText: {displayText: prefix + alias.command}};
+            const desc =
+                `*${await applyPlaceholders(cmdArgRes.usage, {message, command: cmdArgRes, chat, user})}*\n\n` +
+                (await applyPlaceholders(this.getCommandExtendedDescription(cmdArgRes), {
+                    message,
+                    command: cmdArgRes,
+                    chat: chat,
+                    user,
+                }));
+            const buttons: proto.IButton[] = cmdArgRes.announcedAliases.map((alias) => {
+                return {buttonId: (id++).toString(), buttonText: {displayText: prefix + alias}};
             });
-            return messagingService.replyAdvanced(message, {text: desc, buttons: buttons, footer: `(>>help ${cmdArgRes.mainTrigger.command})`}, true);
+            return messagingService.replyAdvanced(
+                message,
+                {text: desc, buttons: buttons, footer: `(${prefix}help ${cmdArgRes.name})`},
+                true,
+            );
         }
 
         const allCommands = this.commandHandler.blockables;
@@ -46,7 +68,7 @@ export default class HelpCommand extends Command {
 
         for (const command of allCommands) {
             if (!command.mainTrigger.command) continue;
-            if (command.mainTrigger.command == this.command) continue;
+            if (command.mainTrigger.command == this.mainTrigger.command) continue;
 
             if ((await this.commandHandler.isBlocked(message, command, false)) != undefined) continue;
 
@@ -54,51 +76,58 @@ export default class HelpCommand extends Command {
             filteredCommands.push(command);
         }
 
-        let helpMessage = "*----- HELP ME I'M RETARDED ----*\n";
+        let helpMessage = `${this.language.execution.prefix}\n`;
         const sections: Map<string, proto.ISection> = new Map();
         let id = 0;
         for (const command of filteredCommands) {
-            const sectionKey = command.category?.toLowerCase() ?? "misc";
+            const sectionKey = command.category?.toLowerCase() ?? this.language.execution.misc.toLowerCase();
             if (!sections.has(sectionKey)) {
-                sections.set(sectionKey, {title: command.category?.toUpperCase() ?? "MISC", rows: new Array<proto.IRow>()});
+                sections.set(sectionKey, {
+                    title: command.category?.toUpperCase() ?? this.language.execution.misc.toUpperCase(),
+                    rows: new Array<proto.IRow>(),
+                });
             }
 
             const section = sections.get(sectionKey);
-            const formattedDescription = this.getCommandExtendedDescription(command);
+            const formattedDescription = await applyPlaceholders(this.getCommandExtendedDescription(command), {
+                message,
+                command,
+                chat,
+                user,
+            });
             section?.rows?.push({
-                title: command.usage.replace(/{prefix}/gi, prefix).replace(/{command}/gi, command.mainTrigger.command),
+                title: await applyPlaceholders(command.usage, {message, command, chat, user}),
                 description: command.description,
-                rowId: `HELP_COMMAND-${id}\n${command.triggers.map((e) => prefix + e.command).join("\n")}\n\r${formattedDescription}`,
+                rowId: `HELP_COMMAND-${id}\n${command.triggers
+                    .map((e) => prefix + e.command)
+                    .join("\n")}\n\r${formattedDescription}`,
             });
 
             id++;
         }
 
-        helpMessage += "מקווה שעזרתי ✌\n";
-        helpMessage += "~bot";
-        const footer =
-            "Please consider supporting the bot by donating to the Patreon!\n\nIn the future, donators will receive special perks!\nhttps://www.patreon.com/wailcommunitybot";
+        helpMessage += `${this.language.execution.suffix}`;
 
         if (sendInGroup || message.content?.toLowerCase()?.includes("here"))
             await messagingService.sendMessage(
                 message.raw?.key.remoteJid!,
                 {
                     text: helpMessage,
-                    buttonText: "Click me for help!",
+                    buttonText: this.language.execution.button,
                     sections: Array.from(sections.entries()).map((arr) => arr[1] as proto.ISection),
-                    footer,
+                    footer: this.language.execution.suffix,
                 },
                 {quoted: message.raw!},
             );
         else {
-            messagingService.replyAdvanced(message, {text: "Check your DMs!"}, true);
+            messagingService.replyAdvanced(message, {text: this.language.execution.dms}, true);
             messagingService.sendMessage(
                 message.sender!,
                 {
                     text: helpMessage,
                     buttonText: "Click me for help!",
                     sections: Array.from(sections.entries()).map((arr) => arr[1] as proto.ISection),
-                    footer,
+                    footer: this.language.execution.footer,
                 },
                 {quoted: message.raw!},
             );
@@ -108,10 +137,12 @@ export default class HelpCommand extends Command {
     onBlocked(data: Message, blockedReason: BlockedReason) {}
 
     private getCommandExtendedDescription(command: Command) {
-        return `*Description:*\n${command.description}${command.extendedDescription ? '\n\n' : ''}${command.extendedDescription}\n\n*Aliases:*\n${command.triggers
+        return `*${this.language.execution.description}:*\n${command.description}${
+            command.extendedDescription ? "\n\n" : ""
+        }${command.extendedDescription}\n\n*${this.language.execution.aliases}:*\n${command.triggers
             .map((e) => e.command)
-            .join(", ")}\n\n*Cooldowns:*\n${Array.from(command.cooldowns.entries())
-            .map((e) => `${ChatLevel[e[0]]}: ${e[1] / 1000}s`)
+            .join(", ")}\n\n*${this.language.execution.cooldowns}:*\n${Array.from(command.cooldowns.entries())
+            .map((e) => `${languages.ranks[this.langCode][ChatLevel[e[0]].toLowerCase()]}: ${e[1] / 1000}s`)
             .join("\n")}`;
     }
 }

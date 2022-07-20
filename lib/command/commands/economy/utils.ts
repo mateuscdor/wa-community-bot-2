@@ -1,11 +1,13 @@
 import {Balance} from "../../../economy";
 import {commas} from "../../../utils/utils";
+import languages from "../../../constants/language.json";
 
 export function buildBalanceChangeMessage(
     previous: Balance,
     current: Balance,
     previousNet: number,
     currentNet: number,
+    langCode: Language,
     bankCapacity?: number,
 ) {
     const havePlus = (num: number) => (num > 0 ? "+" : "");
@@ -31,7 +33,7 @@ export function buildBalanceChangeMessage(
 
     const netText = `${commas(previousNet)} => ${commas(currentNet)} (${havePlus(netDiff)}${commas(netDiff)})`;
 
-    return `*Wallet:* ${walletText}\n*Bank:* ${bankText}\n*Net:* ${netText}`;
+    return `*${languages.economy.wallet[langCode]}:* ${walletText}\n*${languages.economy.bank[langCode]}:* ${bankText}\n*${languages.economy.net[langCode]}:* ${netText}`;
 }
 
 /**

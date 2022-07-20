@@ -8,6 +8,7 @@ import {DeveloperLevel} from "../../../../database/models";
 import {Balance} from "../../../../economy";
 import {formatNumberCommas} from "../../../../utils/utils";
 import {buildBalanceChangeMessage, extractNumbers} from "../utils";
+import { Language } from "../../../../language";
 
 export default class GiveBalanceCommand extends EconomyCommand {
     constructor() {
@@ -57,7 +58,7 @@ export default class GiveBalanceCommand extends EconomyCommand {
         const currentBalance = (await this.getBalance(userJid))!;
         const currentNet = await user.calculateNetBalance();
 
-        const balChangeMessage = buildBalanceChangeMessage(previousBalance, currentBalance, previousNet, currentNet);
+        const balChangeMessage = buildBalanceChangeMessage(previousBalance, currentBalance, previousNet, currentNet, "english");
         const reply = `*@${userJid.split("@")[0]}'s balance*\n\n${balChangeMessage}`;
         return await messagingService.replyAdvanced(message, {text: reply, mentions: [userJid]}, true);
     }

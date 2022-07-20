@@ -5,20 +5,28 @@ import {messagingService} from "../../../constants/services";
 import Message from "../../../message/message";
 import Command from "../../command";
 import CommandTrigger from "../../command_trigger";
+import languages from "../../../constants/language.json";
+import config from '../../../config.json';
 
 export default class CodeCommand extends Command {
-    constructor() {
+    private language: typeof languages.commands.code[Language];
+
+    constructor(language: Language) {
+        const langs = languages.commands.code;
+        const lang = langs[language];
         super({
-            triggers: ["code", "קוד"].map(e => new CommandTrigger(e)),
-            usage: "{prefix}{command}",
-            category: 'Info',
-            description: "Get the code to the bot",
+            triggers: langs.triggers.map((e) => new CommandTrigger(e)),
+            announcedAliases: lang.triggers,
+            category: lang.category,
+            description: lang.description,
         });
+
+        this.language = lang;
     }
 
     async onBlocked(msg: Message, blockedReason: BlockedReason) {}
 
     async execute(client: WASocket, chat: Chat, msg: Message, body: string) {
-        await messagingService.reply(msg, ``, true);
+        await messagingService.reply(msg, config.github_repo, true);
     }
 }
