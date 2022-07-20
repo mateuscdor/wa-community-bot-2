@@ -2,7 +2,13 @@ import {MediaType, WAMessage} from "@adiwajshing/baileys/lib/Types/Message";
 import {isJidGroup} from "@adiwajshing/baileys/lib/WABinary/jid-utils";
 import {ObjectId} from "mongodb";
 import MessageModel from "../database/models/message_model";
-import {getMessageMedia, getMessageMediaBuffer, getMessageMediaType, saveMessageMedia} from "../utils/media_utils";
+import {
+    getMediaPath,
+    getMessageMedia,
+    getMessageMediaBuffer,
+    getMessageMediaType,
+    saveMessageMedia,
+} from "../utils/media_utils";
 import {getMessageBody, getQuotedMessage} from "../utils/message_utils";
 import {BotClient} from "../whatsapp_bot";
 import Metadata from "../database/models/metadata";
@@ -63,7 +69,7 @@ export default class Message {
                 message.key.id!,
                 Number(message.messageTimestamp!),
                 getMessageBody(message),
-                !mediaBlocked ? await saveMessageMedia(message) : undefined,
+                !mediaBlocked ? getMediaPath(message) : undefined,
                 getMessageMediaType(message),
                 quoted?.key?.id ?? undefined,
                 from!,
@@ -100,7 +106,9 @@ export default class Message {
     }
 
     public get media() {
-        return getMessageMedia(this);
+        return getMessageMedia(this).then((f) =>
+            f ? f : saveMessageMedia(this.raw!).then((f) => getMessageMedia(this)),
+        );
     }
 
     public get mediaType() {

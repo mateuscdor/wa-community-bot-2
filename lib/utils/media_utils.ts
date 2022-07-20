@@ -26,11 +26,24 @@ export async function getMessageMediaBuffer(message: proto.IWebMessageInfo): Pro
 }
 
 export async function saveMessageMedia(message: proto.IWebMessageInfo): Promise<string | undefined> {
+    const mediaPath = getMediaPath(message);
+    if (!mediaPath) return;
+
+    const mediaBuffer = await getMessageMediaBuffer(message);
+    if (!mediaBuffer) return;
+    await new Promise((res, rej) => {
+        fs.writeFile(mediaPath, mediaBuffer, {}, (err) => {
+            err ? rej(err) : res(mediaPath);
+        });
+    });
+    return mediaPath;
+}
+
+export function getMediaPath(message: proto.IWebMessageInfo) {
     const mediaFolderPath = "./wa_media";
     const mediaType = getMessageMediaType(message);
     if (!mediaType) return;
-    const mediaBuffer = await getMessageMediaBuffer(message);
-    if (!mediaBuffer) return;
+
     if (!fs.existsSync(mediaFolderPath)) {
         fs.mkdirSync(mediaFolderPath);
     }
@@ -38,13 +51,8 @@ export async function saveMessageMedia(message: proto.IWebMessageInfo): Promise<
     if (!fs.existsSync(`${mediaFolderPath}/` + mediaType)) {
         fs.mkdirSync(`${mediaFolderPath}/` + mediaType);
     }
-    const mediaPath = `${mediaFolderPath}/${mediaType}/${Message.calculateSaveId(message)}`;
-    await new Promise((res, rej) => {
-        fs.writeFile(mediaPath, mediaBuffer, {}, (err) => {
-            err ? rej(err) : res(mediaPath);
-        });
-    });
-    return mediaPath;
+
+    return `${mediaFolderPath}/${mediaType}/${Message.calculateSaveId(message)}`;
 }
 
 export async function getMessageMedia(message: Message) {
