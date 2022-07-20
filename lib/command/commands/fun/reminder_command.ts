@@ -107,11 +107,10 @@ export default class ReminderCommand extends InteractableCommand {
             });
         }
 
-        console.log(`add time ${time} ${timeType}`);
-        const remindTime = moment().utc()
-            .add(time, timeType as moment.unitOfTime.Base)
-        console.log(`remind time ${remindTime.unix()}`)
-        if (remindTime.diff(moment().utc(), "seconds") < 60) {
+        const remindTime = moment()
+            .utc()
+            .add(time, timeType as moment.unitOfTime.Base);
+        if (remindTime.diff(moment().utc(), "seconds") < 59) {
             return await messagingService.reply(message, this.language.execution.too_little_time, true, {
                 placeholder: {chat: chat, command: this},
             });
@@ -124,7 +123,14 @@ export default class ReminderCommand extends InteractableCommand {
         const isDMChat = isJidUser(chat.model.jid);
         const isDMReminder = isDMChat ? true : await this.isDMReminder(message);
         if (isDMReminder == undefined) return;
-        const res = await reminderService.createSimple(message.sender, reminderText, remindTime.unix());
+        const res = await reminderService.createSimple(
+            message.sender,
+            reminderText,
+            moment()
+                .utc()
+                .add(time, timeType as moment.unitOfTime.Base)
+                .unix(), // create moment again since time passed since creating first version
+        );
         if (!res) {
             return await messagingService.reply(message, this.language.execution.error);
         }
