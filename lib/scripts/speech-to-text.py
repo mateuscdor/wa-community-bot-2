@@ -22,6 +22,7 @@ def main():
     input_path = str(args[0])
     jid = str(args[1])
     msg_id = str(args[2])
+    language = str(args[3]) if len(args) > 3 else 'he'
     recognizer = sr.Recognizer()
 
     if not input_path.endswith(".wav"):
@@ -54,7 +55,7 @@ def main():
         input_path = new_input
 
     os.mkdir(chunk_folder)
-    res = speech_to_text(input_path, chunk_folder, recognizer)
+    res = speech_to_text(input_path, chunk_folder, recognizer, language)
     sys.stdout.buffer.write(res)
     sys.stdout.flush()
 

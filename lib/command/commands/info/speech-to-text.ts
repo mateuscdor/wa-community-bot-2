@@ -56,6 +56,7 @@ export default class SpeechToTextCommand extends Command {
             path.resolve(audioPath),
             message.raw?.key.remoteJid ?? "jid",
             message.id,
+            body?.split(' ')[0] ?? 'he'
         ]);
 
         pythonProcess.stdout.on("data", async (data) => {
