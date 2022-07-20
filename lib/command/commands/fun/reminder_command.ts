@@ -1,5 +1,4 @@
 import {isJidUser, proto, WASocket} from "@adiwajshing/baileys";
-import url from "node:url";
 import {Chat} from "../../../chats";
 import {messagingService, reminderService, userRepository} from "../../../constants/services";
 import Message from "../../../message/message";
@@ -25,6 +24,11 @@ export default class ReminderCommand extends InteractableCommand {
     }
 
     private acceptableTimeTypes = new Set([
+        "second",
+        "seconds",
+        "שניה",
+        "שנחיה",
+        "שניות",
         "minute",
         "minutes",
         "דקה",
@@ -71,8 +75,6 @@ export default class ReminderCommand extends InteractableCommand {
                 message,
                 "You must provide time and text to set a reminder.\nExample: `>>reminder 1 hour Hello World`",
             );
-        } else if (timeType == "second" || timeType == "seconds" || timeType == "שנייה" || timeType == "שניות") {
-            return await messagingService.reply(message, "I'm sorry, but I can't set a reminder for seconds.");
         } else if (!this.acceptableTimeTypes.has(timeType?.toLowerCase() ?? "") || !timeType) {
             const connectedString = this.buildAcceptableTimesString();
             return await messagingService.reply(
@@ -107,6 +109,10 @@ export default class ReminderCommand extends InteractableCommand {
             .unix(message.timestamp)
             .add(time, timeType as moment.unitOfTime.Base)
             .unix();
+        const timeDiff = remindTime - message.timestamp;
+        if (timeDiff < 60) {
+            return await messagingService.reply(message, "I'm sorry, but I can't remind you for something less than a minute from now.");
+        }
         const user = await userRepository.get(message.sender ?? "");
         if (!user) {
             return await messagingService.reply(message, "You must be a user to set a reminder.");

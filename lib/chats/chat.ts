@@ -1,3 +1,4 @@
+import {AnyMessageContent, MiscMessageGenerationOptions} from "@adiwajshing/baileys";
 import {ChildProcess} from "child_process";
 import {whatsappBot} from "..";
 import Blockable from "../blockable/blockable";
@@ -30,14 +31,24 @@ import {
     ReputationCommand,
     SpeechToTextCommand,
 } from "../command/commands";
-import {BalanceCommand, BegCommand, DailyCommand, DepositCommand, GiveBalanceCommand, HighlowCommand, WithdrawCommand} from "../command/commands/economy";
-import {messageRepository, userRepository} from "../constants/services";
+import {
+    BalanceCommand,
+    BegCommand,
+    DailyCommand,
+    DepositCommand,
+    GiveBalanceCommand,
+    HighlowCommand,
+    WithdrawCommand,
+} from "../command/commands/economy";
+import {messageRepository, messagingService, userRepository} from "../constants/services";
 import {MessageModel} from "../database/models";
 import ChatModel from "../database/models/chat/chat_model";
+import Metadata from "../database/models/metadata";
 import BlockableHandler from "../handlers/blockable_handler";
 import CommandHandler from "../handlers/command_handler";
 import Message from "../message/message";
 import User from "../user/user";
+import config from "../config.json";
 
 export default abstract class Chat {
     public model: ChatModel;
@@ -62,6 +73,7 @@ export default abstract class Chat {
 
     async registerUserCommands() {
         const handler = this.commandHandler;
+        handler?.clear()
 
         // bot admin tools
         handler?.add(new JIDCommand());
@@ -207,5 +219,5 @@ export default abstract class Chat {
 
     public getCommandByClass(clazz: any) {
         return this.commandHandler?.blockables.filter((e) => e instanceof clazz)[0];
-    }
+    }  
 }

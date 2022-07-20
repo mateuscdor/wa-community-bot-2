@@ -20,11 +20,7 @@ export default class DeleteCommand extends Command {
     }
 
     async execute(client: WASocket, chat: Chat, message: Message, body: string) {
-        const raw = message.raw;
-        if (!raw) {
-            return messagingService.reply(message, 'An error occurred. Try again.', true);
-        }
-
+        const raw = message.raw!;
         const quoted = await message.getQuoted();
         if (!quoted) {
             return messagingService.reply(message, 'Please quote the message you want to delete.', true);

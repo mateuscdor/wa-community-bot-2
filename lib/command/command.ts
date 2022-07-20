@@ -25,6 +25,8 @@ export default abstract class Command implements Blockable<Message> {
 
     usage: string;
 
+    name: string;
+
     category: string | undefined;
 
     description: string;
@@ -45,6 +47,7 @@ export default abstract class Command implements Blockable<Message> {
         minArgs = 0,
         usage = "",
         description = "",
+        name,
         cooldowns = new Map([
             [ChatLevel.Free, 2000],
             [ChatLevel.Premium, 1000],
@@ -61,6 +64,7 @@ export default abstract class Command implements Blockable<Message> {
         blacklistedJids?: string[];
         whitelistedJids?: string[];
         minArgs?: number;
+        name?: string,
         usage?: string;
         description?: string;
         cooldowns?: Map<ChatLevel, number>;
@@ -81,6 +85,7 @@ export default abstract class Command implements Blockable<Message> {
         this.groupLevel = groupLevel;
         this.category = category;
         this.extendedDescription = extendedDescription;
+        this.name = name ?? this.mainTrigger.command;
     }
 
 

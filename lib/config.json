@@ -1,3 +1,5 @@
 {
-    "bank_start_capacity": 10000
+    "default_command_prefix": ">>",
+    "bank_start_capacity": 10000,
+    "github_repo": "https://github.com/Heknon/wa-community-bot-2"
 }

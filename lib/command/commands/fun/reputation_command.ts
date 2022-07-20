@@ -85,9 +85,8 @@ export default class ReputationCommand extends Command {
         const mentions = message.raw?.message?.extendedTextMessage?.contextInfo?.mentionedJid ?? [];
         if (mentions.length === 0) {
             return await messagingService.reply(message, "You must mention someone to give them reputation!", true);
-        } else if (mentions.length != 1) {
-            return await messagingService.reply(message, "You must mention *one person* to give them reputation!", true);
         }
+        
         const reppedJid = mentions[0];
         if (reppedJid == message.sender) {
             return await messagingService.reply(message, "You can't give yourself reputation!", true);

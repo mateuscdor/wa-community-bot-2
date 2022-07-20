@@ -19,6 +19,6 @@ export default class CodeCommand extends Command {
     async onBlocked(msg: Message, blockedReason: BlockedReason) {}
 
     async execute(client: WASocket, chat: Chat, msg: Message, body: string) {
-        await messagingService.reply(msg, `https://github.com/Heknon/wa-community-bot-2`, true);
+        await messagingService.reply(msg, ``, true);
     }
 }

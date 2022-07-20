@@ -1,6 +1,10 @@
 import {extractMessageContent, generateWAMessageFromContent, WAMessage} from "@adiwajshing/baileys";
+import {whatsappBot} from "..";
+import {Chat} from "../chats";
+import {Command} from "../command";
 import {messagingService} from "../constants/services";
 import Message from "../message/message";
+import User from "../user/user";
 import {BotClient} from "../whatsapp_bot";
 import {sleep} from "./utils";
 
@@ -9,10 +13,14 @@ export function getQuotedMessage(message?: WAMessage) {
 
     if (!contextInfo) return;
 
-    let quoted = generateWAMessageFromContent(contextInfo?.remoteJid || contextInfo.participant!, contextInfo?.quotedMessage!, {
-        messageId: contextInfo?.stanzaId!,
-        userJid: contextInfo?.participant!,
-    });
+    let quoted = generateWAMessageFromContent(
+        contextInfo?.remoteJid || contextInfo.participant!,
+        contextInfo?.quotedMessage!,
+        {
+            messageId: contextInfo?.stanzaId!,
+            userJid: contextInfo?.participant!,
+        },
+    );
 
     quoted.key = {
         fromMe: contextInfo?.participant! == BotClient.currentClientId,
@@ -85,4 +93,27 @@ export async function waitForMessage(filter: (message: Message) => boolean | Pro
                 rej("timed out");
             }, timeout);
     });
+}
+
+export async function applyPlaceholders(
+    content: string,
+    {
+        message,
+        user,
+        command,
+        custom,
+        chat,
+    }: {message?: Message; user?: User; command?: Command; chat?: Chat; custom?: Map<string, string>} = {},
+) {
+    let res = content;
+    res = res.replace(/\$\{name\}/g, user?.getFullDefaultingName() ?? "");
+    res = res.replace(/\$\{prefix\}/g, chat?.commandHandler?.prefix ?? ">>");
+    res = res.replace(/\$\{command\}/g, command?.name ?? "");
+    if (chat?.model.jid && whatsappBot.client)
+        res = res.replace(/\$\{group\}/g, (await whatsappBot.client.groupMetadata(chat.model.jid)).subject ?? "");
+    for (const [key, value] of custom ?? []) {
+        res = res.replace(new RegExp(`\\$\\{${key}\\}`, "g"), value);
+    }
+
+    return res;
 }

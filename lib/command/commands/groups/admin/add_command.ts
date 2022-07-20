@@ -28,13 +28,11 @@ export default class AddCommand extends Command {
 
         if (!iAmAdmin) {
             return await messagingService.reply(message, "Give the bot admin access in order to use this command.", true);
-        } else if (!message.raw) {
-            return await messagingService.reply(message, "There seems to have been an error. Please try again.", true);
         }
 
         let vcards =
-            message.raw.message?.extendedTextMessage?.contextInfo?.quotedMessage?.contactMessage?.vcard ||
-            message.raw.message?.extendedTextMessage?.contextInfo?.quotedMessage?.contactsArrayMessage?.contacts!.map((contact) => contact.vcard) ||
+            message.raw!.message?.extendedTextMessage?.contextInfo?.quotedMessage?.contactMessage?.vcard ||
+            message.raw!.message?.extendedTextMessage?.contextInfo?.quotedMessage?.contactsArrayMessage?.contacts!.map((contact) => contact.vcard) ||
             [];
 
         if (vcards.length > 0) {

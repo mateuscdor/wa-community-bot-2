@@ -4,6 +4,11 @@ import {ObjectId} from "mongodb";
 import {createImportSpecifier} from "typescript";
 import Message from "./message/message";
 import Metadata from "./database/models/metadata";
+import User from "./user/user";
+import {Command} from "./command";
+import {Chat} from "./chats";
+import {whatsappBot} from ".";
+import { applyPlaceholders } from "./utils/message_utils";
 
 export default class MessagingService {
     private client: WASocket | undefined;
@@ -48,8 +53,14 @@ export default class MessagingService {
         return msg;
     }
 
-    public async reply(message: Message, content: string, quote: boolean = false, privateReply: boolean = false, metadata?: Metadata) {
-        await this.replyAdvanced(message, {text: content}, quote, privateReply, metadata);
+    public async reply(
+        message: Message,
+        content: string,
+        quote: boolean = false,
+        privateReply: boolean = false,
+        metadata?: Metadata,
+    ) {
+        return await this.replyAdvanced(message, {text: content}, quote, privateReply, metadata);
     }
 
     public async replyAdvanced(
@@ -70,10 +81,20 @@ export default class MessagingService {
             recipient = message.fromMe ? message.to : message.from;
         }
 
-        return this._internalSendMessage(recipient, content, {quoted: quote ? message.raw ?? undefined : undefined}, metadata);
+        return this._internalSendMessage(
+            recipient,
+            content,
+            {quoted: quote ? message.raw ?? undefined : undefined},
+            metadata,
+        );
     }
 
-    public async sendMessage(recipient: string, content: AnyMessageContent, options?: MiscMessageGenerationOptions, metadata?: Metadata) {
+    public async sendMessage(
+        recipient: string,
+        content: AnyMessageContent,
+        options?: MiscMessageGenerationOptions,
+        metadata?: Metadata,
+    ) {
         return this._internalSendMessage(recipient, content, options, metadata);
     }
 
@@ -82,6 +103,12 @@ export default class MessagingService {
         content: AnyMessageContent,
         options?: MiscMessageGenerationOptions,
         metadata?: Metadata,
+        placeholderData?: {
+            message?: Message;
+            user?: User;
+            command?: Command;
+            custom?: Map<string, string>;
+        },
     ): Promise<Message> {
         try {
             assert(this.client, "Client must be set using setClient() method!");
@@ -95,6 +122,13 @@ export default class MessagingService {
             if (options?.quoted) {
                 options.quoted.key.fromMe = false;
             }
+
+            const text = (content as any).text;
+            const caption = (content as any).caption;
+            if (text != undefined && text.length > 0)
+                (content as any).text = applyPlaceholders(text, placeholderData);
+            if (caption != undefined && caption.length > 0)
+                (content as any).caption = applyPlaceholders(text, placeholderData);
 
             const response = await this.client!.sendMessage(recipient, content, options);
 
@@ -113,7 +147,10 @@ export default class MessagingService {
         }
     }
 
-    public addMessageCallback(filter: (message: Message) => boolean | Promise<boolean>, callback: (message: Message) => Promise<any> | any) {
+    public addMessageCallback(
+        filter: (message: Message) => boolean | Promise<boolean>,
+        callback: (message: Message) => Promise<any> | any,
+    ) {
         const id = new ObjectId();
         this.messageCallbacks.push([id, filter, callback]);
         return id;

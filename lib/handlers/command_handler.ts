@@ -133,4 +133,8 @@ export default class CommandHandler extends BlockableHandler<Message> {
     add(...blockable: Command[]): void {
         super.add(...blockable);
     }
+
+    clear() {
+        super.blockables = [];
+    }
 }
