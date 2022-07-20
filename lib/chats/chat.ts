@@ -31,6 +31,7 @@ import {
     ReputationCommand,
     SpeechToTextCommand,
     LanguageCommand,
+    PrefixCommand,
 } from "../command/commands";
 import {
     BalanceCommand,
@@ -68,9 +69,14 @@ export default abstract class Chat {
         await this.registerUserCommands();
     }
 
+    async updatePrefix(prefix: string) {
+        if (!this.commandHandler) return;
+        this.commandHandler!.prefix = prefix;
+    }
+
     async registerUserCommands() {
         const handler = this.commandHandler;
-        handler?.clear()
+        handler?.clear();
 
         // bot admin tools
         handler?.add(new JIDCommand());
@@ -94,6 +100,7 @@ export default abstract class Chat {
         handler?.add(new GtfoCommand(this.model.language));
         handler?.add(new KickCommand(this.model.language));
         handler?.add(new EveryoneCommand(this.model.language));
+        handler?.add(new PrefixCommand(this.model.language));
 
         // bot outreach commands
         handler?.add(new JoinCommand(this.model.language));
@@ -219,5 +226,5 @@ export default abstract class Chat {
 
     public getCommandByClass(clazz: any) {
         return this.commandHandler?.blockables.filter((e) => e instanceof clazz)[0];
-    }  
+    }
 }

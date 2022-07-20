@@ -611,442 +611,476 @@
                 }
             }
         },
-        "reminder": {
+        "prefix": {
+            "triggers": [
+                "prefix",
+                "קידומת"
+            ],
+            "english": {
+                "triggers": [
+                    "prefix"
+                ],
+                "category": "Group Admin",
+                "description": "Change the prefix of the bot",
+                "usage": "{prefix}{command} <prefix>",
+                "execution": {
+                    "no_content": "You must provide a prefix to change the bot's prefix to.",
+                    "success": "Changed the bot's prefix to: \"{prefix}\"",
+                    "too_long": "The prefix must be less than 10 characters long.",
+                    "only_admin": "Only admin's can change the bot's prefix."
+                }
+            },
+            "hebrew": {
+                "triggers": [
+                    "קידומת"
+                ],
+                "category": "אדמין קבוצה",
+                "description": "שנה את הקידומת של הבוט",
+                "usage": "{prefix}{command} <קידומת>",
+                "execution": {
+                    "no_content": "חסר גוף לפקודה. גוף הפקודה תהיה הקידומת החדשה.",
+                    "success": "קידומת הבוט שונתה ל: \"{prefix}\"",
+                    "too_long": "הקידומת חייבת להיות פחות מ10 תווים.",
+                    "only_admin": "רק אדמינים יכולים לשנות את הקידומת של הבוט."
+                }
+            }
+        }
+    },
+    "reminder": {
+        "triggers": [
+            "reminder",
+            "remind",
+            "תזכורת",
+            "תזכיר לי"
+        ],
+        "english": {
             "triggers": [
                 "reminder",
-                "remind",
+                "remind"
+            ],
+            "category": "Fun",
+            "description": "Set a reminder",
+            "extended_description": "View all the reminders you have set using `{prefix}{command} list`",
+            "usage": "{prefix}{command} <time> <message>",
+            "execution": {
+                "no_body": "You must provide time and text to set a reminder.\nExample: `{prefix}{command} 1 hour Hello World`",
+                "too_little_time": "I'm sorry, but I can't set a reminder for less than a minute.",
+                "valid_times": "You must provide a valid time type.\nValid time types: {list}",
+                "error": "Something went wrong while creating the reminder.",
+                "success": "Great.\nI'll remind you to {text} in {time} {time_type}!",
+                "list_title": "*Reminders:* _(select one to modify using the number)_",
+                "list_empty": "You have no reminders set.",
+                "change_menu": {
+                    "title": "What do you want to change?",
+                    "text": "Reminder text",
+                    "dm": "Send reminder in DM",
+                    "delete": "Delete reminder",
+                    "cancel": "Cancel change"
+                },
+                "text_change": "What should the reminder be?",
+                "success_text_change": "Great.\nI'll remind you to {text}!",
+                "success_dm_update": "Updated reminder.",
+                "success_delete": "Deleted.",
+                "success_cancel": "Cancelled reminder change",
+                "where_to_send_question": "Do you want this reminder to be sent to you privately?\n\n*1.* Yes\n*2.* No\n*3.* Cancel",
+                "creation_cancel": "Reminder creation cancelled"
+            }
+        },
+        "hebrew": {
+            "triggers": [
                 "תזכורת",
                 "תזכיר לי"
             ],
-            "english": {
-                "triggers": [
-                    "reminder",
-                    "remind"
-                ],
-                "category": "Fun",
-                "description": "Set a reminder",
-                "extended_description": "View all the reminders you have set using `{prefix}{command} list`",
-                "usage": "{prefix}{command} <time> <message>",
-                "execution": {
-                    "no_body": "You must provide time and text to set a reminder.\nExample: `{prefix}{command} 1 hour Hello World`",
-                    "too_little_time": "I'm sorry, but I can't set a reminder for less than a minute.",
-                    "valid_times": "You must provide a valid time type.\nValid time types: {list}",
-                    "error": "Something went wrong while creating the reminder.",
-                    "success": "Great.\nI'll remind you to {text} in {time} {time_type}!",
-                    "list_title": "*Reminders:* _(select one to modify using the number)_",
-                    "list_empty": "You have no reminders set.",
-                    "change_menu": {
-                        "title": "What do you want to change?",
-                        "text": "Reminder text",
-                        "dm": "Send reminder in DM",
-                        "delete": "Delete reminder",
-                        "cancel": "Cancel change"
-                    },
-                    "text_change": "What should the reminder be?",
-                    "success_text_change": "Great.\nI'll remind you to {text}!",
-                    "success_dm_update": "Updated reminder.",
-                    "success_delete": "Deleted.",
-                    "success_cancel": "Cancelled reminder change",
-                    "where_to_send_question": "Do you want this reminder to be sent to you privately?\n\n*1.* Yes\n*2.* No\n*3.* Cancel",
-                    "creation_cancel": "Reminder creation cancelled"
-                }
-            },
-            "hebrew": {
-                "triggers": [
-                    "תזכורת",
-                    "תזכיר לי"
-                ],
-                "category": "כיף",
-                "description": "הגדר תזכורת",
-                "extended_description": "ניתן לצפות בכל התזכורתים שנקבעו על ידי הפקודה `{prefix}{command} רשימה`",
-                "usage": "{prefix}{command} <הודעה> <זמן>",
-                "execution": {
-                    "no_body": "אתה חייב לספק זמן והודעה בכדי להגדיר תזכורת.\nדוגמא: `{prefix}{command} 1 שעה שלום עולם`",
-                    "too_little_time": "אני לא יכול להגדיר תזכורות מתחת לדקה.",
-                    "valid_times": "אתה חייב לספק זמן תקין.\nזמנים תקינים: {list}",
-                    "error": "אירעה שגיאה בעת יצירת התזכורת.",
-                    "success": "מעולה.\nאני אזכיר לך לעשות {text} בעוד {time} {time_type}!",
-                    "list_title": "*תזכורות:* _(בחר אחד לשינוי בעזרת המספרים)_",
-                    "list_empty": "אין לך כרגע תזכורות.",
-                    "change_menu": {
-                        "title": "מה אתה רוצה לשנות?",
-                        "text": "הודעת התזכורת",
-                        "dm": "שליחת תזכורת בהודעה פרטית",
-                        "delete": "מחק תזכורת",
-                        "cancel": "בטל שינוים"
-                    },
-                    "where_to_send_question": "האם לשלוח את התזכורת בהודעה פרטית?\n\n*1.* כן\n*2.* לא\n*3.* ביטול",
-                    "text_change": "כתוב את התזכורת החדשה:",
-                    "success_text_change": "מעולה, אזכיר לך לעשות {text}!",
-                    "success_dm_update": "התעדכן בהצלחה.",
-                    "success_delete": "נמחק.",
-                    "success_cancel": "יצאתי מהתליך שינוי התזכורת.",
-                    "creation_cancel": "יצירת התזכורת התבטלה."
-                }
+            "category": "כיף",
+            "description": "הגדר תזכורת",
+            "extended_description": "ניתן לצפות בכל התזכורתים שנקבעו על ידי הפקודה `{prefix}{command} רשימה`",
+            "usage": "{prefix}{command} <הודעה> <זמן>",
+            "execution": {
+                "no_body": "אתה חייב לספק זמן והודעה בכדי להגדיר תזכורת.\nדוגמא: `{prefix}{command} 1 שעה שלום עולם`",
+                "too_little_time": "אני לא יכול להגדיר תזכורות מתחת לדקה.",
+                "valid_times": "אתה חייב לספק זמן תקין.\nזמנים תקינים: {list}",
+                "error": "אירעה שגיאה בעת יצירת התזכורת.",
+                "success": "מעולה.\nאני אזכיר לך לעשות {text} בעוד {time} {time_type}!",
+                "list_title": "*תזכורות:* _(בחר אחד לשינוי בעזרת המספרים)_",
+                "list_empty": "אין לך כרגע תזכורות.",
+                "change_menu": {
+                    "title": "מה אתה רוצה לשנות?",
+                    "text": "הודעת התזכורת",
+                    "dm": "שליחת תזכורת בהודעה פרטית",
+                    "delete": "מחק תזכורת",
+                    "cancel": "בטל שינוים"
+                },
+                "where_to_send_question": "האם לשלוח את התזכורת בהודעה פרטית?\n\n*1.* כן\n*2.* לא\n*3.* ביטול",
+                "text_change": "כתוב את התזכורת החדשה:",
+                "success_text_change": "מעולה, אזכיר לך לעשות {text}!",
+                "success_dm_update": "התעדכן בהצלחה.",
+                "success_delete": "נמחק.",
+                "success_cancel": "יצאתי מהתליך שינוי התזכורת.",
+                "creation_cancel": "יצירת התזכורת התבטלה."
             }
-        },
-        "reputation": {
+        }
+    },
+    "reputation": {
+        "triggers": [
+            "reputation",
+            "rep",
+            "כבוד"
+        ],
+        "english": {
             "triggers": [
                 "reputation",
-                "rep",
+                "rep"
+            ],
+            "category": "Fun",
+            "description": "Give reputation to someone for being nice",
+            "extended_description": "View someone's reputation using `{prefix}{command} stats @mention`",
+            "usage": "{prefix}{command} <tag>",
+            "execution": {
+                "no_body": "You must provide a user to give them reputation.\nExample: `{prefix}{command} @user`",
+                "not_reputation_amount": "\"{text}\" is not a valid amount of reputation to give",
+                "stats": "*Reputation stats of {tag}*\n\n*Total reputation received:* {total}",
+                "self_stats": "*Total reputation received:* {total}\n*Reputation points remaining:* {left}",
+                "no_user": "Failed to get this user's reputation.\nI couldn't find a user with the name",
+                "no_mention": "You must mention someone to give them reputation!",
+                "no_self_rep": "You can't give yourself reputation!",
+                "point": [
+                    "point",
+                    "points"
+                ],
+                "reputation": "reputation",
+                "not_enough_rep": "You can not give {pointsGive} reputation point(s) while you only have {pointsLeft} point(s) left",
+                "success_give": "You've successfully given reputation!\n\n*{tag}:* {previous} => {current} (+{given})\n*Points left:* {left}"
+            }
+        },
+        "hebrew": {
+            "triggers": [
                 "כבוד"
             ],
-            "english": {
-                "triggers": [
-                    "reputation",
-                    "rep"
+            "category": "כיף",
+            "description": "תתנו למישהו כבוד בגלל שהוא חבר טוב",
+            "extended_description": "ניתן גם לצפות בכבוד של מישהו על ידי הפקודה `{prefix}{command} סטטיסטיקה @תיוג`",
+            "usage": "{prefix}{command} <תיוג>",
+            "execution": {
+                "no_body": "למי לתת כבוד?\nדוגמא: `{prefix}{command} @תיוג`",
+                "not_reputation_amount": "\"{text}\" אינו כמות תקינה של כבוד לתת.",
+                "stats": "*סטטיסטיקת הכבוד של @{tag}*\n\n*כבוד כולל:* {total}",
+                "self_stats": "*כבוד כולל:* {total}\n*כבוד שנותר לתת:* {left}",
+                "no_user": "אין אפשרות לתת כבוד למשתמש הזה.\nאין משתמש עם השם הזה",
+                "no_mention": "צריך לתייג את מי שאתה רוצה לתת לו כבוד",
+                "no_self_rep": "אין כבוד בלתת לעצמך כבוד...",
+                "point": [
+                    "נקודה",
+                    "נקודות"
                 ],
-                "category": "Fun",
-                "description": "Give reputation to someone for being nice",
-                "extended_description": "View someone's reputation using `{prefix}{command} stats @mention`",
-                "usage": "{prefix}{command} <tag>",
-                "execution": {
-                    "no_body": "You must provide a user to give them reputation.\nExample: `{prefix}{command} @user`",
-                    "not_reputation_amount": "\"{text}\" is not a valid amount of reputation to give",
-                    "stats": "*Reputation stats of {tag}*\n\n*Total reputation received:* {total}",
-                    "self_stats": "*Total reputation received:* {total}\n*Reputation points remaining:* {left}",
-                    "no_user": "Failed to get this user's reputation.\nI couldn't find a user with the name",
-                    "no_mention": "You must mention someone to give them reputation!",
-                    "no_self_rep": "You can't give yourself reputation!",
-                    "point": [
-                        "point",
-                        "points"
-                    ],
-                    "reputation": "reputation",
-                    "not_enough_rep": "You can not give {pointsGive} reputation point(s) while you only have {pointsLeft} point(s) left",
-                    "success_give": "You've successfully given reputation!\n\n*{tag}:* {previous} => {current} (+{given})\n*Points left:* {left}"
-                }
-            },
-            "hebrew": {
-                "triggers": [
-                    "כבוד"
-                ],
-                "category": "כיף",
-                "description": "תתנו למישהו כבוד בגלל שהוא חבר טוב",
-                "extended_description": "ניתן גם לצפות בכבוד של מישהו על ידי הפקודה `{prefix}{command} סטטיסטיקה @תיוג`",
-                "usage": "{prefix}{command} <תיוג>",
-                "execution": {
-                    "no_body": "למי לתת כבוד?\nדוגמא: `{prefix}{command} @תיוג`",
-                    "not_reputation_amount": "\"{text}\" אינו כמות תקינה של כבוד לתת.",
-                    "stats": "*סטטיסטיקת הכבוד של @{tag}*\n\n*כבוד כולל:* {total}",
-                    "self_stats": "*כבוד כולל:* {total}\n*כבוד שנותר לתת:* {left}",
-                    "no_user": "אין אפשרות לתת כבוד למשתמש הזה.\nאין משתמש עם השם הזה",
-                    "no_mention": "צריך לתייג את מי שאתה רוצה לתת לו כבוד",
-                    "no_self_rep": "אין כבוד בלתת לעצמך כבוד...",
-                    "point": [
-                        "נקודה",
-                        "נקודות"
-                    ],
-                    "reputation": "כבוד",
-                    "not_enough_rep": "אתה לא יכול לתת {pointsGive} נקודות כבוד שיש לך רק {pointsLeft}",
-                    "success_give": "מתת כבוד!\n\n*@{tag}:* {previous} => {current} (+{given})\n*נקודות שנותרו:* {left}"
-                }
+                "reputation": "כבוד",
+                "not_enough_rep": "אתה לא יכול לתת {pointsGive} נקודות כבוד שיש לך רק {pointsLeft}",
+                "success_give": "מתת כבוד!\n\n*@{tag}:* {previous} => {current} (+{given})\n*נקודות שנותרו:* {left}"
+            }
+        }
+    },
+    "spoof": {
+        "triggers": [
+            "spoof",
+            "זייף"
+        ],
+        "english": {
+            "triggers": [
+                "spoof"
+            ],
+            "category": "Fun",
+            "description": "An exploit to spoof a friend's message",
+            "usage": "{prefix}{command} @mention \"spoof message\" \"bot message>\"",
+            "execution": {
+                "error": "Must follow {prefix}{command} @mention \"spoofed message\" \"bot message\""
             }
         },
-        "spoof": {
+        "hebrew": {
             "triggers": [
-                "spoof",
                 "זייף"
             ],
-            "english": {
-                "triggers": [
-                    "spoof"
-                ],
-                "category": "Fun",
-                "description": "An exploit to spoof a friend's message",
-                "usage": "{prefix}{command} @mention \"spoof message\" \"bot message>\"",
-                "execution": {
-                    "error": "Must follow {prefix}{command} @mention \"spoofed message\" \"bot message\""
-                }
-            },
-            "hebrew": {
-                "triggers": [
-                    "זייף"
-                ],
-                "category": "כיף",
-                "description": "בעיה בווצאפ שנותנת לזייף הודעה של חבר",
-                "usage": "{prefix}{command} @תיוג \"הודעה מזויפת\" \"הודעה של הבוט\"",
-                "execution": {
-                    "error": "בבקשה תעקוב אחר הפורמט הבא:\n{prefix}{command} @תיוג \"הודעה מזויפת\" \"הודעה של הבוט\""
-                }
+            "category": "כיף",
+            "description": "בעיה בווצאפ שנותנת לזייף הודעה של חבר",
+            "usage": "{prefix}{command} @תיוג \"הודעה מזויפת\" \"הודעה של הבוט\"",
+            "execution": {
+                "error": "בבקשה תעקוב אחר הפורמט הבא:\n{prefix}{command} @תיוג \"הודעה מזויפת\" \"הודעה של הבוט\""
+            }
+        }
+    },
+    "sticker": {
+        "triggers": [
+            "sticker",
+            "סטיקר"
+        ],
+        "english": {
+            "triggers": [
+                "sticker"
+            ],
+            "category": "Fun",
+            "description": "Send along with an image or video to create a sticker",
+            "usage": "{prefix}{command}",
+            "execution": {
+                "no_media": "You must send a video, image, sticker or quote one along with the command.",
+                "too_big": "The sticker you are trying to create is too large."
             }
         },
-        "sticker": {
+        "hebrew": {
             "triggers": [
-                "sticker",
                 "סטיקר"
             ],
-            "english": {
-                "triggers": [
-                    "sticker"
-                ],
-                "category": "Fun",
-                "description": "Send along with an image or video to create a sticker",
-                "usage": "{prefix}{command}",
-                "execution": {
-                    "no_media": "You must send a video, image, sticker or quote one along with the command.",
-                    "too_big": "The sticker you are trying to create is too large."
-                }
-            },
-            "hebrew": {
-                "triggers": [
-                    "סטיקר"
-                ],
-                "category": "כיף",
-                "description": "תשלח את הפקודה עם תמונה או סרטון כדי ליצור סטיקר",
-                "usage": "{prefix}{command}",
-                "execution": {
-                    "no_media": "אתה צריך לשלוח תמונה, סרטון, סטיקר או ציטוט יחד עם הפקודה.",
-                    "too_big": "הסטיקר שאתה מנסה ליצור גדול מדי."
-                }
+            "category": "כיף",
+            "description": "תשלח את הפקודה עם תמונה או סרטון כדי ליצור סטיקר",
+            "usage": "{prefix}{command}",
+            "execution": {
+                "no_media": "אתה צריך לשלוח תמונה, סרטון, סטיקר או ציטוט יחד עם הפקודה.",
+                "too_big": "הסטיקר שאתה מנסה ליצור גדול מדי."
             }
-        },
-        "balance": {
+        }
+    },
+    "balance": {
+        "triggers": [
+            "balance",
+            "bal",
+            "יתרה"
+        ],
+        "english": {
             "triggers": [
                 "balance",
-                "bal",
+                "bal"
+            ],
+            "category": "Economy",
+            "description": "Check your or someone else's balance",
+            "usage": "{prefix}{command} <tag>",
+            "execution": {
+                "no_user": "Must provide a user to check their balance.",
+                "no_balance": "User has no balance.",
+                "title": "*{tag}'s balance*"
+            }
+        },
+        "hebrew": {
+            "triggers": [
                 "יתרה"
             ],
-            "english": {
-                "triggers": [
-                    "balance",
-                    "bal"
-                ],
-                "category": "Economy",
-                "description": "Check your or someone else's balance",
-                "usage": "{prefix}{command} <tag>",
-                "execution": {
-                    "no_user": "Must provide a user to check their balance.",
-                    "no_balance": "User has no balance.",
-                    "title": "*{tag}'s balance*"
-                }
-            },
-            "hebrew": {
-                "triggers": [
-                    "יתרה"
-                ],
-                "category": "כלכלה",
-                "description": "בדוק את היתרה שלך או של מישהו אחר",
-                "usage": "{prefix}{command}",
-                "execution": {
-                    "no_user": "אתה צריך לספק משתמש שתבדוק לו את היתרה.",
-                    "no_balance": "משתמש זה לא קיים במערכת.",
-                    "title": "*היתרה של {tag}*"
-                }
+            "category": "כלכלה",
+            "description": "בדוק את היתרה שלך או של מישהו אחר",
+            "usage": "{prefix}{command}",
+            "execution": {
+                "no_user": "אתה צריך לספק משתמש שתבדוק לו את היתרה.",
+                "no_balance": "משתמש זה לא קיים במערכת.",
+                "title": "*היתרה של {tag}*"
             }
-        },
-        "beg": {
+        }
+    },
+    "beg": {
+        "triggers": [
+            "beg",
+            "לחם"
+        ],
+        "english": {
             "triggers": [
-                "beg",
+                "beg"
+            ],
+            "category": "Economy",
+            "description": "Beg for money, poor bastard",
+            "usage": "{prefix}{command}",
+            "execution": {
+                "imagine_begging": "IMAGINE BEGGING 😹",
+                "no_balance": "User has no balance.",
+                "success_give": "\"oh you poor little beggar, take {amount}\""
+            },
+            "responses": [
+                "HAHAHAHA no",
+                "ew get away",
+                "Get a job you hippy",
+                "nah, would rather not feed your gambling addiction",
+                "begone thot",
+                "nope, nothing for you",
+                "ur too stanky",
+                "no u",
+                "there. is. no. coins. for. you.",
+                "get out with that begging bullcrap",
+                "can you not"
+            ]
+        },
+        "hebrew": {
+            "triggers": [
                 "לחם"
             ],
-            "english": {
-                "triggers": [
-                    "beg"
-                ],
-                "category": "Economy",
-                "description": "Beg for money, poor bastard",
-                "usage": "{prefix}{command}",
-                "execution": {
-                    "imagine_begging": "IMAGINE BEGGING 😹",
-                    "no_balance": "User has no balance.",
-                    "success_give": "\"oh you poor little beggar, take {amount}\""
-                },
-                "responses": [
-                    "HAHAHAHA no",
-                    "ew get away",
-                    "Get a job you hippy",
-                    "nah, would rather not feed your gambling addiction",
-                    "begone thot",
-                    "nope, nothing for you",
-                    "ur too stanky",
-                    "no u",
-                    "there. is. no. coins. for. you.",
-                    "get out with that begging bullcrap",
-                    "can you not"
-                ]
+            "category": "כלכלה",
+            "description": "תתחנן לכסף, עני מסכן",
+            "usage": "{prefix}{command}",
+            "execution": {
+                "imagine_begging": "דמיין להתחנן 😹",
+                "no_balance": "משתמש זה לא קיים במערכת.",
+                "success_give": "אוי, מסכן שלי אל תהיה רעב, קח {amount} {coin}"
             },
-            "hebrew": {
-                "triggers": [
-                    "לחם"
-                ],
-                "category": "כלכלה",
-                "description": "תתחנן לכסף, עני מסכן",
-                "usage": "{prefix}{command}",
-                "execution": {
-                    "imagine_begging": "דמיין להתחנן 😹",
-                    "no_balance": "משתמש זה לא קיים במערכת.",
-                    "success_give": "אוי, מסכן שלי אל תהיה רעב, קח {amount} {coin}"
-                },
-                "responses": [
-                    "חחחחחחחחחחחחחחחחחחחחחחחחחחחחחח לא.",
-                    "איכ תתרחק",
-                    "תשיג עבודה היפי",
-                    "נע, אני מעדיף לא להאכיל את ההתמכרות שלך",
-                    "תתרחקי זונה",
-                    "נופ, כלום בשבילך.",
-                    "אתה מסריח מדי",
-                    "לא, אתה.",
-                    "אין. לי. מטבעות. בשבילך.",
-                    "צא מפה עם החרא שלך.",
-                    "אתה יכול לא"
-                ]
+            "responses": [
+                "חחחחחחחחחחחחחחחחחחחחחחחחחחחחחח לא.",
+                "איכ תתרחק",
+                "תשיג עבודה היפי",
+                "נע, אני מעדיף לא להאכיל את ההתמכרות שלך",
+                "תתרחקי זונה",
+                "נופ, כלום בשבילך.",
+                "אתה מסריח מדי",
+                "לא, אתה.",
+                "אין. לי. מטבעות. בשבילך.",
+                "צא מפה עם החרא שלך.",
+                "אתה יכול לא"
+            ]
+        }
+    },
+    "daily": {
+        "triggers": [
+            "daily",
+            "יומי"
+        ],
+        "english": {
+            "triggers": [
+                "daily"
+            ],
+            "category": "Economy",
+            "description": "Get coins daily, build a streak and get more coins!",
+            "usage": "{prefix}{command}",
+            "execution": {
+                "no_balance": "User has no balance.",
+                "claimed": "*You've already claimed your daily reward today:*\n\nYour next daily is ready in:\n*{text}*",
+                "success_title": "{tag}'s Daily Coins",
+                "success": "*{coins}* {coin} was placed in your wallet!\n\nYour next daily is ready in: {text}\nStreak: {streak} {days} (+{bonus} {coin})",
+                "and": "and "
             }
         },
-        "daily": {
+        "hebrew": {
             "triggers": [
-                "daily",
                 "יומי"
             ],
-            "english": {
-                "triggers": [
-                    "daily"
-                ],
-                "category": "Economy",
-                "description": "Get coins daily, build a streak and get more coins!",
-                "usage": "{prefix}{command}",
-                "execution": {
-                    "no_balance": "User has no balance.",
-                    "claimed": "*You've already claimed your daily reward today:*\n\nYour next daily is ready in:\n*{text}*",
-                    "success_title": "{tag}'s Daily Coins",
-                    "success": "*{coins}* {coin} was placed in your wallet!\n\nYour next daily is ready in: {text}\nStreak: {streak} {days} (+{bonus} {coin})",
-                    "and": "and "
-                }
-            },
-            "hebrew": {
-                "triggers": [
-                    "יומי"
-                ],
-                "category": "כלכלה",
-                "description": "לקבל כמה מטבעות כל יום, תבנה סטריק ותקבל יותר מטבעות!",
-                "usage": "{prefix}{command}",
-                "execution": {
-                    "no_balance": "משתמש זה לא קיים במערכת.",
-                    "claimed": "*אתה כבר לקחת את המתנה היומית שלך:*\n\nהמתנה היומית הבאה שלך תהיה מוכנה בעוד:\n*{text}*",
-                    "success_title": "המתנה היומית של {tag}",
-                    "success": "*{coins}* {coin} הוכנסו לארנק שלך!\n\nהמתנה היומית הבאה שלך תהיה מוכנה בעוד: {text}\nרצף: {streak} {days} (+{bonus} {coin})",
-                    "and": "ו"
-                }
+            "category": "כלכלה",
+            "description": "לקבל כמה מטבעות כל יום, תבנה סטריק ותקבל יותר מטבעות!",
+            "usage": "{prefix}{command}",
+            "execution": {
+                "no_balance": "משתמש זה לא קיים במערכת.",
+                "claimed": "*אתה כבר לקחת את המתנה היומית שלך:*\n\nהמתנה היומית הבאה שלך תהיה מוכנה בעוד:\n*{text}*",
+                "success_title": "המתנה היומית של {tag}",
+                "success": "*{coins}* {coin} הוכנסו לארנק שלך!\n\nהמתנה היומית הבאה שלך תהיה מוכנה בעוד: {text}\nרצף: {streak} {days} (+{bonus} {coin})",
+                "and": "ו"
             }
-        },
-        "deposit": {
+        }
+    },
+    "deposit": {
+        "triggers": [
+            "deposit",
+            "dep",
+            "הפקד"
+        ],
+        "english": {
             "triggers": [
                 "deposit",
-                "dep",
+                "dep"
+            ],
+            "category": "Economy",
+            "description": "Deposit coins into your bank",
+            "usage": "{prefix}{command} <amount>",
+            "execution": {
+                "no_balance": "User has no balance.",
+                "cant_deposit": "You can't deposit zero coins",
+                "no_body": "How much do you want to deposit?\nTry {prefix}{command} <amount>",
+                "capacity_error": "You can only hold {capacity} in your bank right now. To hold more, upgrade your bank!",
+                "error": "Failed to deposit.\nIf this error persists please contact an admin using {prefix}developer"
+            }
+        },
+        "hebrew": {
+            "triggers": [
                 "הפקד"
             ],
-            "english": {
-                "triggers": [
-                    "deposit",
-                    "dep"
-                ],
-                "category": "Economy",
-                "description": "Deposit coins into your bank",
-                "usage": "{prefix}{command} <amount>",
-                "execution": {
-                    "no_balance": "User has no balance.",
-                    "cant_deposit": "You can't deposit zero coins",
-                    "no_body": "How much do you want to deposit?\nTry {prefix}{command} <amount>",
-                    "capacity_error": "You can only hold {capacity} in your bank right now. To hold more, upgrade your bank!",
-                    "error": "Failed to deposit.\nIf this error persists please contact an admin using {prefix}developer"
-                }
-            },
-            "hebrew": {
-                "triggers": [
-                    "הפקד"
-                ],
-                "category": "כלכלה",
-                "description": "הפקדת מטבעות לבנק",
-                "usage": "{prefix}{command} <כמות>",
-                "execution": {
-                    "no_balance": "משתמש זה לא קיים במערכת.",
-                    "cant_deposit": "אתה לא יכול להפקיד אפס מטבעות",
-                    "no_body": "כמה את רוצה להפקיד?\nנסה {prefix}{command} <amount>",
-                    "capacity_error": "הבנק שלך יכול להחזיק רק {capacity} מטבעות כרגע. אם תרצה לאחסן יותר, תשדרג את הבנק שלך!",
-                    "error": "ההפקדה נכשלה.\nאם השגיאה הזאת ממשיכה תיצור קשר עם מנהל המערכת באמצעות {prefix}developer"
-                }
+            "category": "כלכלה",
+            "description": "הפקדת מטבעות לבנק",
+            "usage": "{prefix}{command} <כמות>",
+            "execution": {
+                "no_balance": "משתמש זה לא קיים במערכת.",
+                "cant_deposit": "אתה לא יכול להפקיד אפס מטבעות",
+                "no_body": "כמה את רוצה להפקיד?\nנסה {prefix}{command} <amount>",
+                "capacity_error": "הבנק שלך יכול להחזיק רק {capacity} מטבעות כרגע. אם תרצה לאחסן יותר, תשדרג את הבנק שלך!",
+                "error": "ההפקדה נכשלה.\nאם השגיאה הזאת ממשיכה תיצור קשר עם מנהל המערכת באמצעות {prefix}developer"
             }
-        },
-        "withdraw": {
+        }
+    },
+    "withdraw": {
+        "triggers": [
+            "withdraw",
+            "with",
+            "משוך"
+        ],
+        "english": {
             "triggers": [
                 "withdraw",
-                "with",
-                "משוך"
+                "with"
             ],
-            "english": {
-                "triggers": [
-                    "withdraw",
-                    "with"
-                ],
-                "category": "Economy",
-                "description": "Withdraw coins from your bank to your wallet",
-                "usage": "{prefix}{command} <amount>",
-                "execution": {
-                    "no_balance": "User has no balance.",
-                    "cant_withdraw": "You can't withdraw zero coins",
-                    "no_body": "How much do you want to withdraw?\nTry {prefix}{command} <amount>",
-                    "too_much": "You only have {max} in your bank right now. Can't withdraw more than that.",
-                    "error": "Failed to withdraw.\nIf this error persists please contact an admin using {prefix}developer"
-                }
-            },
-            "hebrew": {
-                "triggers": [
-                    "משוך"
-                ],
-                "category": "כלכלה",
-                "description": "משיכת מטבעות מהבנק לארנק",
-                "usage": "{prefix}{command} <כמות>",
-                "execution": {
-                    "no_balance": "משתמש זה לא קיים במערכת.",
-                    "cant_withdraw": "אתה לא יכול למשוך אפס מטבעות",
-                    "no_body": "כמה את רוצה למשוך?\nנסה {prefix}{command} <amount>",
-                    "too_much": "כרגע יש לך {max} בבנק. אתה לא יכול למשוך יותר מזה.",
-                    "error": "משיכה נכשלה.\nאם השגיאה הזאת ממשיכה תיצור קשר עם מנהל המערכת באמצעות {prefix}developer"
-                }
+            "category": "Economy",
+            "description": "Withdraw coins from your bank to your wallet",
+            "usage": "{prefix}{command} <amount>",
+            "execution": {
+                "no_balance": "User has no balance.",
+                "cant_withdraw": "You can't withdraw zero coins",
+                "no_body": "How much do you want to withdraw?\nTry {prefix}{command} <amount>",
+                "too_much": "You only have {max} in your bank right now. Can't withdraw more than that.",
+                "error": "Failed to withdraw.\nIf this error persists please contact an admin using {prefix}developer"
             }
         },
-        "highlow": {
+        "hebrew": {
+            "triggers": [
+                "משוך"
+            ],
+            "category": "כלכלה",
+            "description": "משיכת מטבעות מהבנק לארנק",
+            "usage": "{prefix}{command} <כמות>",
+            "execution": {
+                "no_balance": "משתמש זה לא קיים במערכת.",
+                "cant_withdraw": "אתה לא יכול למשוך אפס מטבעות",
+                "no_body": "כמה את רוצה למשוך?\nנסה {prefix}{command} <amount>",
+                "too_much": "כרגע יש לך {max} בבנק. אתה לא יכול למשוך יותר מזה.",
+                "error": "משיכה נכשלה.\nאם השגיאה הזאת ממשיכה תיצור קשר עם מנהל המערכת באמצעות {prefix}developer"
+            }
+        }
+    },
+    "highlow": {
+        "triggers": [
+            "highlow",
+            "hl",
+            "גבוה נמוך",
+            "גבוהה נמוך"
+        ],
+        "english": {
             "triggers": [
                 "highlow",
-                "hl",
-                "גבוה נמוך",
-                "גבוהה נמוך"
+                "hl"
             ],
-            "english": {
-                "triggers": [
-                    "highlow",
-                    "hl"
-                ],
-                "category": "Economy",
-                "description": "Guess if the number is higher or lower, if you're right you get money!",
-                "usage": "{prefix}{command}",
-                "execution": {
-                    "no_balance": "User has no balance.",
-                    "options": "*1.* Higher\n*2.* Lower\n*3.* JACKPOT!",
-                    "game_text": "{tag}'s high-low game*\n\nI just chose a secret number between 1 and 100.\nIs the secret number higher or lower than {number}?",
-                    "footer": "Your hint was *{number}*. The hidden number was *{secretNumber}*",
-                    "win_text": "*{tag} won high-low game*\n\n*You won {prize}!*",
-                    "lose_text": "*{tag} lost high-low game*\n\n*You lost!*",
-                    "jackpot_text": "{tag} WON HIGH-LOW GAME JACKPOT!\n\n*You won {prize}!*"
-                }
-            },
-            "hebrew": {
-                "triggers": [
-                    "גבוה נמוך",
-                    "hl"
-                ],
-                "category": "כלכלה",
-                "description": "תנחש אם המספר גבוהה או נמוך יותר, אם אתה צודק אתה מקבל כסף!",
-                "usage": "{prefix}{command}",
-                "execution": {
-                    "no_balance": "משתמש זה לא קיים במערכת.",
-                    "options": "*1.* גבוהה יותר\n*2.* נמוך יותר\n*3.* בול פגיעה!",
-                    "game_text": "*משחק גבוה נמוך של {tag}*\n\nאני בחרת מספר סודי בין 1 ל100.\nהאם המספר הסודי גבוה יותר או נמוך יותר מ{number}?",
-                    "footer": "הרמז שלך היה *{number}*. המספר הסודי היה *{secretNumber}*",
-                    "win_text": "*{tag} ניצח במשחק גבוה נמוך*\n\n*זכית ב{prize}!*",
-                    "lose_text": "*{tag} הפסיד במשחק גבוה נמוך*\n\n*הפסדת!*",
-                    "jackpot_text": "*{tag} ניצח במשחק גבוה נמוך בבול פגיעה!!!*\n\n*זכית ב{prize}!*"
-                }
+            "category": "Economy",
+            "description": "Guess if the number is higher or lower, if you're right you get money!",
+            "usage": "{prefix}{command}",
+            "execution": {
+                "no_balance": "User has no balance.",
+                "options": "*1.* Higher\n*2.* Lower\n*3.* JACKPOT!",
+                "game_text": "{tag}'s high-low game*\n\nI just chose a secret number between 1 and 100.\nIs the secret number higher or lower than {number}?",
+                "footer": "Your hint was *{number}*. The hidden number was *{secretNumber}*",
+                "win_text": "*{tag} won high-low game*\n\n*You won {prize}!*",
+                "lose_text": "*{tag} lost high-low game*\n\n*You lost!*",
+                "jackpot_text": "{tag} WON HIGH-LOW GAME JACKPOT!\n\n*You won {prize}!*"
+            }
+        },
+        "hebrew": {
+            "triggers": [
+                "גבוה נמוך",
+                "hl"
+            ],
+            "category": "כלכלה",
+            "description": "תנחש אם המספר גבוהה או נמוך יותר, אם אתה צודק אתה מקבל כסף!",
+            "usage": "{prefix}{command}",
+            "execution": {
+                "no_balance": "משתמש זה לא קיים במערכת.",
+                "options": "*1.* גבוהה יותר\n*2.* נמוך יותר\n*3.* בול פגיעה!",
+                "game_text": "*משחק גבוה נמוך של {tag}*\n\nאני בחרת מספר סודי בין 1 ל100.\nהאם המספר הסודי גבוה יותר או נמוך יותר מ{number}?",
+                "footer": "הרמז שלך היה *{number}*. המספר הסודי היה *{secretNumber}*",
+                "win_text": "*{tag} ניצח במשחק גבוה נמוך*\n\n*זכית ב{prize}!*",
+                "lose_text": "*{tag} הפסיד במשחק גבוה נמוך*\n\n*הפסדת!*",
+                "jackpot_text": "*{tag} ניצח במשחק גבוה נמוך בבול פגיעה!!!*\n\n*זכית ב{prize}!*"
             }
         }
     },
@@ -1138,22 +1172,22 @@
                 "שנה",
                 "שנים"
             ]
-        }
-    },
-    "and": {
-        "english": "and",
-        "hebrew": "ו"
-    },
-    "ranks": {
-        "english": {
-            "free": "Free",
-            "premium": "Premium",
-            "sponser": "Sponsor"
         },
-        "hebrew": {
-            "free": "חינם",
-            "premium": "פרימיום",
-            "sponser": "ספונסר"
+        "and": {
+            "english": "and",
+            "hebrew": "ו"
+        },
+        "ranks": {
+            "english": {
+                "free": "Free",
+                "premium": "Premium",
+                "sponser": "Sponsor"
+            },
+            "hebrew": {
+                "free": "חינם",
+                "premium": "פרימיום",
+                "sponser": "ספונסר"
+            }
         }
     }
 }

@@ -24,6 +24,7 @@ import ReminderCommand from "./fun/reminder_command";
 import ReputationCommand from "./fun/reputation_command";
 import SpeechToTextCommand from "./info/speech-to-text";
 import LanguageCommand from "./groups/admin/language";
+import PrefixCommand from "./groups/admin/prefix";
 
 export {
     JIDCommand,
@@ -51,5 +52,6 @@ export {
     ReminderCommand,
     ReputationCommand,
     SpeechToTextCommand,
-    LanguageCommand
+    LanguageCommand,
+    PrefixCommand
 };
