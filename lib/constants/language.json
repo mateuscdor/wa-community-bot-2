@@ -579,8 +579,8 @@
         },
         "reminder": {
             "triggers": [
-                "remind",
                 "reminder",
+                "remind",
                 "תזכורת",
                 "תזכיר לי"
             ],
