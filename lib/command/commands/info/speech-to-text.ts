@@ -23,9 +23,9 @@ export default class SpeechToTextCommand extends Command {
             description: "Speech to text",
             extendedDescription: "תמלול הודעה קולית",
             cooldowns: new Map([
-                [ChatLevel.Free, 30 * 1000],
-                [ChatLevel.Premium, 20 * 1000],
-                [ChatLevel.Sponser, 10 * 1000],
+                [ChatLevel.Free, 10 * 1000],
+                [ChatLevel.Premium, 5 * 1000],
+                [ChatLevel.Sponser, 0 * 1000],
             ]),
         });
     }
