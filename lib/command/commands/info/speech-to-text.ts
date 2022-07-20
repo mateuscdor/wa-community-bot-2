@@ -6,7 +6,7 @@ import {messagingService} from "../../../constants/services";
 import Message from "../../../message/message";
 import Command from "../../command";
 import CommandTrigger from "../../command_trigger";
-import {spawn} from "child_process";
+import {exec, spawn} from "child_process";
 import path from "path";
 
 /**
@@ -50,17 +50,22 @@ export default class SpeechToTextCommand extends Command {
         }
 
         await messagingService.reply(message, "Processing...", true);
-        const pythonProcess = spawn("python", [
-            path.resolve(__dirname, "../../../../lib/scripts/speech-to-text.py"),
-            path.resolve(audioPath),
-            message.raw?.key.remoteJid ?? "jid",
-            message.id,
-        ]);
-
-        pythonProcess.stdout.on("data", async (data) => {
-            const text = data.toString();
-            await messagingService.reply(message, `*SPEECH-TO-TEXT:*\n${text}`, true);
-        });
+        const pythonProcess = exec(
+            [
+                "python",
+                path.resolve(__dirname, "../../../../lib/scripts/speech-to-text.py"),
+                path.resolve(audioPath),
+                message.raw?.key.remoteJid ?? "jid",
+                message.id,
+            ].join(" "),
+            {encoding: "utf-8"},
+            async (error, stdout, stderr) => {
+                if (error) {
+                    return console.error(error);
+                }
+                await messagingService.reply(message, `*SPEECH-TO-TEXT:*\n${stdout}`, true);
+            },
+        );
     }
 
     onBlocked(data: Message, blockedReason: BlockedReason) {}

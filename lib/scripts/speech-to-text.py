@@ -24,13 +24,13 @@ def main():
     msg_id = str(args[2])
     recognizer = sr.Recognizer()
 
-    # if input_path.endswith(".ogg"):
-    #     AudioSegment.from_ogg(input_path).export(
-    #         input_path.replace(".ogg", ".wav"), format="wav")
+    if not input_path.endswith(".wav"):
+        AudioSegment.from_ogg(input_path).export(
+            input_path.replace(".ogg", ".wav"), format="wav")
 
-    #     # delete ogg file
-    #     os.remove(input_path)
-    #     input_path = input_path.replace(".ogg", ".wav")
+        # delete ogg file
+        # os.remove(input_path)
+        input_path = input_path.replace(".ogg", ".wav")
 
     chunk_folder = get_chunk_folder(jid, msg_id)
     if not os.path.exists(chunks_folder):
@@ -53,8 +53,8 @@ def main():
 
     os.mkdir(chunk_folder)
     print('started')
-    print(f'INPUT: {input_path}')
-    print(speech_to_text(input_path, chunk_folder, recognizer))
+    res = speech_to_text(input_path, chunk_folder, recognizer)
+    print("res:", res)
     sys.stdout.flush()
 
     shutil.rmtree(chunk_folder)
@@ -66,12 +66,10 @@ def speech_to_text(input, chunk_folder, recognizer):
     chunks = split_on_silence(
         audio, min_silence_len=500, silence_thresh=-50, keep_silence=500)
 
-    stt = ""
-    print(chunks)
-    sys.stdout.flush()
+    stt: str = ""
     for i, chunk in enumerate(chunks):
         chunk_path = get_chunck_path(chunk_folder, i)
-        chunk.export(chunk_path, format="ogg")
+        chunk.export(chunk_path, format="wav")
 
         audio_data: sr.AudioFile
         with sr.AudioFile(chunk_path) as src:
@@ -88,7 +86,6 @@ def speech_to_text(input, chunk_folder, recognizer):
         except sr.RequestError as e:
             return "Could not request results from Google Speech Recognition service; {0}".format(e)
 
-    print("STT: " + stt)
     return stt
 
 
