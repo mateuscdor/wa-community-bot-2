@@ -37,11 +37,10 @@ export default class PrefixCommand extends InteractableCommand {
         await chatRepository.update(chat.model.jid, {$set: {command_prefix: newPrefix}});
         chat.updatePrefix(newPrefix);
 
+        console.log(newPrefix)
         return messagingService.reply(message, this.language.execution.success, true, {
             placeholder: {
-                custom: {
-                    prefix: newPrefix,
-                },
+                custom: new Map([["prefix", newPrefix]]),
             },
         });
     }
