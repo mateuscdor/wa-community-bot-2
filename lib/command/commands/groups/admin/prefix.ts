@@ -34,7 +34,7 @@ export default class PrefixCommand extends InteractableCommand {
             return messagingService.reply(message, this.language.execution.too_long);
         }
 
-        await chatRepository.update(chat.model.jid, {$set: {prefix: newPrefix}});
+        await chatRepository.update(chat.model.jid, {$set: {command_prefix: newPrefix}});
         chat.updatePrefix(newPrefix);
 
         return messagingService.reply(message, this.language.execution.success, true, {
