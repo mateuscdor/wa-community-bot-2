@@ -165,9 +165,9 @@ export default class MessagingService {
 
             const text = (content as any).text;
             const caption = (content as any).caption;
-            if (text != undefined && text.length > 0) (content as any).text = applyPlaceholders(text, placeholderData);
+            if (text != undefined && text.length > 0) (content as any).text = await applyPlaceholders(text, placeholderData);
             if (caption != undefined && caption.length > 0)
-                (content as any).caption = applyPlaceholders(text, placeholderData);
+                (content as any).caption = await applyPlaceholders(text, placeholderData);
 
             const response = await this.client!.sendMessage(recipient, content, options);
 
