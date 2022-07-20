@@ -13,6 +13,9 @@ chunks_folder = f'{folder_dir}chunks'
 
 
 def main():
+    print("Speech to text")
+    print(sys.argv)
+    sys.stdout.flush()
     args = sys.argv[1:]
     if (len(args) < 3):
         raise Exception(
@@ -39,6 +42,8 @@ def main():
         shutil.rmtree(chunk_folder)
 
     os.mkdir(chunk_folder)
+    print('started')
+    sys.stdout.flush()
     print(speech_to_text(input_path, chunk_folder, recognizer))
     sys.stdout.flush()
 
