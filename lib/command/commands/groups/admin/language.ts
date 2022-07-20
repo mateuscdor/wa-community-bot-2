@@ -25,7 +25,7 @@ export default class LanguageCommand extends InteractableCommand {
         if (!body || !availableLanguages.some((e) => body.trim().startsWith(e))) {
             return await messagingService.reply(
                 message,
-                availableLanguages.map((e) => `{prefix}{command}${e}`).join("\n"),
+                availableLanguages.map((e) => `{prefix}{command} ${e}`).join("\n"),
                 true,
                 {
                     placeholderData: {command: this, chat, message},
