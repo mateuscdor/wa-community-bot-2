@@ -30,6 +30,7 @@ import {
     ReminderCommand,
     ReputationCommand,
     SpeechToTextCommand,
+    LanguageCommand,
 } from "../command/commands";
 import {
     BalanceCommand,
@@ -79,7 +80,7 @@ export default abstract class Chat {
         handler?.add(new ExecCommand());
 
         // fun commands
-        handler?.add(new AnonymousCommand());
+        handler?.add(new AnonymousCommand(this.model.language));
         handler?.add(new LmgtfyCommand());
         handler?.add(new MP3Command());
         handler?.add(new SpoofCommand());
@@ -114,6 +115,9 @@ export default abstract class Chat {
         handler?.add(new DepositCommand());
         handler?.add(new BegCommand());
         handler?.add(new WithdrawCommand());
+
+        // bot misc commands
+        handler?.add(new LanguageCommand());
     }
 
     async getHandlers<J>(data: J) {

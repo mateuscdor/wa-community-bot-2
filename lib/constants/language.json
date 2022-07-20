@@ -3,6 +3,10 @@
         "english",
         "hebrew"
     ],
+    "language_changed": {
+        "english": "Language changed",
+        "hebrew": "שפה שונתה."
+    },
     "commands": {
         "code": {
             "triggers": [

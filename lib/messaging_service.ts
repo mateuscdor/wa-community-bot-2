@@ -69,6 +69,7 @@ export default class MessagingService {
                 user?: User;
                 command?: Command;
                 custom?: Map<string, string>;
+                chat?: Chat;
             };
         } = {},
     ) {
@@ -91,6 +92,7 @@ export default class MessagingService {
                 user?: User;
                 command?: Command;
                 custom?: Map<string, string>;
+                chat?: Chat;
             };
         } = {},
     ) {
@@ -128,6 +130,7 @@ export default class MessagingService {
                 user?: User;
                 command?: Command;
                 custom?: Map<string, string>;
+                chat?: Chat;
             };
         } = {},
     ) {
@@ -144,6 +147,7 @@ export default class MessagingService {
             user?: User;
             command?: Command;
             custom?: Map<string, string>;
+            chat?: Chat;
         },
     ): Promise<Message> {
         try {

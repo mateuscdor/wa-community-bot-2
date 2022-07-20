@@ -29,7 +29,7 @@ export default class AnonymousCommand extends Command {
     async execute(client: WASocket, chat: Chat, message: Message, body?: string) {
         if (!message.media && !body) {
             return await messagingService.reply(message, this.language.execution.no_content, true, {
-                placeholderData: {command: this},
+                placeholderData: {command: this, chat, message},
             });
         }
 
@@ -43,7 +43,7 @@ export default class AnonymousCommand extends Command {
         if (number) number += "@s.whatsapp.net";
         if (!number) {
             return await messagingService.reply(message, this.language.execution.no_number, true, {
-                placeholderData: {command: this},
+                placeholderData: {command: this, chat, message},
             });
         }
 

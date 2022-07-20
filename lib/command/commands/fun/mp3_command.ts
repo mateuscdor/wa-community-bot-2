@@ -15,7 +15,7 @@ import {MessageMetadata} from "../../../message";
 export default class MP3Command extends Command {
     constructor() {
         super({
-            triggers: ["mp3", "music", "song", "מוזיקה"].map(e => new CommandTrigger(e)),
+            triggers: ["mp3", "music", "song", "מוזיקה"].map((e) => new CommandTrigger(e)),
             usage: "{prefix}{command}",
             category: "Fun",
             cooldowns: new Map([
@@ -30,8 +30,10 @@ export default class MP3Command extends Command {
     downloading_list = {};
 
     async execute(client: WASocket, chat: Chat, message: Message, body?: string) {
-        if (!message.raw?.key.remoteJid) return await messagingService.reply(message, "That's... Odd... It seems like this group doesn't exist 🤨");
-        if (!body) return await messagingService.reply(message, "Please specify what you want to convert to an MP3", true);
+        if (!message.raw?.key.remoteJid)
+            return await messagingService.reply(message, "That's... Odd... It seems like this group doesn't exist 🤨");
+        if (!body)
+            return await messagingService.reply(message, "Please specify what you want to convert to an MP3", true);
 
         const videos = await yt.search(body);
         const video = videos.filter((vid) => {
@@ -106,7 +108,7 @@ export default class MP3Command extends Command {
                     mimetype: "audio/mpeg",
                 },
                 {quoted: message.raw ?? undefined},
-                new MessageMetadata(new Map([["media", false]])),
+                {metadata: new MessageMetadata(new Map([["media", false]]))},
             );
         }
     }
