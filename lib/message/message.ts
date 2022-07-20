@@ -55,6 +55,7 @@ export default class Message {
         const to = fromGroup ? message.key.remoteJid! : fromMe ? message.key.remoteJid! : BotClient.currentClientId;
 
         let quoted: WAMessage | undefined = getQuotedMessage(message);
+        const mediaBlocked = metadata?.meta.get("media") == false;
 
         // TODO: Change media save to be local not on DB
         return new Message(
@@ -62,7 +63,7 @@ export default class Message {
                 message.key.id!,
                 Number(message.messageTimestamp!),
                 getMessageBody(message),
-                await saveMessageMedia(message),
+                !mediaBlocked ? await saveMessageMedia(message) : undefined,
                 getMessageMediaType(message),
                 quoted?.key?.id ?? undefined,
                 from!,
