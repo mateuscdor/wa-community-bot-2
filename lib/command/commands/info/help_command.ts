@@ -96,7 +96,7 @@ export default class HelpCommand extends Command {
                 user,
             });
             section?.rows?.push({
-                title: await applyPlaceholders(command.usage, {message, command, chat, user}),
+                title: prefix + command.name,
                 description: command.description,
                 rowId: `HELP_COMMAND-${id}\n${command.triggers
                     .map((e) => prefix + e.command)
@@ -115,7 +115,7 @@ export default class HelpCommand extends Command {
                     text: helpMessage,
                     buttonText: this.language.execution.button,
                     sections: Array.from(sections.entries()).map((arr) => arr[1] as proto.ISection),
-                    footer: this.language.execution.suffix,
+                    footer: this.language.execution.footer,
                 },
                 {quoted: message.raw!},
             );
