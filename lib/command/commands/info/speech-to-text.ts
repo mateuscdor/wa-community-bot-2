@@ -50,11 +50,11 @@ export default class SpeechToTextCommand extends Command {
         }
 
         await messagingService.reply(message, "Processing...", true);
-        console.log(`path ${path.resolve(__dirname, "../../../../python/speech_to_text.py")}`)
+        console.log(`path ${path.resolve(__dirname, "../../../../lib/scripts/speech_to_text.py")}`)
         console.log(`path ${audioPath}`)
         console.log(`path ${path.resolve(audioPath)}`)
         const pythonProcess = spawn("python", [
-            path.resolve(__dirname, "../../../../python/speech_to_text.py"),
+            path.resolve(__dirname, "../../../../lib/scripts/speech_to_text.py"),
             path.resolve(audioPath),
             message.raw?.key.remoteJid ?? "jid",
             message.sender ?? "sender",
