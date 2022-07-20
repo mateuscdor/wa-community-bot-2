@@ -24,13 +24,13 @@ def main():
     msg_id = str(args[2])
     recognizer = sr.Recognizer()
 
-    if input_path.endswith(".ogg"):
-        AudioSegment.from_ogg(input_path).export(
-            input_path.replace(".ogg", ".wav"), format="wav")
+    # if input_path.endswith(".ogg"):
+    #     AudioSegment.from_ogg(input_path).export(
+    #         input_path.replace(".ogg", ".wav"), format="wav")
 
-        # delete ogg file
-        os.remove(input_path)
-        input_path = input_path.replace(".ogg", ".wav")
+    #     # delete ogg file
+    #     os.remove(input_path)
+    #     input_path = input_path.replace(".ogg", ".wav")
 
     chunk_folder = get_chunk_folder(jid, msg_id)
     if not os.path.exists(chunks_folder):
@@ -62,15 +62,16 @@ def main():
 
 
 def speech_to_text(input, chunk_folder, recognizer):
-    audio = AudioSegment.from_wav(input)
+    audio = AudioSegment.from_ogg(input)
     chunks = split_on_silence(
         audio, min_silence_len=500, silence_thresh=-50, keep_silence=500)
 
     stt = ""
-
+    print(chunks)
+    sys.stdout.flush()
     for i, chunk in enumerate(chunks):
         chunk_path = get_chunck_path(chunk_folder, i)
-        chunk.export(chunk_path, format="wav")
+        chunk.export(chunk_path, format="ogg")
 
         audio_data: sr.AudioFile
         with sr.AudioFile(chunk_path) as src:

@@ -54,7 +54,7 @@ export default class SpeechToTextCommand extends Command {
             path.resolve(__dirname, "../../../../lib/scripts/speech-to-text.py"),
             path.resolve(audioPath),
             message.raw?.key.remoteJid ?? "jid",
-            message.sender ?? "sender",
+            message.id,
         ]);
 
         pythonProcess.stdout.on("data", async (data) => {
