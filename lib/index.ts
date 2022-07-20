@@ -121,7 +121,7 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
                         text: `*${aliasesButtons[0].buttonText?.displayText ?? ""}*\n\n${commandDescription}`,
                         buttons: aliasesButtons,
                         footer: `(${chat?.model.commandPrefix}${
-                            helpCommand?.name ?? 'help'
+                            helpCommand?.name ?? "help"
                         } ${aliasesButtons[0].buttonText?.displayText?.replace(chat?.model.commandPrefix ?? "", "")})`,
                     },
                     true,
@@ -138,7 +138,12 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
             //     await Promise.all(promises);
             // }
 
-            if (msg.content?.includes("@everyone") || msg.content?.includes("@כולם")) {
+            if (
+                msg.content?.includes("@everyone") ||
+                msg.content?.includes("@כולם") ||
+                msg.content?.includes("@here") ||
+                msg.content?.includes("@כאן")
+            ) {
                 const everyoneCmd = (await chat?.getCommandByTrigger(">>everyone")) as EveryoneCommand;
                 if (!everyoneCmd) continue;
                 await messagingService.replyAdvanced(
@@ -149,6 +154,21 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
                             {
                                 buttonId: "0",
                                 buttonText: {displayText: `${chat?.model.commandPrefix}${everyoneCmd.name}`},
+                            },
+                        ],
+                    },
+                    true,
+                );
+            } else if (msg.content?.includes("prefix?") || msg.content?.includes("קידומת?")) {
+                const helpCommand = await chat?.getCommandByTrigger(">>help");
+                await messagingService.replyAdvanced(
+                    msg,
+                    {
+                        text: `*${chat?.model.commandPrefix}*`,
+                        buttons: [
+                            {
+                                buttonId: "0",
+                                buttonText: {displayText: `${chat?.model.commandPrefix}${helpCommand?.name ?? "help"}`},
                             },
                         ],
                     },
