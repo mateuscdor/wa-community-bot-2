@@ -121,7 +121,7 @@ export async function applyPlaceholders(
 
     let res = content;
     res = res.replace(/\{name\}/g, user?.getFullDefaultingName() ?? "");
-    res = res.replace(/\{prefix\}/g, chat?.commandHandler?.prefix ?? config.default_command_prefix);
+    if (chat?.commandHandler?.prefix) res = res.replace(/\{prefix\}/g, chat?.commandHandler?.prefix);
     res = res.replace(/\{command\}/g, command?.name ?? "");
     if (chat?.model.jid && whatsappBot.client && res.includes("{group}"))
         res = res.replace(/\{group\}/g, (await whatsappBot.client.groupMetadata(chat.model.jid)).subject ?? "");
