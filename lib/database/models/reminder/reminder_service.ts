@@ -15,7 +15,7 @@ export default class ReminderService {
         });
 
         setInterval(async () => {
-            const checkTime = moment().unix();
+            const checkTime = moment().utc().unix();
             for (const [id, reminder] of this.repository) {
                 if (reminder.remindTimestamp <= checkTime) {
                     await messagingService.sendMessage(reminder.jid, {text: `*⏰Reminder*\n\n${reminder.reminder}`});
