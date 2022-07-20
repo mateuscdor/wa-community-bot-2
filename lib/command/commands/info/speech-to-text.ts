@@ -10,6 +10,7 @@ import {spawn} from "child_process";
 import path from "path";
 import {TextDecoder} from "util";
 import languages from "../../../constants/language.json";
+import fs from "fs";
 
 /**
  * DEVELOPER NOTE:
@@ -45,7 +46,10 @@ export default class SpeechToTextCommand extends Command {
         }
 
         const audioPath = quoted.mediaPath;
-        if (!audioPath) {
+        if (audioPath && !fs.existsSync(audioPath)) {
+            await quoted.media;
+        }
+        if (!audioPath || !fs.existsSync(audioPath)) {
             return await messagingService.reply(message, this.language.execution.no_audio_in_storage, true);
         }
 
