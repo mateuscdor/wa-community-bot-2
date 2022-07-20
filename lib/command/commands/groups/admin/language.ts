@@ -45,7 +45,7 @@ export default class LanguageCommand extends InteractableCommand {
         if (blockedReason === BlockedReason.InsufficientGroupLevel) {
             await messagingService.reply(
                 data,
-                "Ask an admin to change the language for ths chat.\nתבקש מאדמין לשנות את השפה בקבוצה הזו.",
+                "Ask an admin to change the language for this chat.\nתבקש מאדמין לשנות את השפה בקבוצה הזו.",
                 true,
             );
         }
