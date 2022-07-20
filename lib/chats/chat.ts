@@ -29,7 +29,7 @@ import {
     ReminderCommand,
     ReputationCommand,
 } from "../command/commands";
-import {BalanceCommand, DailyCommand, DepositCommand, GiveBalanceCommand, HighlowCommand} from "../command/commands/economy";
+import {BalanceCommand, BegCommand, DailyCommand, DepositCommand, GiveBalanceCommand, HighlowCommand, WithdrawCommand} from "../command/commands/economy";
 import {messageRepository, userRepository} from "../constants/services";
 import {MessageModel} from "../database/models";
 import ChatModel from "../database/models/chat/chat_model";
@@ -102,6 +102,8 @@ export default abstract class Chat {
         handler?.add(new DailyCommand());
         handler?.add(new HighlowCommand());
         handler?.add(new DepositCommand());
+        handler?.add(new BegCommand());
+        handler?.add(new WithdrawCommand());
     }
 
     async getHandlers<J>(data: J) {
