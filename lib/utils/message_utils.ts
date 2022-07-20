@@ -106,13 +106,13 @@ export async function applyPlaceholders(
     }: {message?: Message; user?: User; command?: Command; chat?: Chat; custom?: Map<string, string>} = {},
 ) {
     let res = content;
-    res = res.replace(/\$\{name\}/g, user?.getFullDefaultingName() ?? "");
-    res = res.replace(/\$\{prefix\}/g, chat?.commandHandler?.prefix ?? ">>");
-    res = res.replace(/\$\{command\}/g, command?.name ?? "");
+    res = res.replace(/\{name\}/g, user?.getFullDefaultingName() ?? "");
+    res = res.replace(/\{prefix\}/g, chat?.commandHandler?.prefix ?? ">>");
+    res = res.replace(/\{command\}/g, command?.name ?? "");
     if (chat?.model.jid && whatsappBot.client && res.includes("{group}"))
-        res = res.replace(/\$\{group\}/g, (await whatsappBot.client.groupMetadata(chat.model.jid)).subject ?? "");
+        res = res.replace(/\{group\}/g, (await whatsappBot.client.groupMetadata(chat.model.jid)).subject ?? "");
     for (const [key, value] of custom ?? []) {
-        res = res.replace(new RegExp(`\\$\\{${key}\\}`, "g"), value);
+        res = res.replace(new RegExp(`\{${key}\}`, "g"), value);
     }
 
     return res;
