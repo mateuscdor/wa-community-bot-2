@@ -27,7 +27,7 @@ export default class PrefixCommand extends InteractableCommand {
     }
 
     async execute(client: WASocket, chat: Chat, message: Message, body?: string) {
-        const newPrefix = body;
+        const newPrefix = body?.trim();
         if (!newPrefix) {
             return messagingService.reply(message, this.language.execution.no_content);
         } else if (newPrefix.length > 10) {
@@ -37,7 +37,6 @@ export default class PrefixCommand extends InteractableCommand {
         await chatRepository.update(chat.model.jid, {$set: {command_prefix: newPrefix}});
         chat.updatePrefix(newPrefix);
 
-        console.log(newPrefix)
         return messagingService.reply(message, this.language.execution.success, true, {
             placeholder: {
                 custom: new Map([["prefix", newPrefix]]),
