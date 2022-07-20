@@ -1,0 +1,30 @@
+{
+    "languages": [
+        "english",
+        "hebrew"
+    ],
+    "commands": {
+        "code": {
+            "english": {
+                "triggers": [],
+                "category": "",
+                "description": "",
+                "extended_description": "",
+                "usage": "",
+                "execution": {
+                    
+                }
+            },
+            "hebrew": {
+                "triggers": [],
+                "category": "",
+                "description": "",
+                "extended_description": "",
+                "usage": "",
+                "execution": {
+                    
+                }
+            }
+        }
+    }
+}

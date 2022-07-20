@@ -28,6 +28,7 @@ import {
     ShutdownCommand,
     ReminderCommand,
     ReputationCommand,
+    SpeechToTextCommand,
 } from "../command/commands";
 import {BalanceCommand, BegCommand, DailyCommand, DepositCommand, GiveBalanceCommand, HighlowCommand, WithdrawCommand} from "../command/commands/economy";
 import {messageRepository, userRepository} from "../constants/services";
@@ -95,6 +96,7 @@ export default abstract class Chat {
         handler?.add(new VCardCommand());
         handler?.add(new PingCommand());
         handler?.add(new CodeCommand());
+        handler?.add(new SpeechToTextCommand());
 
         // bot eco commands
         handler?.add(new BalanceCommand());

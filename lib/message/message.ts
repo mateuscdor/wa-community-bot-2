@@ -2,7 +2,7 @@ import {MediaType, WAMessage} from "@adiwajshing/baileys/lib/Types/Message";
 import {isJidGroup} from "@adiwajshing/baileys/lib/WABinary/jid-utils";
 import {ObjectId} from "mongodb";
 import MessageModel from "../database/models/message_model";
-import {getMessageMediaBuffer, getMessageMediaType} from "../utils/media_utils";
+import {getMessageMedia, getMessageMediaBuffer, getMessageMediaType, saveMessageMedia} from "../utils/media_utils";
 import {getMessageBody, getQuotedMessage} from "../utils/message_utils";
 import {BotClient} from "../whatsapp_bot";
 import Metadata from "../database/models/metadata";
@@ -62,7 +62,7 @@ export default class Message {
                 message.key.id!,
                 Number(message.messageTimestamp!),
                 getMessageBody(message),
-                metadata?.meta.get("media") ?? true ? await getMessageMediaBuffer(message) : undefined,
+                await saveMessageMedia(message),
                 getMessageMediaType(message),
                 quoted?.key?.id ?? undefined,
                 from!,
@@ -72,6 +72,10 @@ export default class Message {
             message,
             quoted ? await this.fromWAMessage(quoted!) : undefined,
         );
+    }
+
+    public static calculateSaveId(message: WAMessage) {
+        return `${message.key.id}-${message.key.remoteJid}-${message.messageTimestamp}-${message.key.participant}`;
     }
 
     public get from() {
@@ -90,8 +94,12 @@ export default class Message {
         return this.model.id;
     }
 
+    public get mediaPath() {
+        return this.model.mediaPath;
+    }
+
     public get media() {
-        return this.model.media;
+        return getMessageMedia(this);
     }
 
     public get mediaType() {

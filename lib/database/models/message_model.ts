@@ -5,7 +5,7 @@ export default class MessageModel {
     public id: string;
     public timestamp: number;
     public content: string | undefined;
-    public media: Buffer | undefined;
+    public mediaPath: string | undefined;
     public mediaType: MediaType | undefined;
     public quoted: string | undefined;
     public from: string;
@@ -16,7 +16,7 @@ export default class MessageModel {
         id: string,
         timestamp: number,
         content: string | undefined,
-        media: Buffer | undefined,
+        mediaPath: string | undefined,
         mediaType: MediaType | undefined,
         quoted: string | undefined,
         from: string,
@@ -26,7 +26,7 @@ export default class MessageModel {
         this.id = id;
         this.timestamp = timestamp;
         this.content = content;
-        this.media = media;
+        this.mediaPath = mediaPath;
         this.mediaType = mediaType;
         this.quoted = quoted;
         this.from = from;
@@ -39,7 +39,7 @@ export default class MessageModel {
             "id": this.id,
             "timestamp": this.timestamp,
             "content": this.content,
-            "media": this.media,
+            "media_path": this.mediaPath,
             'media_type': this.mediaType,
             "quoted": this.quoted,
             "from": this.from,
@@ -53,7 +53,7 @@ export default class MessageModel {
             map['_id'],
             map['timestamp'],
             map['content'],
-            map['media'],
+            map['media_path'],
             map['media_type'],
             map['quoted'],
             map['from'],

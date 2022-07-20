@@ -22,6 +22,7 @@ import ExecCommand from "./admin/exec_command";
 import ShutdownCommand from "./admin/shutdown";
 import ReminderCommand from "./fun/reminder_command";
 import ReputationCommand from "./fun/reputation_command";
+import SpeechToTextCommand from "./info/speech-to-text";
 
 export {
     JIDCommand,
@@ -47,5 +48,6 @@ export {
     ShutdownCommand,
     ExecCommand,
     ReminderCommand,
-    ReputationCommand
+    ReputationCommand,
+    SpeechToTextCommand
 };
