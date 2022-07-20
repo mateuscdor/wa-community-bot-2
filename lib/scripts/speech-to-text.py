@@ -23,8 +23,6 @@ def main():
     jid = str(args[1])
     msg_id = str(args[2])
     language = str(args[3]) if len(args) > 3 else 'he'
-    print(f'language: {language}')
-    sys.stdout.flush()
     recognizer = sr.Recognizer()
 
     if not input_path.endswith(".wav"):
