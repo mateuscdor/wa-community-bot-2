@@ -104,7 +104,6 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
 
             const selectedRowId = rawMsg.message?.listResponseMessage?.singleSelectReply?.selectedRowId;
             if (selectedRowId && selectedRowId?.startsWith("HELP_COMMAND")) {
-                const helpCommand = await chat?.getCommandByTrigger("help");
                 let splitAtNewLine = selectedRowId.split("\n");
                 splitAtNewLine.shift();
                 let data = splitAtNewLine.join("\n").split("\n\r");
@@ -120,9 +119,7 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
                     {
                         text: `*${aliasesButtons[0].buttonText?.displayText ?? ""}*\n\n${commandDescription}`,
                         buttons: aliasesButtons,
-                        footer: `(${chat?.model.commandPrefix}${
-                            helpCommand?.name
-                        } ${aliasesButtons[0].buttonText?.displayText?.replace(chat?.model.commandPrefix ?? "", "")})`,
+                        footer: `(${chat?.model.commandPrefix}help ${aliasesButtons[0].buttonText?.displayText?.replace(chat?.model.commandPrefix ?? "", "")})`,
                     },
                     true,
                 );
