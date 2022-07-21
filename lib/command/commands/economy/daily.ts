@@ -9,6 +9,8 @@ import {Message} from "../../../message";
 import {havePluralS, pluralForm} from "../../../utils/message_utils";
 import {commas, formatNumberCommas} from "../../../utils/utils";
 import languages from "../../../constants/language.json";
+import {RandomSeed} from "random-seed";
+import {weightedReward} from "./utils";
 
 export default class DailyCommand extends EconomyCommand {
     private language: typeof languages.commands.daily[Language];
@@ -79,8 +81,8 @@ export default class DailyCommand extends EconomyCommand {
         else dailyStreak++;
 
         const rand = user.random;
-        const streakBonus = !isStreakBroken ? dailyStreak * rand.intBetween(500, 1000) : 0;
-        const dailyCoins = rand.intBetween(2000, 30000) + streakBonus;
+        const streakBonus = !isStreakBroken ? dailyStreak * this.getStreakReward(rand, dailyStreak) : 0;
+        const dailyCoins = this.getDailyReward(rand) + streakBonus;
         await this.addBalance(userJid, new Balance(dailyCoins, 0));
 
         const dailyCoinsWithCommas = formatNumberCommas(dailyCoins);
@@ -107,4 +109,27 @@ export default class DailyCommand extends EconomyCommand {
     }
 
     onBlocked(data: Message, blockedReason: BlockedReason) {}
+
+    private getStreakReward(random: RandomSeed, streak: number) {
+        return (
+            Math.min(streak, 150) *
+            weightedReward(random, [
+                [[500, 1000], 94], // 94% chance of getting reward between 500 and 1000
+                [[1300, 1600], 3],
+                [[300, 600], 3], // unlucky
+            ])
+        );
+    }
+
+    private getDailyReward(random: RandomSeed) {
+        return weightedReward(random, [
+            [[2000, 5000], 10],
+            [[5000, 10000], 20],
+            [[7500, 15000], 27],
+            [[12000, 20000], 35],
+            [[20000, 30000], 5],
+            [[25000, 30000], 3],
+            [[50000, 70000], 0.001],
+        ]);
+    }
 }
