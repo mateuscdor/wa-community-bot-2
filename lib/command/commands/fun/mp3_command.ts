@@ -76,13 +76,14 @@ export default class MP3Command extends Command {
         await messagingService.reply(message, downloadMessage, true, {
             placeholder: {custom: new Map([["title", video.title]])},
         });
-        const path = `./media/music/${video.title}.mp3`;
+        const path = `./media/music/${video.title}.ogg`;
         this.downloading_list[video.title] = {path, messages: [message]};
         downloadData = this.downloading_list[video.title];
 
         const videoStream = ytdl(video.url, {filter: "audioonly", quality: "highestaudio"});
         ffmpeg(videoStream)
             .audioBitrate(128)
+            .toFormat("ogg")
             .save(path)
             .on("end", async () => {
                 if (!downloadData) {
@@ -121,7 +122,7 @@ export default class MP3Command extends Command {
                 jid,
                 {
                     audio: file as WAMediaUpload,
-                    fileName: title + ".mp3",
+                    fileName: title + ".ogg",
                     mimetype: "audio/ogg; codecs=opus",
                 },
                 {quoted: message.raw ?? undefined},
