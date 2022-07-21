@@ -77,12 +77,21 @@ export default class CrimeCommand extends EconomyCommand {
         const crimeChosenMessage = await this.validatedWaitForInteractionWith(
             message,
             (msg) => messagingService.reply(message, pickACrimeText, true, {placeholder}),
+            20 * 1000,
+            () =>
+                messagingService.replyAdvanced(
+                    message,
+                    {text: this.language.execution.didnt_choose_crime, mentions: [userJid]},
+                    true,
+                    {placeholder},
+                ),
             "1",
             "2",
             "3",
             ...crimes.map((e) => e.name),
         );
 
+        if (!crimeChosenMessage) return;
         const crimeChosenBody = crimeChosenMessage.content?.trim();
         if (!crimeChosenMessage || !crimeChosenBody) return;
 

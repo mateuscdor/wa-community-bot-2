@@ -56,10 +56,13 @@ export default class HighlowCommand extends EconomyCommand {
         const highlowResult = await this.validatedWaitForInteractionWith(
             message,
             () => messagingService.reply(message, optionsText, true),
+            undefined,
+            undefined,
             "1",
             "2",
             "3",
         );
+        if (!highlowResult) return;
 
         const guess = highlowResult.content ?? "1";
         const isExact = secretNumber == higherLowerNumber;

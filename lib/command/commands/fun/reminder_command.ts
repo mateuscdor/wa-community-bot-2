@@ -76,7 +76,7 @@ export default class ReminderCommand extends InteractableCommand {
         const splitBody = body.split(" ");
         const time = Number(splitBody.shift());
         let timeType = splitBody.shift();
-        timeType = timeType?.replace(/min|m/gi, "minute").replace(/sec|s/gi, "second").replace(/h/gi, 'hour');
+        timeType = timeType?.replace(/min|m/gi, "minute").replace(/sec|s/gi, "second").replace(/h/gi, "hour");
         if (!time) {
             return await messagingService.reply(message, this.language.execution.no_body, true, {
                 placeholder: {chat: chat, command: this},
@@ -187,6 +187,8 @@ export default class ReminderCommand extends InteractableCommand {
 
         await messagingService.reply(message, text, true);
         let recvMsg = await this.waitForInteractionWith(message);
+        if (!recvMsg) return;
+
         if (!recvMsg.content) return;
         const selectedReminderId = Number(recvMsg.content);
         if (!selectedReminderId) return;
@@ -204,6 +206,8 @@ export default class ReminderCommand extends InteractableCommand {
         recvMsg = await this.validatedWaitForInteractionWith(
             message,
             (msg) => messagingService.reply(message, modificationMenuMessage),
+            undefined,
+            undefined,
             "1",
             "2",
             "3",
@@ -211,11 +215,13 @@ export default class ReminderCommand extends InteractableCommand {
             "cancel",
             "ביטול",
         );
+        if (!recvMsg) return;
 
         const receivedContent = recvMsg.content!.toLowerCase().replace("ביטול", "cancel").replace("cancel", "3");
         if (receivedContent.startsWith("1")) {
             await messagingService.reply(message, this.language.execution.text_change);
             recvMsg = await this.waitForInteractionWith(message);
+            if (!recvMsg) return;
 
             const newReminderText = recvMsg.content!;
             await reminderService.update(selectedReminder._id, {$set: {reminder: newReminderText}});
@@ -242,6 +248,8 @@ export default class ReminderCommand extends InteractableCommand {
         let recvMsg = await this.validatedWaitForInteractionWith(
             message,
             (msg) => messagingService.reply(message, shouldDMMessage),
+            undefined,
+            undefined,
             "1",
             "2",
             "3",
@@ -252,6 +260,7 @@ export default class ReminderCommand extends InteractableCommand {
             "cancel",
             "ביטול",
         );
+        if (!recvMsg) return;
 
         const receivedContent = recvMsg
             .content!.toLowerCase()
