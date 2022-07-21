@@ -12,6 +12,7 @@ import makeWASocket, {
 import {Boom} from "@hapi/boom";
 import {existsSync, fstat, mkdir, mkdirSync} from "fs";
 import P from "pino";
+import { messagingService } from "./constants/services";
 import {getClientID} from "./utils/client_utils";
 
 export class BotClient {
@@ -79,6 +80,7 @@ export class BotClient {
             auth: state,
         });
 
+        messagingService.setClient(this.client);
         this.store.bind(this.client.ev);
         console.log("Client Ready!");
         this.eventListener = this.client.ev;

@@ -15,7 +15,6 @@ export const whatsappBot: BotClient = new BotClient("./session", registerEventHa
 
 whatsappBot.start();
 
-messagingService.setClient(whatsappBot.client!);
 registerListeners();
 registerCommands();
 
