@@ -1262,7 +1262,7 @@
                             "success_chance": 0.4
                         }
                     ],
-                    "commited": "{tag} ביצע {crime}",
+                    "commited": "*{tag} ביצע {crime}*",
                     "failed_crime_footer": "תדמיין להיות כל כך גרוע..."
                 }
             }

@@ -108,7 +108,7 @@ export default class HelpCommand extends Command {
 
         helpMessage += `${this.language.execution.suffix}`;
 
-        if (sendInGroup || message.content?.toLowerCase()?.includes("here"))
+        if (sendInGroup || ["here", "כאן"].some((e) => message.content?.trim().toLowerCase().includes(e))) {
             await messagingService.sendMessage(
                 message.raw?.key.remoteJid!,
                 {
@@ -119,7 +119,7 @@ export default class HelpCommand extends Command {
                 },
                 {quoted: message.raw!},
             );
-        else {
+        } else {
             messagingService.replyAdvanced(message, {text: this.language.execution.dms}, true);
             messagingService.sendMessage(
                 message.sender!,
