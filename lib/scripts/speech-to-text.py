@@ -43,9 +43,7 @@ def main():
         shutil.rmtree(chunk_folder)
 
     if not os.path.exists(input_path):
-        print("Could not find audio file")
-        sys.stdout.flush()
-        return
+        return"Could not find audio file"
     else:
         # copy input file to inputs folder
         if not os.path.exists(inputs_folder):
