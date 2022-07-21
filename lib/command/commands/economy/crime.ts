@@ -78,11 +78,13 @@ export default class CrimeCommand extends EconomyCommand {
         );
 
         const crimeChosenBody = crimeChosenMessage.content?.trim();
+        console.log(crimeChosenBody);
         if (!crimeChosenMessage || !crimeChosenBody) return;
 
         const crimeChosen = parseInt(crimeChosenBody)
             ? parseInt(crimeChosenBody) - 1
             : crimes.findIndex((e) => e.name === crimeChosenBody);
+        console.log(`index : ${crimeChosen}`);
         const crime = crimes[crimeChosen];
         if (!crime) return;
 
@@ -116,6 +118,7 @@ export default class CrimeCommand extends EconomyCommand {
             crimeResultMessage += "\n\n" + this.language.execution.failed_crime_footer;
         }
 
+        console.log(`text : ${crimeResultMessage}`);
         return await messagingService.replyAdvanced(crimeChosenMessage, {text: crimeResultMessage, mentions: [`@${jidDecode(userJid)?.user}`]}, true, {
             placeholder: this.addCustomPlaceholders(placeholder, {
                 amount: commas(reward),
