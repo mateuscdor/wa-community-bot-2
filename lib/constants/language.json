@@ -1173,7 +1173,7 @@
                             "success_chance": 0.4
                         }
                     ],
-                    "commited": "{tag} commited {crime}",
+                    "commited": "*{tag} commited {crime}*",
                     "failed_crime_footer": "imagine being so bad..."
                 }
             },
