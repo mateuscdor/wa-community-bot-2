@@ -46,30 +46,31 @@ export default class SpeechToTextCommand extends Command {
         }
 
         const audioPath = quoted.mediaPath;
-        if (audioPath && !fs.existsSync(audioPath)) {
-            await quoted.media;
-        }
         if (!audioPath || !fs.existsSync(audioPath)) {
             return await messagingService.reply(message, this.language.execution.no_audio_in_storage, true);
         }
 
-        await messagingService.reply(message, this.language.execution.started, true);
-        const pythonProcess = spawn("python", [
-            path.resolve(__dirname, "../../../../lib/scripts/speech-to-text.py"),
-            path.resolve(audioPath),
-            message.raw?.key.remoteJid ?? "jid",
-            message.id,
-            body?.trim()?.split(" ")[0] || "he",
-        ]);
+        if (audioPath && !fs.existsSync(audioPath)) {
+            message.media.then(async (media) => {
+                await messagingService.reply(message, this.language.execution.started, true);
+                const pythonProcess = spawn("python", [
+                    path.resolve(__dirname, "../../../../lib/scripts/speech-to-text.py"),
+                    path.resolve(audioPath),
+                    message.raw?.key.remoteJid ?? "jid",
+                    message.id,
+                    body?.trim()?.split(" ")[0] || "he",
+                ]);
 
-        pythonProcess.stdout.on("data", async (data) => {
-            const text = new TextDecoder("utf-8").decode(data);
-            await messagingService.reply(message, this.language.execution.success_message, true, {
-                placeholder: {
-                    custom: new Map([["text", text]]),
-                },
+                pythonProcess.stdout.on("data", async (data) => {
+                    const text = new TextDecoder("utf-8").decode(data);
+                    await messagingService.reply(message, this.language.execution.success_message, true, {
+                        placeholder: {
+                            custom: new Map([["text", text]]),
+                        },
+                    });
+                });
             });
-        });
+        }
     }
 
     onBlocked(data: Message, blockedReason: BlockedReason) {}

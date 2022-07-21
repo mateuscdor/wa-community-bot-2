@@ -79,7 +79,7 @@ export default class MP3Command extends Command {
         this.downloading_list[video.title] = {path, messages: [message]};
         downloadData = this.downloading_list[video.title];
 
-        ytdl.default(video.url)
+        ytdl.default(video.url, {filter: 'audioonly'})
             .pipe(fs.createWriteStream(path))
             .addListener("finish", async () => {
                 if (!downloadData) {
