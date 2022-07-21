@@ -60,9 +60,15 @@ export default class CrimeCommand extends EconomyCommand {
 
         // pick a crime
         const rand = user.random;
-        const crimes = [undefined, undefined, undefined].map(
-            (e) => this.language.execution.crimes[rand.intBetween(0, this.language.execution.crimes.length - 1)],
-        );
+        const chosenIndices = new Set();
+        const crimes = [undefined, undefined, undefined].map((e) => {
+            let chosenIndex = rand.intBetween(0, this.language.execution.crimes.length - 1);
+            while (chosenIndices.has(chosenIndex)) {
+                chosenIndex = rand.intBetween(0, this.language.execution.crimes.length - 1);
+            }
+            chosenIndices.add(chosenIndex);
+            return this.language.execution.crimes[chosenIndex];
+        });
 
         const crimesToPickText = crimes.map((crime, i) => `${i + 1}. ${crime.name}`).join("\n");
         const pickACrimeText = `${this.language.execution.pick_crime}\n\n${crimesToPickText}`;
@@ -116,13 +122,18 @@ export default class CrimeCommand extends EconomyCommand {
             crimeResultMessage += "\n\n" + this.language.execution.failed_crime_footer;
         }
 
-        return await messagingService.replyAdvanced(crimeChosenMessage, {text: crimeResultMessage, mentions: [userJid]}, true, {
-            placeholder: this.addCustomPlaceholders(placeholder, {
-                amount: commas(reward),
-                crime: crime.name,
-                coin: getCoinText(reward),
-            }),
-        });
+        return await messagingService.replyAdvanced(
+            crimeChosenMessage,
+            {text: crimeResultMessage, mentions: [userJid]},
+            true,
+            {
+                placeholder: this.addCustomPlaceholders(placeholder, {
+                    amount: commas(reward),
+                    crime: crime.name,
+                    coin: getCoinText(reward),
+                }),
+            },
+        );
     }
 
     onBlocked(data: Message, blockedReason: BlockedReason) {}
