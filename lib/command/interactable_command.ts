@@ -11,8 +11,9 @@ export default abstract class InteractableCommand extends Command {
         onTimeout?: () => any | Promise<any>,
     ): Promise<Message | undefined> {
         let timedOut = false;
+        let timerCode: NodeJS.Timer;
         if (timeout !== undefined && timeout > 0) {
-            setTimeout(async () => {
+            timerCode = setTimeout(async () => {
                 timedOut = true;
                 if (onTimeout) await onTimeout();
             }, timeout);
@@ -24,10 +25,16 @@ export default abstract class InteractableCommand extends Command {
                 msg.raw?.key.remoteJid == message.raw?.key.remoteJid &&
                 (msg.content?.trim()?.length ?? 0) > 0;
             if (!baseCheck) return false;
-            if (!filter) return true;
+            if (!filter) {
+                clearTimeout(timerCode);
+                return true;
+            }
 
             const filterResult = await filter(msg);
-            if (filterResult === undefined) return true;
+            if (filterResult === undefined) {
+                clearTimeout(timerCode);
+                return true;
+            }
             if (!filterResult && onFail) await onFail(msg);
             return filterResult;
         }).then((msg) => {
