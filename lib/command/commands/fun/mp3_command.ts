@@ -122,7 +122,7 @@ export default class MP3Command extends Command {
                 {
                     audio: file as WAMediaUpload,
                     fileName: title + ".mp3",
-                    mimetype: "audio/mpeg",
+                    mimetype: "audio/mp3",
                 },
                 {quoted: message.raw ?? undefined},
                 {metadata: new MessageMetadata(new Map([["media", false]]))},
