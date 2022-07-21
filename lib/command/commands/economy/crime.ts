@@ -113,10 +113,10 @@ export default class CrimeCommand extends EconomyCommand {
         }
 
         if (crimeDeath || !crimeSuccess) {
-            crimeResultMessage += "\n" + this.language.execution.failed_crime_footer;
+            crimeResultMessage += "\n\n" + this.language.execution.failed_crime_footer;
         }
 
-        return await messagingService.reply(crimeChosenMessage, crimeResultMessage, true, {
+        return await messagingService.replyAdvanced(crimeChosenMessage, {text: crimeResultMessage, mentions: [`@${jidDecode(userJid)?.user}`]}, true, {
             placeholder: this.addCustomPlaceholders(placeholder, {
                 amount: commas(reward),
                 crime: crime.name,
