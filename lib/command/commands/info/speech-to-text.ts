@@ -46,13 +46,13 @@ export default class SpeechToTextCommand extends Command {
         }
 
         const audioPath = quoted.mediaPath;
-        console.log(audioPath)
         if (!audioPath) {
             return await messagingService.reply(message, this.language.execution.no_audio_in_storage, true);
         }
 
         if (audioPath) {
             message.media.then(async (media) => {
+                console.log(media)
                 if (!media || !fs.existsSync(audioPath)) {
                     return await messagingService.reply(message, this.language.execution.no_audio_in_storage, true);
                 }
