@@ -68,6 +68,9 @@ def speech_to_text(input, chunk_folder, recognizer, language):
     chunks = split_on_silence(
         audio, min_silence_len=500, silence_thresh=-50, keep_silence=500)
 
+    if len(chunks) == 0:
+        return "I can't hear anything...\nאני לא שומע כלום".encode('utf-8')
+
     stt: str = ""
     for i, chunk in enumerate(chunks):
         chunk_path = get_chunck_path(chunk_folder, i)
@@ -78,15 +81,15 @@ def speech_to_text(input, chunk_folder, recognizer, language):
             audio_data = recognizer.record(src)
 
         if audio_data is None:
-            return "Audio file is empty"
+            return "Audio file is empty".encode('utf-8')
 
         try:
             text = recognizer.recognize_google(audio_data, language=language)
             stt += text
         except sr.UnknownValueError:
-            return "Google Speech Recognition could not understand audio"
+            return "Google Speech Recognition could not understand audio".encode('utf-8')
         except sr.RequestError as e:
-            return "Could not request results from Google Speech Recognition service; {0}".format(e)
+            return "Could not request results from Google Speech Recognition service; {0}".format(e).encode('utf-8')
 
     return stt.encode('utf-8')
 
