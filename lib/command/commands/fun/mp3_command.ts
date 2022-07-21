@@ -84,6 +84,7 @@ export default class MP3Command extends Command {
         ffmpeg(videoStream)
             .audioBitrate(128)
             .toFormat("ogg")
+            .audioCodec('libopus')
             .save(path)
             .on("end", async () => {
                 if (!downloadData) {
