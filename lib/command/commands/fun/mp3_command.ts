@@ -121,7 +121,7 @@ export default class MP3Command extends Command {
                 jid,
                 {
                     audio: file as WAMediaUpload,
-                    fileName: title + ".mp3",
+                    fileName: title + ".ogg",
                     mimetype: "audio/ogg",
                 },
                 {quoted: message.raw ?? undefined},

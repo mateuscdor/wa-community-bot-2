@@ -46,12 +46,15 @@ export default class SpeechToTextCommand extends Command {
         }
 
         const audioPath = quoted.mediaPath;
-        if (!audioPath || !fs.existsSync(audioPath)) {
+        if (!audioPath) {
             return await messagingService.reply(message, this.language.execution.no_audio_in_storage, true);
         }
 
         if (audioPath && !fs.existsSync(audioPath)) {
             message.media.then(async (media) => {
+                if (!media || !fs.existsSync(audioPath)) {
+                    return await messagingService.reply(message, this.language.execution.no_audio_in_storage, true);
+                }
                 await messagingService.reply(message, this.language.execution.started, true);
                 const pythonProcess = spawn("python", [
                     path.resolve(__dirname, "../../../../lib/scripts/speech-to-text.py"),
