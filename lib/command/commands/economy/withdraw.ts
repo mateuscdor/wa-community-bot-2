@@ -96,7 +96,7 @@ export default class WithdrawCommand extends EconomyCommand {
         return await messagingService.replyAdvanced(message, {text: reply, mentions: [userJid]}, true, {
             placeholder: {
                 custom: {
-                    tag: `@${jidDecode(userJid).user}`,
+                    tag: `@${jidDecode(userJid)?.user}`,
                 },
             },
         });

@@ -41,8 +41,8 @@ export default class CreatorCommand extends Command {
         vcard.addName(undefined, message.raw?.pushName ?? this.language.execution.vcard_default_name);
         vcard.setProperty(
             "TEL",
-            `TEL;type=CELL;waid=${jidDecode(message.from).user}`,
-            `+${jidDecode(message.from).user}`,
+            `TEL;type=CELL;waid=${jidDecode(message.from)?.user}`,
+            `+${jidDecode(message.from)?.user}`,
         );
         await messagingService.sendMessage(process.env["CREATOR_JID"]!, {
             contacts: {

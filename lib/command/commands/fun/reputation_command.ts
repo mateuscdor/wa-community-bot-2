@@ -88,7 +88,7 @@ export default class ReputationCommand extends Command {
                         chat,
                         custom: new Map([
                             ["total", user.model.reputation.reputation.toString()],
-                            ["tag", `@${jidDecode(userStatToCheck).user}`],
+                            ["tag", `@${jidDecode(userStatToCheck)?.user}`],
                         ]),
                     },
                 },
@@ -158,7 +158,7 @@ export default class ReputationCommand extends Command {
                         ["current", reppedUser.model.reputation.reputation.toString()],
                         ["given", repPointsToGive.toString()],
                         ["left", (userPointsCanGive - repPointsToGive).toString()],
-                        ["tag", `@${jidDecode(reppedJid).user}`],
+                        ["tag", `@${jidDecode(reppedJid)?.user}`],
                     ]),
                 },
             },

@@ -158,8 +158,13 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
                         ],
                     },
                     true,
+                    {
+                        placeholder: {
+                            chat,
+                        },
+                    },
                 );
-            } else if (msg.content?.includes("prefix?") || msg.content?.includes("קידומת?")) {
+            } else if (msg.content?.toLowerCase().includes("prefix?") || msg.content?.includes("קידומת?")) {
                 const helpCommand = await chat?.getCommandByTrigger(">>help");
                 await messagingService.replyAdvanced(
                     msg,

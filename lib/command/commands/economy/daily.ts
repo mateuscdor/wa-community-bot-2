@@ -94,7 +94,7 @@ export default class DailyCommand extends EconomyCommand {
         return await messagingService.replyAdvanced(message, {text: reply, mentions: [userJid]}, true, {
             placeholder: {
                 custom: {
-                    tag: `@${jidDecode(userJid).user}`,
+                    tag: `@${jidDecode(userJid)?.user}`,
                     coins: dailyCoinsWithCommas, // amount placed
                     coin: pluralForm(dailyCoins, languages.economy.coin[this.langCode]), // coin word translation
                     text: timeTillUTCMidnightFormatted, // time till next daily

@@ -49,7 +49,7 @@ export default class HighlowCommand extends EconomyCommand {
             placeholder: {
                 custom: {
                     number: higherLowerNumber.toString(),
-                    tag: `@${jidDecode(userJid).user}`,
+                    tag: `@${jidDecode(userJid)?.user}`,
                 },
             },
         });
@@ -73,7 +73,7 @@ export default class HighlowCommand extends EconomyCommand {
                 custom: {
                     number: higherLowerNumber.toString(),
                     secretNumber: secretNumber.toString(),
-                    tag: `@${jidDecode(userJid).user}`,
+                    tag: `@${jidDecode(userJid)?.user}`,
                     prize: commas(correctGuessPrize),
                 },
             },

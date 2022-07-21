@@ -43,6 +43,9 @@ export default class JoinCommand extends Command {
         const code = matches[2];
         try {
             client.groupAcceptInvite(code).then(async (res) => {
+                if (!res) {
+                    return await messagingService.reply(message, this.language.execution.failed, true);
+                }
                 const meta = await client.groupMetadata(res);
                 await messagingService.reply(message, this.language.execution.joined, true, {
                     placeholder: {custom: new Map([["group", meta.subject]])},

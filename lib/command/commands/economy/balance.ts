@@ -53,7 +53,7 @@ export default class BalanceCommand extends EconomyCommand {
         }:* ${netText}`;
         return await messagingService.replyAdvanced(message, {text: reply, mentions: [userJid]}, true, {
             placeholder: {
-                custom: new Map([["tag", `@${jidDecode(userJid).user}`]]),
+                custom: new Map([["tag", `@${jidDecode(userJid)?.user}`]]),
             },
         });
     }
