@@ -36,6 +36,7 @@ import {
 import {
     BalanceCommand,
     BegCommand,
+    CrimeCommand,
     DailyCommand,
     DepositCommand,
     GiveBalanceCommand,
@@ -122,6 +123,7 @@ export default abstract class Chat {
         handler?.add(new DepositCommand(this.model.language));
         handler?.add(new BegCommand(this.model.language));
         handler?.add(new WithdrawCommand(this.model.language));
+        handler?.add(new CrimeCommand(this.model.language));
 
         // bot misc commands
         handler?.add(new LanguageCommand());

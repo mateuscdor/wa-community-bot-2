@@ -1082,6 +1082,190 @@
                     "jackpot_text": "*{tag} ניצח במשחק גבוה נמוך בבול פגיעה!!!*\n\n*זכית ב{prize}!*"
                 }
             }
+        },
+        "crime": {
+            "triggers": [
+                "crime",
+                "פשע"
+            ],
+            "english": {
+                "triggers": [
+                    "crime"
+                ],
+                "category": "Economy",
+                "description": "Commit a crime for a chance to win some coins (and a chance to die)!",
+                "execution": {
+                    "pick_crime": "*What crime do you want to commit?*\n_Pick an option below to commit one!_",
+                    "didnt_choose_crime": "Guess you are too scared {tag}...",
+                    "found_item": "Wow! You also found a *{item}*!",
+                    "death_not_implemented": "You still can't die since you have no way to save yourself.\nBeware though, in the future there will be an item to save your soul and death will be activated!",
+                    "crimes": [
+                        {
+                            "name": "shoplifting",
+                            "failed": "You tried to steal something but the shop was closed!",
+                            "success": "You managed to steal {amount} {coin}. Money Heist!",
+                            "death": "You stole an unknown drink and drank it. It turned out to be poison and you died. RIP",
+                            "success_chance": 0.7,
+                            "death_chance": 0.001
+                        },
+                        {
+                            "name": "vandalism",
+                            "failed": "You tried to write something on a wall, but ran out of spray. LOL",
+                            "success": "You wrote a support message for the bot on the wall. The developers sent you {amount} {coin}. Nice!",
+                            "death": "",
+                            "death_chance": 0,
+                            "success_chance": 0.75
+                        },
+                        {
+                            "name": "drug distribution",
+                            "failed": "You didn't find any clients... Maybe try a different industry?",
+                            "success": "You distributed a lot of drugs and earned {amount} {coin}, are you the next Escobar?",
+                            "death": "Police caught you and killed you immediately 😥 No more drugs!",
+                            "success_chance": 0.4,
+                            "death_chance": 0.05
+                        },
+                        {
+                            "name": "tax evasion",
+                            "failed": "You accidentally sent correct papers and earned nothing. Loser!",
+                            "success": "You saved {amount} {coin} on avoiding taxes! You'd better not tell anyone...",
+                            "death": "",
+                            "death_chance": 0,
+                            "success_chance": 0.65
+                        },
+                        {
+                            "name": "arson",
+                            "failed": "Turns out that's the fire station, it didn't go up in flames.",
+                            "success": "You set a building on fire and on your way out you found {amount} {coin}",
+                            "death": "You tried to set the police station on fire! They didn't appreciate it and kinda sorta.. shot you..",
+                            "death_chance": 0.05,
+                            "success_chance": 0.4
+                        },
+                        {
+                            "name": "murder",
+                            "failed": "You tried to murder a random stranger, but he got away! You can't even murder properly.",
+                            "success": "You murdered a random stranger in a dark alley. There was {amount} {coin} in his wallet! Was it worth it?",
+                            "death": "You were holding the gun upside down and killed yourself! Imagine being this stupid!",
+                            "death_chance": 0.05,
+                            "success_chance": 0.35
+                        },
+                        {
+                            "name": "cyber bullying",
+                            "failed": "You tried to bully a kid, but quickly got banned by mods. LOL, seeya idiot.",
+                            "success": "You bullied a kid and he sent you {amount} {coin} to stop! I hope that kid grows up richer than you.",
+                            "death": "You laughed at a kid so much, you choked to death. Who is laughing now? Imagine being a bully.",
+                            "death_chance": 0.03,
+                            "success_chance": 0.5
+                        },
+                        {
+                            "name": "fraud",
+                            "failed": "Turns out that old lady you tried to scam, was also a scammer!",
+                            "success": "You lied to an old lady over the phone and got {amount} {coin}",
+                            "death": "Lady you tried to fool had a shotgun and shot you! That's just sad.",
+                            "death_chance": 0.04,
+                            "success_chance": 0.65
+                        },
+                        {
+                            "name": "identity theft",
+                            "failed": "Somebody noticed your strange behaviour and reported you.",
+                            "success": "You stole a hooker's identity, started dancing and got {amount} {coin}",
+                            "death": "You stole the identity of Chuck Norris... Unfortunately, he noticed it and MURDERED you in cold blood!",
+                            "death_chance": 0.05,
+                            "success_chance": 0.4
+                        }
+                    ],
+                    "commited": "{tag} commited {crime}",
+                    "failed_crime_footer": "imagine being so bad..."
+                }
+            },
+            "hebrew": {
+                "triggers": [
+                    "פשע"
+                ],
+                "category": "כלכלה",
+                "description": "תבצע פשע בשביל סיכוי לזכות במטבעות (קיים גם סיכון של מוות)!",
+                "execution": {
+                    "pick_crime": "*איזה פשע אתה רוצה לבצע?*\n_תבחר אחת מהאופציות!_",
+                    "didnt_choose_crime": "אני מניח שאתה פשוט מפחד {tag}...",
+                    "found_item": "וואו! מצאת גם *{item}*!",
+                    "death_not_implemented": "יש לך מזל! עוד אי אפשר למות בגלל שאין לך דרך להציל את עצמך...\nבעתיד יהיה מוצר שיוכל להציל אותך ממוות. ברגע שיש אותו מוות יופעל.",
+                    "crimes": [
+                        {
+                            "name": "גניבה מחנות",
+                            "failed": "ניסית לגנוב משהו אבל החנות הייתה סגורה!",
+                            "success": "הצלחת לגנוב {amount} {coin}. שוד!",
+                            "death": "גנבת משקה מוזר ושתית ממנו. מסתבר שזה היה רעל. מתת 😂",
+                            "death_chance": 0.001,
+                            "success_chance": 0.7
+                        },
+                        {
+                            "name": "ונדליזם",
+                            "failed": "ניסית לכתוב משהו על הקיר אבל נגמר לך הספריי חחחחחחחחחחחחחחחחחחחחחח",
+                            "success": "המפתחים אהבו את התמיכה שהבעת על הקיר ושלחו לך {amount} {coin}. Nice!",
+                            "death": "",
+                            "death_chance": 0,
+                            "success_chance": 0.6
+                        },
+                        {
+                            "name": "הפצת סמים",
+                            "failed": "לא מצאת לקוח אחד... אולי תנסה תעשייה אחרת?",
+                            "success": "הפצת הרבה סמים והרווחת {amount} {coin}, אולי אתה האסקובר הבא?",
+                            "death": "המשטרה תפסה אותך וישר הרגה אותך 😥 אין יותר סמים!",
+                            "death_chance": 0.08,
+                            "success_chance": 0.4
+                        },
+                        {
+                            "name": "העלמת מס",
+                            "failed": "בטעות שלחת את הניירת הנכונה ולא הרווחת כלום! אפס!",
+                            "success": "חסכת {amount} {coin} בהעלמת מס! הייתי ממליץ לא לדבר על זה...",
+                            "death": "",
+                            "success_chance": 0.65,
+                            "death_chance": 0
+                        },
+                        {
+                            "name": "הצתה באש",
+                            "failed": "אופס! נראה שזה היה תחנת כיבוי אש... המבנה לא עלה באש.",
+                            "success": "הצתתה בניין באש ובדרך החוצה מצאת {amount} {coin}",
+                            "death": "הצתתה את תחנת המשטרה בלהבות ואמממ... הם די לא הערכי את ו... ירו בך.",
+                            "death_chance": 0.04,
+                            "success_chance": 0.4
+                        },
+                        {
+                            "name": "רצח",
+                            "failed": "ניסית לרצוח אדם משונה אבל הוא ברח! אפילו לרצוח אתה לא יכול.",
+                            "success": "רצחת אדם זר בסמטה חשוכה. היה {amount} {coin} בארנק שלו! האם זה היה שווה את זה?",
+                            "death": "החזקת את האקדח הפוך וירית בעצמך! תדמיין להיות כזה מפגר!",
+                            "death_chance": 0.05,
+                            "success_chance": 0.35
+                        },
+                        {
+                            "name": "בריונות רשת",
+                            "failed": "ניסית לבריין איזה ילד אבל ישר העיפו אותך מהשרת. חחחחחחחחחחחחח",
+                            "success": "בריינת ילד בן 13 והוא שלח לך {amount} {coin} כדי שתפסיק! אני מקווה שהילד הזה יגלד ויהיה עשיר יותר ממך...",
+                            "death": "צחקת על ילד כל כך הרבה שנחנקת למוות. מי צוחק עכשיו? תדמיין להיות בריון.",
+                            "death_chance": 0.04,
+                            "success_chance": 0.5
+                        },
+                        {
+                            "name": "עקיצה",
+                            "failed": "נראה שהזקנה שניסית לעקוץ גם מנסה לעקוץ אחרים",
+                            "success": "שיקרת לאישה זקנה בטלפון והיא העבירה לך {amount} {coin}",
+                            "death": "לאישה שניסית לרמות היה אקדח והיא ירתה בך. זה פשוט עצוב.",
+                            "death_chance": 0.04,
+                            "success_chance": 0.65
+                        },
+                        {
+                            "name": "גניבת זהות",
+                            "failed": "מישהו שם לב להתנהגות החשודה ודיווח עליך.",
+                            "success": "גנבת את הזהות של זונה והרווחת {amount} {coin} מהלקוחות שלה.",
+                            "death": "גנבת את הזהות של צ'אק נוריס... הוא שם לב ו... *שחט* אותך בדם קר.",
+                            "death_chance": 0.05,
+                            "success_chance": 0.4
+                        }
+                    ],
+                    "commited": "{tag} ביצע {crime}",
+                    "failed_crime_footer": "תדמיין להיות כל כך גרוע..."
+                }
+            }
         }
     },
     "economy": {

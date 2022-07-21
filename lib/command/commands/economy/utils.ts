@@ -1,6 +1,8 @@
 import {Balance} from "../../../economy";
 import {commas} from "../../../utils/utils";
 import languages from "../../../constants/language.json";
+import {RandomSeed} from "random-seed";
+import weightedRandom from "weighted-random";
 
 export function buildBalanceChangeMessage(
     previous: Balance,
@@ -65,4 +67,25 @@ export function extractNumbers(str: string): number[] {
     });
 
     return numbers;
+}
+
+/**
+ * for intuitiveness, make sure weights sum to multiple of 10
+ * @param weightRewards key is reward range ([min, max]) - value is chance
+ * @returns
+ */
+export function weightedReward(random: RandomSeed, weightRewards: [[number, number], number][]): number {
+    const rewardRange = weightedChoice(weightRewards);
+    return random.intBetween(rewardRange[0], rewardRange[1]);
+}
+
+/**
+ * choose a weighted random value from an array
+ * @param weightedArray array with a value and a weight for that value
+ * @returns the value chosen
+ */
+export function weightedChoice<T>(weightedArray: [T, number][]): T {
+    const weights = weightedArray.map(([, weight]) => weight);
+    const chosenIndex = weightedRandom(weights);
+    return weightedArray[chosenIndex][0];
 }

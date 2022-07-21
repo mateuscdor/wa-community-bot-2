@@ -1,6 +1,7 @@
 import GiveBalanceCommand from "./admin/give";
 import BalanceCommand from "./balance";
 import BegCommand from "./beg";
+import CrimeCommand from "./crime";
 import DailyCommand from "./daily";
 import DepositCommand from "./deposit";
 import HighlowCommand from "./highlow";
@@ -13,5 +14,6 @@ export {
     HighlowCommand,
     DepositCommand,
     BegCommand,
-    WithdrawCommand
+    WithdrawCommand,
+    CrimeCommand
 }

@@ -8,6 +8,7 @@ import User from "../user/user";
 import {BotClient} from "../whatsapp_bot";
 import {sleep} from "./utils";
 import config from "../config.json";
+import { Placeholder } from "../messaging_service";
 
 export function getQuotedMessage(message?: WAMessage) {
     const contextInfo = getContextInfo(message);
@@ -108,13 +109,7 @@ export async function applyPlaceholders(
         command,
         custom,
         chat,
-    }: {
-        message?: Message;
-        user?: User;
-        command?: Command;
-        chat?: Chat;
-        custom?: Map<string, string> | {[key: string]: string | undefined};
-    } = {},
+    }: Placeholder = {},
 ) {
     if (custom && !(custom instanceof Map))
         custom = new Map(Object.entries(custom).filter(([, value]) => value != undefined) as [string, string][]);

@@ -1,4 +1,4 @@
-import {WASocket} from "@adiwajshing/baileys";
+import {jidDecode, WASocket} from "@adiwajshing/baileys";
 import Blockable from "../blockable/blockable";
 import {BlockedReason} from "../blockable/blocked_reason";
 import {Chat} from "../chats";
@@ -7,6 +7,8 @@ import Message from "../message/message";
 import {DeveloperLevel} from "../database/models/user/developer_level";
 import {GroupLevel} from "../models/group_level";
 import CommandTrigger from "./command_trigger";
+import User from "../user/user";
+import {Placeholder} from "../messaging_service";
 
 export default abstract class Command implements Blockable<Message> {
     triggers: CommandTrigger[];
@@ -99,5 +101,35 @@ export default abstract class Command implements Blockable<Message> {
 
     public get mainTrigger() {
         return this.triggers[0];
+    }
+
+    protected getDefaultPlaceholder({chat, message, user, custom}: Placeholder): Placeholder {
+        const customPlaceholder = custom instanceof Map ? custom : custom ? new Map(Object.entries(custom)) : new Map();
+        if (user) customPlaceholder.set("tag", `@${jidDecode(user.model.jid)?.user}`);
+
+        return {
+            chat,
+            message,
+            command: this,
+            user,
+            custom: customPlaceholder,
+        };
+    }
+
+    /**
+     *
+     * @param placeholder placeholder to mutate
+     * @param custom added palceholders
+     */
+    protected addCustomPlaceholders(placeholder: Placeholder, custom: Map<string, string> | {[key: string]: string}) {
+        const customPlaceholder = custom instanceof Map ? custom : new Map(Object.entries(custom));
+        if (!placeholder.custom) placeholder.custom = new Map();
+        if (!(placeholder.custom instanceof Map)) placeholder.custom = new Map(Object.entries(placeholder.custom));
+
+        for (const [key, value] of customPlaceholder) {
+            placeholder.custom?.set(key, value);
+        }
+
+        return placeholder;
     }
 }

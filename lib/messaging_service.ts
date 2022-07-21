@@ -10,6 +10,14 @@ import {Chat} from "./chats";
 import {whatsappBot} from ".";
 import {applyPlaceholders} from "./utils/message_utils";
 
+export type Placeholder = {
+    chat?: Chat;
+    message?: Message;
+    user?: User;
+    command?: Command;
+    custom?: Map<string, string> | {[key: string]: string};
+}
+
 export default class MessagingService {
     private client: WASocket | undefined;
     private metadataEnabled: boolean;
@@ -64,13 +72,7 @@ export default class MessagingService {
         }: {
             privateReply?: boolean;
             metadata?: Metadata;
-            placeholder?: {
-                message?: Message;
-                user?: User;
-                command?: Command;
-                custom?: Map<string, string> | {[key: string]: string | undefined};
-                chat?: Chat;
-            };
+            placeholder?: Placeholder;
         } = {},
     ) {
         return await this.replyAdvanced(message, {text: content}, quote, {privateReply, metadata, placeholder});
@@ -87,13 +89,7 @@ export default class MessagingService {
         }: {
             privateReply?: boolean;
             metadata?: Metadata;
-            placeholder?: {
-                message?: Message;
-                user?: User;
-                command?: Command;
-                custom?: Map<string, string> | {[key: string]: string | undefined};
-                chat?: Chat;
-            };
+            placeholder?: Placeholder;
         } = {},
     ) {
         if (quote) {
@@ -125,13 +121,7 @@ export default class MessagingService {
             placeholder,
         }: {
             metadata?: Metadata;
-            placeholder?: {
-                message?: Message;
-                user?: User;
-                command?: Command;
-                custom?: Map<string, string> | {[key: string]: string | undefined};
-                chat?: Chat;
-            };
+            placeholder?: Placeholder;
         } = {},
     ) {
         return this._internalSendMessage(recipient, content, options, metadata, placeholder);
@@ -142,13 +132,7 @@ export default class MessagingService {
         content: AnyMessageContent,
         options?: MiscMessageGenerationOptions,
         metadata?: Metadata,
-        placeholder?: {
-            message?: Message;
-            user?: User;
-            command?: Command;
-            custom?: Map<string, string> | {[key: string]: string | undefined};
-            chat?: Chat;
-        },
+        placeholder?: Placeholder,
     ): Promise<Message> {
         try {
             assert(this.client, "Client must be set using setClient() method!");

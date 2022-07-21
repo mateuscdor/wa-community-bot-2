@@ -12,7 +12,7 @@ export default abstract class InteractableCommand extends Command {
             const baseCheck =
                 msg.sender == message.sender &&
                 msg.raw?.key.remoteJid == message.raw?.key.remoteJid &&
-                (msg.content?.length ?? 0) > 0;
+                (msg.content?.trim()?.length ?? 0) > 0;
             if (!baseCheck) return false;
             if (!filter) return true;
 
@@ -32,7 +32,7 @@ export default abstract class InteractableCommand extends Command {
         return this.waitForInteractionWith(
             message,
             async (msg) => {
-                if (validResponsesNoUndefined.some((e) => msg.content?.toLowerCase()?.startsWith(e) ?? false))
+                if (validResponsesNoUndefined.some((e) => msg.content?.trim().toLowerCase()?.startsWith(e) ?? false))
                     return true;
                 return false;
             },
