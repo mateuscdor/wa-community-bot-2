@@ -39,6 +39,10 @@ export default abstract class InteractableCommand extends Command {
                 return true;
             }
             if (!filterResult && onFail) await onFail(msg);
+            if (filterResult) {
+                clearTimeout(timerCode);
+                cancelTimeout = true;
+            }
             return filterResult;
         }).then((msg) => {
             if (timedOut) return undefined;
