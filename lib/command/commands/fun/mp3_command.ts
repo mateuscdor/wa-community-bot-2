@@ -76,7 +76,7 @@ export default class MP3Command extends Command {
         await messagingService.reply(message, downloadMessage, true, {
             placeholder: {custom: new Map([["title", video.title]])},
         });
-        const path = `./media/music/${video.title}.ogg`;
+        const path = `./media/music/${video.title}.mp3`;
         this.downloading_list[video.title] = {path, messages: [message]};
         downloadData = this.downloading_list[video.title];
 
@@ -121,8 +121,8 @@ export default class MP3Command extends Command {
                 jid,
                 {
                     audio: file as WAMediaUpload,
-                    fileName: title + ".ogg",
-                    mimetype: "audio/mpeg",
+                    fileName: title + ".mp3",
+                    mimetype: "audio/ogg; codecs=opus",
                 },
                 {quoted: message.raw ?? undefined},
                 {metadata: new MessageMetadata(new Map([["media", false]]))},
