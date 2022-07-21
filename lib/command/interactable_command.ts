@@ -11,11 +11,12 @@ export default abstract class InteractableCommand extends Command {
         onTimeout?: () => any | Promise<any>,
     ): Promise<Message | undefined> {
         let timedOut = false;
+        let cancelTimeout = false;
         let timerCode: NodeJS.Timer;
         if (timeout !== undefined && timeout > 0) {
             timerCode = setTimeout(async () => {
                 timedOut = true;
-                if (onTimeout) await onTimeout();
+                if (onTimeout && !cancelTimeout) await onTimeout();
             }, timeout);
         }
         return waitForMessage(async (msg) => {
@@ -27,12 +28,14 @@ export default abstract class InteractableCommand extends Command {
             if (!baseCheck) return false;
             if (!filter) {
                 clearTimeout(timerCode);
+                cancelTimeout = true;
                 return true;
             }
 
             const filterResult = await filter(msg);
             if (filterResult === undefined) {
                 clearTimeout(timerCode);
+                cancelTimeout = true;
                 return true;
             }
             if (!filterResult && onFail) await onFail(msg);

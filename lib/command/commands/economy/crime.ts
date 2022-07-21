@@ -115,7 +115,7 @@ export default class CrimeCommand extends EconomyCommand {
         if (crimeSuccess) {
             crimeResultMessage += crime.success;
             await this.addBalance(userJid, new Balance(reward, 0));
-        } else {
+        } else if (!crimeDeath && !crimeSuccess) {
             crimeResultMessage += crime.failed;
         }
 
