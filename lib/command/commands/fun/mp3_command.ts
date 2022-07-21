@@ -1,7 +1,7 @@
 import {isJidGroup, isJidUser, proto, WAMediaUpload, WASocket} from "@adiwajshing/baileys";
 import fs from "fs";
 import * as yt from "youtube-search-without-api-key";
-import * as ytdl from "ytdl-core";
+import ytdl from "ytdl-core";
 import {Chat} from "../../../chats";
 import {messagingService} from "../../../constants/services";
 import Message from "../../../message/message";
@@ -12,6 +12,7 @@ import {BlockedReason} from "../../../blockable";
 import {ChatLevel, DeveloperLevel} from "../../../database/models";
 import {MessageMetadata} from "../../../message";
 import languages from "../../../constants/language.json";
+import ffmpeg from "fluent-ffmpeg";
 
 export default class MP3Command extends Command {
     private language: typeof languages.commands.mp3[Language];
@@ -79,9 +80,11 @@ export default class MP3Command extends Command {
         this.downloading_list[video.title] = {path, messages: [message]};
         downloadData = this.downloading_list[video.title];
 
-        ytdl.default(video.url, {filter: 'audioonly'})
-            .pipe(fs.createWriteStream(path))
-            .addListener("finish", async () => {
+        const videoStream = ytdl(video.url, {filter: "audioonly", quality: "highestaudio"});
+        ffmpeg(videoStream)
+            .audioBitrate(128)
+            .save(path)
+            .on("end", async () => {
                 if (!downloadData) {
                     this.deleteFiles(video.title, path);
                     delete this.downloading_list[video.title];
