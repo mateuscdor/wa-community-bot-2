@@ -98,7 +98,11 @@ export default class GiveDonorCommand extends InteractableCommand {
                 if (!donor) return true;
                 if (donor.model.chatLevel === chatLevel) return true;
 
-                if (chatLevel == donor!.model.chatLevel) donorChatLevel = chatLevel;
+                if (chatLevel == donor!.model.chatLevel) {
+                    await messagingService.reply(message, "That user already has that chat level.");
+                    return false;
+                }
+                donorChatLevel = chatLevel;
                 return true;
             },
             () => messagingService.reply(message, donorLevelText, true),
@@ -108,8 +112,6 @@ export default class GiveDonorCommand extends InteractableCommand {
 
         if (!donor) {
             return await messagingService.reply(message, "That user doesn't exist.");
-        } else if (donor!.model.chatLevel == donorChatLevel) {
-            return await messagingService.reply(message, "That user already has that chat level.");
         }
 
         await userRepository.update(donorJid!, {$set: {chatLevel: donorChatLevel}});
