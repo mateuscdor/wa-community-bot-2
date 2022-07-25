@@ -76,7 +76,7 @@ export default class ReminderCommand extends InteractableCommand {
         const splitBody = body.split(" ");
         const time = Number(splitBody.shift());
         let timeType = splitBody.shift();
-        timeType = timeType?.replace(/min|m/gi, "minute").replace(/sec|s/gi, "second").replace(/h/gi, "hour");
+        timeType = timeType?.replace(/min$|m$/gi, "minute").replace(/sec$|s$/gi, "second").replace(/h$/gi, "hour");
         if (!time) {
             return await messagingService.reply(message, this.language.execution.no_body, true, {
                 placeholder: {chat: chat, command: this},

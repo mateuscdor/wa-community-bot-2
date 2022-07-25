@@ -63,12 +63,11 @@ export default class AnonymousCommand extends Command {
         if (!sentToUser) {
             return await messagingService.reply(message, this.language.execution.not_bot_user, true);
         }
-        
+
         const sentToLanguage = languages.commands.anonymous[sentToChat?.model.language ?? "english"];
         content = `${sentToLanguage.execution.received_title}\n${content}`;
         const media = await message.media;
         const msg: AnyMessageContent = media ? {caption: content, image: media} : {text: content.trim()};
-        console.log(sendToJid);
         await messagingService.sendMessage(sendToJid, msg);
         await messagingService.reply(message, this.language.execution.success, true);
     }
