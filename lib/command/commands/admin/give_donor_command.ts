@@ -47,7 +47,6 @@ export default class GiveDonorCommand extends InteractableCommand {
                 if (body.toLowerCase().trim().startsWith("cancel")) return true;
 
                 const mentions = msg.raw?.message?.extendedTextMessage?.contextInfo?.mentionedJid ?? [];
-                console.log(mentions);
                 const phoneNumber = extractNumberFromString(body);
 
                 if (mentions && mentions.length > 0) {
@@ -58,6 +57,7 @@ export default class GiveDonorCommand extends InteractableCommand {
 
                 if (!donorJid) return false;
 
+                donor = await userRepository.get(donorJid, true);
                 if (!donor) {
                     return false;
                 }
