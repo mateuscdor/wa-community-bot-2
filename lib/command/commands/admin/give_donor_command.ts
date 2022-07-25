@@ -94,6 +94,7 @@ export default class GiveDonorCommand extends InteractableCommand {
                     return true;
 
                 const chatLevel = fullEnumSearch(ChatLevel, body.replace(/\D*/g, ""));
+                console.log(chatLevel);
                 if (!chatLevel && chatLevel != 0) return false;
 
                 donor = await userRepository.get(donorJid!, true);
