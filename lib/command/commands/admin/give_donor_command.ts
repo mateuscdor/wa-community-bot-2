@@ -94,11 +94,11 @@ export default class GiveDonorCommand extends InteractableCommand {
                     return true;
 
                 const chatLevel = body.includes("0")
-                    ? ChatLevel.Free
+                    ? ChatLevel.Free as number
                     : body.includes("1")
-                    ? ChatLevel.Premium
+                    ? ChatLevel.Premium as number
                     : body.includes("2")
-                    ? ChatLevel.Sponsor
+                    ? ChatLevel.Sponsor as number
                     : undefined;
                 if (!chatLevel && chatLevel != 0) return false;
 
