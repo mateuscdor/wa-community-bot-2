@@ -773,7 +773,7 @@
                     ],
                     "reputation": "כבוד",
                     "not_enough_rep": "אתה לא יכול לתת {pointsGive} נקודות כבוד שיש לך רק {pointsLeft}",
-                    "success_give": "מתת כבוד!\n\n*@{tag}:* {previous} => {current} (+{given})\n*נקודות שנותרו:* {left}"
+                    "success_give": "נתת כבוד!\n\n*@{tag}:* {previous} => {current} (+{given})\n*נקודות שנותרו:* {left}"
                 }
             }
         },

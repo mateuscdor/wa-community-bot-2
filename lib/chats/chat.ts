@@ -142,8 +142,6 @@ export default abstract class Chat {
     }
 
     async handleMessage(message: Message) {
-        await this.registerMessageToDB(message);
-
         // dont execute blockable if message is from bot
         if (message.fromMe) return;
         const handlers = (await this.getHandlers(message)) ?? [];
@@ -209,16 +207,6 @@ export default abstract class Chat {
             // add command cooldown to user
             await user?.addCooldown(message.raw?.key.remoteJid!, blockable);
             blockable.execute(whatsappBot.client!, this, message, body, body, ...body.split(" "));
-        }
-    }
-
-    private async registerMessageToDB(message: Message) {
-        const model = message.model;
-        try {
-            await messageRepository.create(model);
-        } catch (err) {
-            console.error(`MESSAGE ${message.id} ALREADY LOGGED TO DATABASE`);
-            console.error(err);
         }
     }
 
