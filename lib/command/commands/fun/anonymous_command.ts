@@ -33,7 +33,7 @@ export default class AnonymousCommand extends Command {
             });
         }
 
-        const splitData = body?.replace(" ", "")?.split(" ") ?? [];
+        const splitData = body?.split(" ") ?? [];
         let number = splitData.shift();
         number = number
             ?.replace(/-/g, "")
@@ -52,6 +52,7 @@ export default class AnonymousCommand extends Command {
             return await messagingService.reply(message, this.language.execution.no_content, true);
         }
 
+        console.log(await client.onWhatsApp(number))
         if (!(await client.onWhatsApp(number))[0].exists) {
             return await messagingService.reply(message, this.language.execution.no_whatsapp, true);
         }
