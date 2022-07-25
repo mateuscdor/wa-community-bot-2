@@ -11,6 +11,7 @@ import Command from "../../command";
 import CommandTrigger from "../../command_trigger";
 import InteractableCommand from "../../interactable_command";
 import languages from "../../../constants/language.json";
+import moment from "moment";
 
 export default class GiveDonorCommand extends InteractableCommand {
     private language: typeof languages.commands["give donor"][Language];
@@ -68,6 +69,7 @@ export default class GiveDonorCommand extends InteractableCommand {
             20 * 1000,
             () => messagingService.reply(message, "You took too long to respond. Please try again."),
         );
+        if (!donorNumberMsg) return;
 
         if (!donorJid) {
             return await messagingService.reply(message, "You didn't enter a phone number.");
@@ -92,7 +94,7 @@ export default class GiveDonorCommand extends InteractableCommand {
                     return true;
 
                 const chatLevel = fullEnumSearch(ChatLevel, body.replace(/\D*/g, ""));
-                if (!chatLevel) return false;
+                if (!chatLevel && chatLevel != 0) return false;
 
                 donor = await userRepository.get(donorJid!, true);
                 if (!donor) return true;
@@ -110,11 +112,44 @@ export default class GiveDonorCommand extends InteractableCommand {
             () => messagingService.reply(message, "You took too long to respond. Please try again."),
         );
 
+        if (!donorLevelMsg) return;
+
+        const howManyMonths =
+            "*How many months do you want to give the donator?*\n_(Please enter the number of months)_";
+        let months: number | undefined;
+        const monthsMsg = await this.waitForInteractionWith(
+            message,
+            async (msg) => {
+                const body = msg.content;
+                if (!body) return false;
+
+                const months = body.replace("D*", "");
+                if (!months) return false;
+                const monthsNum = Number(months);
+
+                if (monthsNum < 1) {
+                    return false;
+                }
+
+                return true;
+            },
+            () => messagingService.reply(message, howManyMonths, true),
+            20 * 1000,
+            () => messagingService.reply(message, "You took too long to respond. Please try again."),
+        );
+
+        if (!monthsMsg) return;
+        if (!months) {
+            return await messagingService.reply(message, "You didn't enter a number.");
+        }
+
         if (!donor) {
             return await messagingService.reply(message, "That user doesn't exist.");
         }
 
-        await userRepository.update(donorJid!, {$set: {chatLevel: donorChatLevel}});
+        await userRepository.update(donorJid!, {
+            $set: {chatLevel: donorChatLevel, donor: {time: moment().unix(), until: moment().add(1, "year").unix()}},
+        });
         await messagingService.reply(message, `${donor.model.name} has been given the chat level ${donorChatLevel}!`);
 
         const donorChat = await chatRepository.get(donorJid!, true);
