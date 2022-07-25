@@ -37,6 +37,7 @@ export default class GiveDonorCommand extends InteractableCommand {
 
         let donorJid: string | undefined;
         let donor: User | undefined;
+        await messagingService.reply(message, donorNumberQuestion, true);
         const donorNumberMsg = await this.waitForInteractionWith(
             message,
             async (msg) => {
@@ -75,11 +76,19 @@ export default class GiveDonorCommand extends InteractableCommand {
         }
 
         let donorChatLevel: ChatLevel | undefined;
-        const donorLevelMsg = await this.validatedWaitForInteractionWith(
+        const donorLevelText =
+            "*What chat level do you want to set the donator as?*\n_(Please enter the chat level)_\n\n*0.* Free\n*1.* Premium\n*2.* Sponsor";
+        await messagingService.reply(message, donorLevelText, true);
+
+        const donorLevelMsg = await this.waitForInteractionWith(
             message,
             async (msg) => {
                 const body = msg.content;
                 if (!body) return false;
+
+                const validResponsesNoUndefined = ["0 - Free", "1 - Premium", "2 - Sponsor"];
+                if (validResponsesNoUndefined.some((e) => msg.content?.trim().toLowerCase()?.startsWith(e) ?? false))
+                    return true;
 
                 const chatLevel = fullEnumSearch(ChatLevel, body.replace(/\D*/g, ""));
                 if (!chatLevel) return false;
@@ -91,13 +100,9 @@ export default class GiveDonorCommand extends InteractableCommand {
                 if (chatLevel == donor!.model.chatLevel) donorChatLevel = chatLevel;
                 return true;
             },
+            () => messagingService.reply(message, donorLevelText, true),
             20 * 1000,
-            async () => {
-                return messagingService.reply(message, "You took too long to respond. Please try again.");
-            },
-            "0 - Free",
-            "1 - Premium",
-            "2 - Sponsor",
+            () => messagingService.reply(message, "You took too long to respond. Please try again."),
         );
 
         if (!donor) {
