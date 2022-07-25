@@ -78,7 +78,7 @@ export default class GiveDonorCommand extends InteractableCommand {
             return await messagingService.reply(message, "That user doesn't exist.");
         }
 
-        let donorChatLevel: ChatLevel | undefined;
+        let donorChatLevel: number | undefined;
         const donorLevelText =
             "*What chat level do you want to set the donator as?*\n_(Please enter the chat level)_\n\n*0.* Free\n*1.* Premium\n*2.* Sponsor";
         await messagingService.reply(message, donorLevelText, true);
@@ -130,7 +130,7 @@ export default class GiveDonorCommand extends InteractableCommand {
                 const body = msg.content;
                 if (!body) return false;
 
-                const monthsStr = body.replace("D*", "");
+                const monthsStr = body.replace(/\D*/g, "");
                 if (!monthsStr) return false;
                 months = Number(monthsStr);
 
@@ -156,7 +156,7 @@ export default class GiveDonorCommand extends InteractableCommand {
 
         await userRepository.update(donorJid!, {
             $set: {
-                chatLevel: donorChatLevel,
+                chat_level: donorChatLevel,
                 donor: {until: moment().add(months, "months").unix()},
             },
         });
