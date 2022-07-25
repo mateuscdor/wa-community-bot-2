@@ -94,7 +94,7 @@ export default class GiveDonorCommand extends InteractableCommand {
                     return true;
 
                 const chatLevel = fullEnumSearch(ChatLevel, body.replace(/\D*/g, ""));
-                if (!chatLevel && chatLevel != 0) return false;
+                if (chatLevel == undefined) return false;
 
                 donor = await userRepository.get(donorJid!, true);
                 if (!donor) return true;
@@ -116,6 +116,7 @@ export default class GiveDonorCommand extends InteractableCommand {
 
         const howManyMonths =
             "*How many months do you want to give the donator?*\n_(Please enter the number of months)_";
+        await messagingService.reply(message, howManyMonths, true);
         let months: number | undefined;
         const monthsMsg = await this.waitForInteractionWith(
             message,
