@@ -61,6 +61,7 @@ export default class AnonymousCommand extends Command {
         content = `${sentToLanguage.execution.received_title}\n${content}`;
         const media = await message.media;
         const msg: AnyMessageContent = media ? {caption: content, image: media} : {text: content};
+        console.log(number)
         await messagingService.sendMessage(number, msg);
         await messagingService.reply(message, this.language.execution.success, true);
     }
