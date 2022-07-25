@@ -1,6 +1,6 @@
 import {AnyMessageContent, WASocket} from "@adiwajshing/baileys";
 import {Chat, ChatLevel} from "../../../chats";
-import {chatRepository, messagingService} from "../../../constants/services";
+import {chatRepository, messagingService, userRepository} from "../../../constants/services";
 import Message from "../../../message/message";
 import Command from "../../command";
 import CommandTrigger from "../../command_trigger";
@@ -59,6 +59,11 @@ export default class AnonymousCommand extends Command {
 
         const sendToJid = existsRes[0].jid;
         const sentToChat = await chatRepository.get(sendToJid, true);
+        const sentToUser = await userRepository.get(sendToJid, true);
+        if (!sentToUser) {
+            return await messagingService.reply(message, this.language.execution.not_bot_user, true);
+        }
+        
         const sentToLanguage = languages.commands.anonymous[sentToChat?.model.language ?? "english"];
         content = `${sentToLanguage.execution.received_title}\n${content}`;
         const media = await message.media;
