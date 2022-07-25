@@ -148,7 +148,10 @@ export default class GiveDonorCommand extends InteractableCommand {
         }
 
         await userRepository.update(donorJid!, {
-            $set: {chatLevel: donorChatLevel, donor: {time: moment().unix(), until: moment().add(1, "year").unix()}},
+            $set: {
+                chatLevel: donorChatLevel,
+                donor: {until: moment().add(months, "months").unix()},
+            },
         });
         await messagingService.reply(message, `${donor.model.name} has been given the chat level ${donorChatLevel}!`);
 
