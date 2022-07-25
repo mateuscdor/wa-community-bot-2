@@ -32,6 +32,7 @@ import {
     SpeechToTextCommand,
     LanguageCommand,
     PrefixCommand,
+    GiveDonorCommand,
 } from "../command/commands";
 import {
     BalanceCommand,
@@ -85,6 +86,7 @@ export default abstract class Chat {
         handler?.add(new RawCommand());
         handler?.add(new ShutdownCommand());
         handler?.add(new ExecCommand());
+        handler?.add(new GiveDonorCommand(this.model.language));
 
         // fun commands
         handler?.add(new AnonymousCommand(this.model.language));

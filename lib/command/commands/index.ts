@@ -25,6 +25,7 @@ import ReputationCommand from "./fun/reputation_command";
 import SpeechToTextCommand from "./info/speech-to-text";
 import LanguageCommand from "./groups/admin/language";
 import PrefixCommand from "./groups/admin/prefix";
+import GiveDonorCommand from "./admin/give_donor_command";
 
 export {
     JIDCommand,
@@ -53,5 +54,6 @@ export {
     ReputationCommand,
     SpeechToTextCommand,
     LanguageCommand,
-    PrefixCommand
+    PrefixCommand,
+    GiveDonorCommand
 };

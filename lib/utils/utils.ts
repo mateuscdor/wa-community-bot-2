@@ -27,6 +27,7 @@ export async function sleep(fn: () => Promise<any> | any, ms: number) {
 
 export function extractNumberFromString(str: string) {
     return str
+        .replace(/(?<=\d\d\d) /gi, "")
         .split(" ")[0]
         .replace(/-/g, "")
         .replace(/(?<=\d\d\d) /, "");
