@@ -16,7 +16,7 @@ export type Placeholder = {
     user?: User;
     command?: Command;
     custom?: Map<string, string> | {[key: string]: string};
-}
+};
 
 export default class MessagingService {
     private client: WASocket | undefined;
@@ -149,7 +149,8 @@ export default class MessagingService {
 
             const text = (content as any).text;
             const caption = (content as any).caption;
-            if (text != undefined && text.length > 0) (content as any).text = await applyPlaceholders(text, placeholder);
+            if (text != undefined && text.length > 0)
+                (content as any).text = await applyPlaceholders(text, placeholder);
             if (caption != undefined && caption.length > 0)
                 (content as any).caption = await applyPlaceholders(caption, placeholder);
 

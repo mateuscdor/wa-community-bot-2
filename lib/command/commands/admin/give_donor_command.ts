@@ -129,12 +129,8 @@ export default class GiveDonorCommand extends InteractableCommand {
             lang = languages.commands["give donor"]["hebrew"];
         }
 
-        await messagingService.sendMessage(donorJid!, {text: lang.execution.thanks}, undefined, {
-            placeholder: {
-                custom: {
-                    rank: ChatLevel[donorChatLevel!],
-                },
-            },
+        await messagingService.sendMessage(donorJid!, {
+            text: lang.execution.thanks.replace("{rank}", ChatLevel[donorChatLevel!]),
         });
     }
 
