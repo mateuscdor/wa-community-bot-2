@@ -838,12 +838,12 @@
         "give donor": {
             "english": {
                 "execution": {
-                    "thanks": "Thank you for donating to our bot! Your donation is incredibly appreciated and will help us to keep the bot running and improve the quality of the bot.\n\nThank you again for your support!"
+                    "thanks": "Thank you for donating to our bot! Your donation is incredibly appreciated and will help us to keep the bot running and improve the quality of the bot.\n\nThank you again for your support!\n\nYou are now a {rank}"
                 }
             },
             "hebrew": {
                 "execution": {
-                    "thanks": "תודה רבה על תרומתך לבוט! התרומה שלך מוערכת מאוד ותעזור לנו להמשיך את הבוט רץ ותשפר את האיכות של הבוט.\n\nתודה רבה!"
+                    "thanks": "תודה רבה על תרומתך לבוט! התרומה שלך מוערכת מאוד ותעזור לנו להמשיך את הבוט רץ ותשפר את האיכות של הבוט.\n\nתודה רבה!\n\nאתה עכשיו {rank}"
                 }
             }
         },
