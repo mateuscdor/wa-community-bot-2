@@ -24,7 +24,7 @@ export default class GptCommand extends Command {
             description: lang.description,
             cooldowns: new Map([
                 [ChatLevel.Premium, 20 * 1000],
-                [ChatLevel.Sponser, 10 * 1000],
+                [ChatLevel.Sponsor, 10 * 1000],
             ]),
         });
 

@@ -24,7 +24,7 @@ export default class HighlowCommand extends EconomyCommand {
             cooldowns: new Map([
                 [ChatLevel.Free, 30000],
                 [ChatLevel.Premium, 15000],
-                [ChatLevel.Sponser, 10000],
+                [ChatLevel.Sponsor, 10000],
             ]),
         });
 

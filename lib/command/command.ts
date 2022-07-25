@@ -55,7 +55,7 @@ export default abstract class Command implements Blockable<Message> {
         cooldowns = new Map([
             [ChatLevel.Free, 2000],
             [ChatLevel.Premium, 1000],
-            [ChatLevel.Sponser, 500],
+            [ChatLevel.Sponsor, 500],
         ]),
         groupLevel = GroupLevel.None,
         category = undefined,

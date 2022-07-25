@@ -30,7 +30,7 @@ export default class MP3Command extends Command {
             cooldowns: new Map([
                 [ChatLevel.Free, 5 * 1000],
                 [ChatLevel.Premium, 3 * 1000],
-                [ChatLevel.Sponser, 2 * 1000],
+                [ChatLevel.Sponsor, 2 * 1000],
             ]),
         });
 

@@ -37,7 +37,7 @@ export default class CrimeCommand extends EconomyCommand {
             cooldowns: new Map([
                 [ChatLevel.Free, 45 * 1000],
                 [ChatLevel.Premium, 20 * 1000],
-                [ChatLevel.Sponser, 15 * 1000],
+                [ChatLevel.Sponsor, 15 * 1000],
             ]),
         });
 

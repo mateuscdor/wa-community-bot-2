@@ -1,5 +1,5 @@
 export enum ChatLevel {
     Free,
     Premium,
-    Sponser
+    Sponsor
 }

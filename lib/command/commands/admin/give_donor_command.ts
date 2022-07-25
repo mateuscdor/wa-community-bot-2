@@ -93,8 +93,13 @@ export default class GiveDonorCommand extends InteractableCommand {
                 if (validResponsesNoUndefined.some((e) => msg.content?.trim().toLowerCase()?.startsWith(e) ?? false))
                     return true;
 
-                const chatLevel = fullEnumSearch(ChatLevel, body.replace(/\D*/g, ""));
-                console.log(chatLevel);
+                const chatLevel = body.includes("0")
+                    ? ChatLevel.Free
+                    : body.includes("1")
+                    ? ChatLevel.Premium
+                    : body.includes("2")
+                    ? ChatLevel.Sponsor
+                    : undefined;
                 if (!chatLevel && chatLevel != 0) return false;
 
                 donor = await userRepository.get(donorJid!, true);

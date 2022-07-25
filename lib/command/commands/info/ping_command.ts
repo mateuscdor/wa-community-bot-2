@@ -22,7 +22,7 @@ export default class PingCommand extends Command {
             cooldowns: new Map([
                 [ChatLevel.Free, 500],
                 [ChatLevel.Premium, 250],
-                [ChatLevel.Sponser, 0],
+                [ChatLevel.Sponsor, 0],
             ]),
         });
 
