@@ -109,27 +109,28 @@ export default class HelpCommand extends Command {
         helpMessage += `${this.language.execution.suffix}`;
 
         if (sendInGroup || ["here", "כאן"].some((e) => message.content?.trim().toLowerCase().includes(e))) {
-            await messagingService.sendMessage(
-                message.raw?.key.remoteJid!,
+            await messagingService.replyAdvanced(
+                message,
                 {
                     text: helpMessage,
                     buttonText: this.language.execution.button,
                     sections: Array.from(sections.entries()).map((arr) => arr[1] as proto.ISection),
                     footer: this.language.execution.footer,
                 },
-                {quoted: message.raw!},
+                true,
             );
         } else {
             messagingService.replyAdvanced(message, {text: this.language.execution.dms}, true);
-            messagingService.sendMessage(
-                message.sender!,
+            await messagingService.replyAdvanced(
+                message,
                 {
                     text: helpMessage,
                     buttonText: "Click me for help!",
                     sections: Array.from(sections.entries()).map((arr) => arr[1] as proto.ISection),
                     footer: this.language.execution.footer,
                 },
-                {quoted: message.raw!},
+                true,
+                {privateReply: true},
             );
         }
     }

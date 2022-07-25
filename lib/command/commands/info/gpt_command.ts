@@ -44,7 +44,9 @@ export default class GptCommand extends Command {
 
     async execute(client: WASocket, chat: Chat, message: Message, body?: string) {
         if (!body) {
-            return await messagingService.reply(message, this.language.execution.no_question);
+            return await messagingService.reply(message, this.language.execution.no_question, true, {
+                placeholder: this.getDefaultPlaceholder({chat, message}),
+            });
         }
 
         // body can only contain english and special characters
