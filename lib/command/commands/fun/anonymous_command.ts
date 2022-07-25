@@ -27,7 +27,7 @@ export default class AnonymousCommand extends Command {
     }
 
     async execute(client: WASocket, chat: Chat, message: Message, body?: string) {
-        if (!message.media && !body) {
+        if (!message.mediaPath && !body) {
             return await messagingService.reply(message, this.language.execution.no_content, true, {
                 placeholder: {command: this, chat, message},
             });

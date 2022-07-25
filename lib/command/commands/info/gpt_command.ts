@@ -20,9 +20,9 @@ export default class GptCommand extends Command {
             announcedAliases: lang.triggers,
             usage: lang.usage,
             category: lang.category,
+            chatLevel: ChatLevel.Premium,
             description: lang.description,
             cooldowns: new Map([
-                [ChatLevel.Free, 30 * 1000],
                 [ChatLevel.Premium, 20 * 1000],
                 [ChatLevel.Sponser, 10 * 1000],
             ]),
