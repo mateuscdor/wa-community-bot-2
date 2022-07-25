@@ -53,7 +53,7 @@ export default class AnonymousCommand extends Command {
         }
 
         const existsRes = await client.onWhatsApp(number);
-        if (existsRes && existsRes.length > 0 && existsRes[0].exists) {
+        if (!existsRes || existsRes.length == 0 || !existsRes[0].exists) {
             return await messagingService.reply(message, this.language.execution.no_whatsapp, true);
         }
 
@@ -62,7 +62,7 @@ export default class AnonymousCommand extends Command {
         const sentToLanguage = languages.commands.anonymous[sentToChat?.model.language ?? "english"];
         content = `${sentToLanguage.execution.received_title}\n${content}`;
         const media = await message.media;
-        const msg: AnyMessageContent = media ? {caption: content, image: media} : {text: content};
+        const msg: AnyMessageContent = media ? {caption: content, image: media} : {text: content.trim()};
         console.log(sendToJid);
         await messagingService.sendMessage(sendToJid, msg);
         await messagingService.reply(message, this.language.execution.success, true);
