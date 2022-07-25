@@ -124,11 +124,11 @@ export default class GiveDonorCommand extends InteractableCommand {
                 const body = msg.content;
                 if (!body) return false;
 
-                const months = body.replace("D*", "");
-                if (!months) return false;
-                const monthsNum = Number(months);
+                const monthsStr = body.replace("D*", "");
+                if (!monthsStr) return false;
+                months = Number(monthsStr);
 
-                if (monthsNum < 1) {
+                if (months < 1) {
                     return false;
                 }
 
