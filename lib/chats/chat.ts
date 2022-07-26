@@ -33,6 +33,7 @@ import {
     LanguageCommand,
     PrefixCommand,
     GiveDonorCommand,
+    DonateCommand,
 } from "../command/commands";
 import {
     BalanceCommand,
@@ -116,6 +117,7 @@ export default abstract class Chat {
         handler?.add(new PingCommand(this.model.language));
         handler?.add(new CodeCommand(this.model.language));
         handler?.add(new SpeechToTextCommand(this.model.language));
+        handler?.add(new DonateCommand(this.model.language));
 
         // bot eco commands
         handler?.add(new BalanceCommand(this.model.language));
