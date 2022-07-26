@@ -26,6 +26,8 @@ export default class DonateCommand extends Command {
     async onBlocked(msg: Message, blockedReason: BlockedReason) {}
 
     async execute(client: WASocket, chat: Chat, msg: Message, body: string) {
-        await messagingService.reply(msg, this.language.execution.text, true);
+        await messagingService.reply(msg, this.language.execution.text, true, {
+            placeholder: this.getDefaultPlaceholder(chat, msg)
+        });
     }
 }
