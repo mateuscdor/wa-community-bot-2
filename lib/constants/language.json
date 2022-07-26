@@ -133,7 +133,7 @@
                 "execution": {
                     "prefix": "*----- HELP ME I'M RETARDED ----*",
                     "suffix": "Hope I helped ✌\n~bot",
-                    "footer": "Please consider supporting the bot by donating to the Patreon!\n\nDonators receive special perks!\nhttps://payboxapp.page.link/VNQQ1AAknBKoneF79\nhttps://www.patreon.com/wailcommunitybot\nhttps://paypal.me/whatsappbotisrael",
+                    "footer": "Please consider supporting the bot by donating to the Patreon!\n\nDonators receive special perks!\nhttps://payboxapp.page.link/VNQQ1AAknBKoneF79\nhttps://www.patreon.com/wailcommunitybot\nhttps://paypal.me/whatsappbotisrael\n\nWant me to make you a bot? https://www.fiverr.com/share/Y0Zb9a",
                     "button": "Click me for help!",
                     "dms": "Check your DMs!",
                     "misc": "Misc",
@@ -152,7 +152,7 @@
                 "execution": {
                     "prefix": "*----- עזרה אני מפגר!!! -----*",
                     "suffix": "מקווה שעזרתי ✌",
-                    "footer": "בבקשה תשקלו לתמוך בבוט בעזרת תרומה קטנה בפרטרון שלנו!\n\nתורמים מקבלים פריבילגיות מיוחדות!\nhttps://payboxapp.page.link/VNQQ1AAknBKoneF79\nhttps://www.patreon.com/wailcommunitybot\nhttps://paypal.me/whatsappbotisrael",
+                    "footer": "בבקשה תשקלו לתמוך בבוט בעזרת תרומה קטנה בפרטרון שלנו!\n\nתורמים מקבלים פריבילגיות מיוחדות!\nhttps://payboxapp.page.link/VNQQ1AAknBKoneF79\nhttps://www.patreon.com/wailcommunitybot\nhttps://paypal.me/whatsappbotisrael\n\nרוצים שאצור לכם בוט? https://www.fiverr.com/share/Y0Zb9a",
                     "button": "תלחץ עליי לעזרה!",
                     "dms": "תסתכל על השיחות הפרטיות שלך!",
                     "misc": "אחר",
@@ -184,7 +184,7 @@
                 "category": "מידע",
                 "description": "מידע לגבי התרמות לבוט. מה מקבלים? איך מתרימים?",
                 "execution": {
-                    "text": "תודה רבה על השיקול לתרום לבוט.\n\n_איך תורמים?_\nניתן לתרום דרך פייבוקס, פייפל (PayPal) וPatreon.\n1. https://payboxapp.page.link/VNQQ1AAknBKoneF79\n2. https://www.patreon.com/wailcommunitybot\n3. https://www.paypal.com/paypalme/whatsappbotisrael\n\nכאשר אתם תורמים, אנא השאירו בחלק של הפתק את מספר הטלפון שלכם על מנת שאוכל ליצור אתכם קשר ולתת לכם \"פריבילגיות\"\n\n_שאלות_\nלשאלות שלחו הודעה ליוצר בעזרת הפקודה \"מפתח{prefix}\"\n\n_מה מקבלים?_ (*רק* תורמים של 3 שקל ומעלה!)\n1. לחכות בין שליחת פקודות פחות\n2. פקודת \"אנונימי\" שאיתה אפשר לשלוח דרך הבוט הודעות אנונימיות למספרי טלפון (אפשר לשלוח רק למשתמשים של הבוט)\n3. פקודת \"בינה\" שנותנת לבינה מלאכותית לכתוב טקסט על פי שאלה שאתם נותנים לה.\n4. משאירים את הבוט רץ!\n6. אלו שתורמים חמש דולר ומעלה (17 שקל) יקבלו את האפשרות להוסיף את הפריבילגיות האלו לקבוצה אחת לבחירתם.\n*(הפריבילגיות של התרומות שלכם נשארות לחודש מהרגע שהם התווספו אלה אם התרמת יותר מהמינימום, דבר שיכול לתת לך יותר זמן)*\n\n_למה לתרום?_\nהתרומות שלכם משאירים את הבוט רץ.\nכרגע, הבוט במצב לא טוב כספית והמצב הזה לצערי רק מחמיר.\nהתרומות שלכם יכסו את:\n1. השרת שאליו הבוט רץ\n2. שדרוג החומרה שעליו רץ הבוט על מנת להתמודד עם ביקוש עולה\n3. מספר הטלפון (על מנת שלא ישתנה)\n4. הזמן שלי - השקעתי מעל 200 שעות בפיתוח הבוט על מנת שיהיה מעולה לכל קבוצה או אדם."
+                    "text": "תודה רבה על השיקול לתרום לבוט.\n\n_איך תורמים?_\nניתן לתרום דרך פייבוקס, פייפל (PayPal) וPatreon.\n1. https://payboxapp.page.link/VNQQ1AAknBKoneF79\n2. https://www.patreon.com/wailcommunitybot\n3. https://www.paypal.com/paypalme/whatsappbotisrael\n\nכאשר אתם תורמים, אנא השאירו בחלק של הפתק את מספר הטלפון שלכם על מנת שאוכל ליצור אתכם קשר ולתת לכם \"פריבילגיות\"\n\n_שאלות_\nלשאלות שלחו הודעה ליוצר בעזרת הפקודה \"{prefix}מפתח\"\n\n_מה מקבלים?_ (*רק* תורמים של 3 שקל ומעלה!)\n1. לחכות בין שליחת פקודות פחות\n2. פקודת \"אנונימי\" שאיתה אפשר לשלוח דרך הבוט הודעות אנונימיות למספרי טלפון (אפשר לשלוח רק למשתמשים של הבוט)\n3. פקודת \"בינה\" שנותנת לבינה מלאכותית לכתוב טקסט על פי שאלה שאתם נותנים לה.\n4. משאירים את הבוט רץ!\n6. אלו שתורמים חמש דולר ומעלה (17 שקל) יקבלו את האפשרות להוסיף את הפריבילגיות האלו לקבוצה אחת לבחירתם.\n*(הפריבילגיות של התרומות שלכם נשארות לחודש מהרגע שהם התווספו אלה אם התרמת יותר מהמינימום, דבר שיכול לתת לך יותר זמן)*\n\n_למה לתרום?_\nהתרומות שלכם משאירים את הבוט רץ.\nכרגע, הבוט במצב לא טוב כספית והמצב הזה לצערי רק מחמיר.\nהתרומות שלכם יכסו את:\n1. השרת שאליו הבוט רץ\n2. שדרוג החומרה שעליו רץ הבוט על מנת להתמודד עם ביקוש עולה\n3. מספר הטלפון (על מנת שלא ישתנה)\n4. הזמן שלי - השקעתי מעל 200 שעות בפיתוח הבוט על מנת שיהיה מעולה לכל קבוצה או אדם."
                 }
             }
         },
