@@ -850,7 +850,7 @@
                 "description": "Send along with an image or video to create a sticker",
                 "usage": "{prefix}{command}",
                 "execution": {
-                    "no_media": "You must send a video, image, sticker or reply to one of those.",
+                    "no_media": "You must send a video, image, sticker, text or reply to one of those.",
                     "too_big": "The sticker you are trying to create is too large."
                 }
             },
@@ -862,7 +862,7 @@
                 "description": "תשלח את הפקודה עם תמונה או סרטון כדי ליצור סטיקר",
                 "usage": "{prefix}{command}",
                 "execution": {
-                    "no_media": "אתה צריך לשלוח תמונה, סרטון, סטיקר או לצטט אחד מאלו.",
+                    "no_media": "אתה צריך לשלוח תמונה, סרטון, סטיקר, טקסט או לצטט אחד מאלו.",
                     "too_big": "הסטיקר שאתה מנסה ליצור גדול מדי."
                 }
             }

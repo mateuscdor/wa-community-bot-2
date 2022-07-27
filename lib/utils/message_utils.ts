@@ -20,7 +20,7 @@ export function getQuotedMessage(message?: WAMessage) {
         contextInfo?.quotedMessage!,
         {
             messageId: contextInfo?.stanzaId!,
-            userJid: contextInfo?.participant!,
+            userJid: contextInfo?.participant!
         },
     );
 

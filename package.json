@@ -8,6 +8,7 @@
     "start": "npm run build && node dist/index.js"
   },
   "dependencies": {
+    "-": "^0.0.1",
     "@adiwajshing/baileys": "^4.3.0",
     "@adiwajshing/keyed-db": "^0.2.4",
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
@@ -20,6 +21,7 @@
     "link-preview-js": "^2.1.15",
     "moment": "^2.29.4",
     "mongodb": "^4.7.0",
+    "nan": "^2.16.0",
     "node-schedule": "^2.1.0",
     "openai": "^3.0.0",
     "qrcode-terminal": "^0.12.0",
