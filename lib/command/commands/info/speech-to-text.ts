@@ -51,7 +51,6 @@ export default class SpeechToTextCommand extends Command {
 
         const audioPath = quoted.mediaPath;
         let media: Buffer | undefined;
-        console.log(this.audioSavePath)
         if (audioPath && !fs.existsSync(audioPath)) {
             media = await quoted.media;
         }

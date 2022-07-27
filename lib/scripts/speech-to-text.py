@@ -20,7 +20,7 @@ def main():
 
     input_path = str(args[0])
     audio_id = str(args[1])
-    language = str(args[2]) if len(args) > 3 else 'he'
+    language = str(args[2]) if len(args) > 2 else 'he'
     recognizer = sr.Recognizer()
 
     if not input_path.endswith(".wav"):
