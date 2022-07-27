@@ -988,7 +988,15 @@
                 "execution": {
                     "no_user": "Must provide a user to steal from.",
                     "no_balance": "This user is too poor to rob 💀.",
-                    "success_give": "\"oh you poor little thief, take {amount}\""
+                    "success_give": "\"oh you poor little thief, take {amount}\"",
+                    "take_messages": {
+                        "90": "LMFAO 😂😂 you basically took EVERYTHINg there is to take from this poor bastard",
+                        "60": "Great heist! you could have tried to better but good I guess...",
+                        "30": "C'mon... At least try.. maybe next time you could score more 🤦‍♂️",
+                        "10": "Are you even trying? C'mon your a thief...",
+                        "0": "LMAO and you quit your job for this?? 😹😹😹"
+                    },
+                    "success_footer": "Your payout was {coins} {coin}"
                 }
             },
             "hebrew": {
