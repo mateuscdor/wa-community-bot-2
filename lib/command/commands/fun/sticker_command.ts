@@ -41,9 +41,8 @@ export default class StickerCommand extends Command {
             const bgColor = "#212c33";
             const textColor = "#e9edef";
             const footerColor = "#9fa4a7";
-            const numberColors = ["#df64b6", "#f79877", "#d885ea", "#a281f0", "#63baea", "#f7d37c"];
-            const numberColor = numberColors[Math.floor(Math.random() * numberColors.length)];
-            const messageSize = [100, 100];
+            const numberColor = choice(["#df64b6", "#f79877", "#d885ea", "#a281f0", "#63baea", "#f7d37c"]);
+            const messageSize = [500, 500];
 
             const chosenMessage = body?.length ?? 0 > 0 ? message : quoted!;
             const bodyText = body?.length ?? 0 > 0 ? body : chosenMessage.content;
@@ -60,7 +59,7 @@ export default class StickerCommand extends Command {
             let numberSize = ctx.measureText(bodyAuthor ?? "");
             ctx.font = "14.2px Segoe UI";
             ctx.fillStyle = textColor;
-            // ctx.fillText(bodyText ?? "", 6, 7 + 14.2 + numberSize.actualBoundingBoxDescent + 7);
+            ctx.fillText(bodyText ?? "", 6, 7 + 14.2 + numberSize.actualBoundingBoxDescent + 7);
             messageMedia = canvas.toBuffer();
         }
 
