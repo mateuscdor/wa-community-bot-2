@@ -31,7 +31,9 @@ export default class CreatorCommand extends Command {
 
     async execute(client: WASocket, chat: Chat, message: Message, body?: string) {
         if ((!message.mediaPath || !(await message.media)) && (!body || body.trim().length == 0)) {
-            return await messagingService.reply(message, this.language.execution.no_body, true);
+            return await messagingService.reply(message, this.language.execution.no_body, true, {
+                placeholder: this.getDefaultPlaceholder(chat, message)
+            });
         }
 
         await messagingService.sendMessage(process.env["CREATOR_JID"]!, {
