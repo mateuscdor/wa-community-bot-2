@@ -6,8 +6,9 @@ import dotenv from "dotenv";
 import {chatRepository, messagingService, userRepository} from "./constants/services";
 import {normalizeJid} from "./utils/group_utils";
 import moment from "moment";
-import {EveryoneCommand} from "./command/commands";
+import {EveryoneCommand, HelpCommand, PingCommand} from "./command/commands";
 import config from "./config.json";
+import languages from "./constants/language.json";
 
 ffmpeg.setFfmpegPath(ffmpegPath);
 dotenv.config({path: "./"});
@@ -103,7 +104,7 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
 
             const selectedRowId = rawMsg.message?.listResponseMessage?.singleSelectReply?.selectedRowId;
             if (selectedRowId && selectedRowId?.startsWith("HELP_COMMAND")) {
-                const helpCommand = await chat?.getCommandByTrigger(">>help");
+                const helpCommand = await chat?.getCommandByTrigger("help");
                 let splitAtNewLine = selectedRowId.split("\n");
                 splitAtNewLine.shift();
                 let data = splitAtNewLine.join("\n").split("\n\r");
@@ -111,7 +112,15 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
                 const commandDescription = data[1];
                 let id = 0;
                 const aliasesButtons: proto.IButton[] = commandAliases.map((alias) => {
-                    return {buttonId: (id++).toString(), buttonText: {displayText: alias}};
+                    return {
+                        buttonId: (id++).toString(),
+                        buttonText: {
+                            displayText: alias.replace(
+                                "{prefix}",
+                                chat?.model.commandPrefix ?? config.default_command_prefix,
+                            ),
+                        },
+                    };
                 });
 
                 return await messagingService.replyAdvanced(
@@ -143,7 +152,7 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
                 msg.content?.includes("@here") ||
                 msg.content?.includes("@כאן")
             ) {
-                const everyoneCmd = (await chat?.getCommandByTrigger(">>everyone")) as EveryoneCommand;
+                const everyoneCmd = (await chat?.getCommandByTrigger("everyone")) as EveryoneCommand;
                 if (!everyoneCmd) continue;
                 await messagingService.replyAdvanced(
                     msg,
@@ -163,8 +172,9 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
                         },
                     },
                 );
-            } else if (msg.content?.toLowerCase().includes("prefix?") || msg.content?.includes("קידומת?")) {
-                const helpCommand = await chat?.getCommandByTrigger(">>help");
+            }
+            if (msg.content?.toLowerCase().includes("prefix?") || msg.content?.includes("קידומת?")) {
+                const helpCommand = await chat?.getCommandByTrigger("help");
                 await messagingService.replyAdvanced(
                     msg,
                     {
@@ -177,6 +187,30 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
                         ],
                     },
                     true,
+                );
+            }
+
+            const mentions = msg.raw?.message?.extendedTextMessage?.contextInfo?.mentionedJid ?? [];
+            if (mentions.includes(BotClient.currentClientId ?? "")) {
+                const helpCommand = (await chat?.getCommandByTrigger("help")) as HelpCommand;
+
+                await messagingService.replyAdvanced(
+                    msg,
+                    {
+                        text: languages.tagged_info[chat?.model.language ?? "hebrew"],
+                        buttons: [
+                            {
+                                buttonId: "0",
+                                buttonText: {displayText: `${chat?.model.commandPrefix}${helpCommand.name}`},
+                            },
+                        ],
+                    },
+                    true,
+                    {
+                        placeholder: {
+                            chat,
+                        },
+                    },
                 );
             }
 

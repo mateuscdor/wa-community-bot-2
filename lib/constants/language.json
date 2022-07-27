@@ -1404,15 +1404,19 @@
         "english": {
             "free": "Free",
             "premium": "Premium",
-            "sponser": "Sponsor"
+            "sponsor": "Sponsor"
         },
         "hebrew": {
             "free": "חינם",
             "premium": "פרימיום",
-            "sponser": "ספונסר"
+            "sponsor": "ספונסר"
         }
     },
     "audio_stt_recommend": {
         "english": "Hey! Would you like to convert this audio to text"
+    },
+    "tagged_info": {
+        "english": "Whop, do you need something?\nTry using {prefix}help",
+        "hebrew": "הא? צריך משהו?\nתנסה להשתמש ב{prefix}עזרה"
     }
 }

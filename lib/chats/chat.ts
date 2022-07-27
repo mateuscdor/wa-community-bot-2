@@ -190,6 +190,10 @@ export default abstract class Chat {
         const handler = this.commandHandler;
         if (!handler) return undefined;
 
+        if (!trigger.startsWith(handler.prefix)) {
+            trigger = handler.prefix + trigger;
+        }
+
         const res = await handler.findByContent(trigger);
         for (const [, blockable] of res) {
             if (blockable instanceof Command) {

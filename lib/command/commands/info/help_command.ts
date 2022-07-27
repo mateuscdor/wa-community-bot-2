@@ -99,7 +99,7 @@ export default class HelpCommand extends Command {
                 title: prefix + command.name,
                 description: command.description,
                 rowId: `HELP_COMMAND-${id}\n${command.announcedAliases
-                    .map((e) => prefix + e)
+                    .map((e) => `{prefix}${e}`)
                     .join("\n")}\n\r${formattedDescription}`,
             });
 
