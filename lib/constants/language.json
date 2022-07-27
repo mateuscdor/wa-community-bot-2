@@ -1458,11 +1458,11 @@
     "tagged_info": {
         "english": {
             "message": "Whop, do you need something?\nTry using {prefix}help",
-            "command": "{prefix}{command} full"
+            "text_version": "text_version"
         },
         "hebrew": {
             "message": "הא? צריך משהו?\nתנסה {prefix}עזרה",
-            "command": "{prefix}{command} מלא"
+            "text_version": "גרסת_טקסט"
         }
     }
 }

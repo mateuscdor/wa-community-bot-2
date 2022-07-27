@@ -205,10 +205,15 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
                             {
                                 buttonId: "0",
                                 buttonText: {
-                                    displayText: await applyPlaceholders(
-                                        languages.tagged_info[chat?.model.language ?? "hebrew"].command,
-                                        {command: helpCommand, chat},
-                                    ),
+                                    displayText: `${chat?.model.commandPrefix}${helpCommand.name} ${
+                                        languages.tagged_info[chat?.model.language ?? "hebrew"].text_version
+                                    }`,
+                                },
+                            },
+                            {
+                                buttonId: "1",
+                                buttonText: {
+                                    displayText: `${chat?.model.commandPrefix}${helpCommand.name}`,
                                 },
                             },
                         ],
