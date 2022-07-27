@@ -129,6 +129,7 @@ export default class HelpCommand extends Command {
                     footer: this.language.execution.footer,
                 },
                 true,
+                {placeholder: this.getDefaultPlaceholder({chat, message, user})},
             );
         } else {
             if (isJidGroup(message.to))
@@ -142,7 +143,7 @@ export default class HelpCommand extends Command {
                     footer: this.language.execution.footer,
                 },
                 true,
-                {privateReply: true},
+                {privateReply: true, placeholder: this.getDefaultPlaceholder({chat, message, user})},
             );
         }
     }
