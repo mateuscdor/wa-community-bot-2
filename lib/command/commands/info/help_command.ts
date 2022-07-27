@@ -106,30 +106,29 @@ export default class HelpCommand extends Command {
             id++;
         }
 
-        for (const section of sections.values()) {
-            helpMessage += `*${section.title}*\n`;
-            for (const row of section.rows ?? []) {
-                helpMessage += `● ${row.title}\n${row.description}\n\n`;
-            }
+        // for (const section of sections.values()) {
+        //     helpMessage += `*${section.title}*\n`;
+        //     for (const row of section.rows ?? []) {
+        //         helpMessage += `● ${row.title}\n${row.description}\n\n`;
+        //     }
 
-            // remove last newline
-            helpMessage = helpMessage.slice(0, -1);
-            helpMessage += "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
-        }
+        //     // remove last newline
+        //     helpMessage = helpMessage.slice(0, -1);
+        //     helpMessage += "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
+        // }
 
-        helpMessage += `${this.language.execution.suffix}\n\n${this.language.execution.footer}`;
+        helpMessage += `${this.language.execution.suffix}`;
 
         if (sendInGroup || ["here", "כאן"].some((e) => message.content?.trim().toLowerCase().includes(e))) {
             await messagingService.replyAdvanced(
                 message,
                 {
                     text: helpMessage,
-                    // buttonText: this.language.execution.button,
-                    // sections: Array.from(sections.entries()).map((arr) => arr[1] as proto.ISection),
-                    // footer: this.language.execution.footer,
+                    buttonText: this.language.execution.button,
+                    sections: Array.from(sections.entries()).map((arr) => arr[1] as proto.ISection),
+                    footer: this.language.execution.footer,
                 },
                 true,
-                {placeholder: this.getDefaultPlaceholder({chat, message, user})},
             );
         } else {
             if (isJidGroup(message.to))
@@ -138,12 +137,12 @@ export default class HelpCommand extends Command {
                 message,
                 {
                     text: helpMessage,
-                    // buttonText: this.language.execution.button,
-                    // sections: Array.from(sections.entries()).map((arr) => arr[1] as proto.ISection),
-                    // footer: this.language.execution.footer,
+                    buttonText: this.language.execution.button,
+                    sections: Array.from(sections.entries()).map((arr) => arr[1] as proto.ISection),
+                    footer: this.language.execution.footer,
                 },
                 true,
-                {privateReply: true, placeholder: this.getDefaultPlaceholder({chat, message, user})},
+                {privateReply: true},
             );
         }
     }
