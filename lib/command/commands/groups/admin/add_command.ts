@@ -118,7 +118,7 @@ export default class AddCommand extends Command {
 
     onBlocked(data: Message, blockedReason: BlockedReason) {
         if (blockedReason === BlockedReason.BlockedChat) {
-            return this.language.execution.blocked_chat;
+            return messagingService.reply(data, this.language.execution.blocked_chat, true);
         }
     }
 }
