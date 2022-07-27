@@ -122,7 +122,7 @@ export default class StickerCommand extends Command {
             ctx.fillStyle = "#ffffff";
             ctx.fillRect(0, 0, 512, 512);
             ctx.fillStyle = "#000000";
-            ctx.font = "48px Segoe UI";
+            ctx.font = "bold 48px Segoe UI";
             const text = getTextLines(body, "48px Segoe UI", 512 - 8 * 2).join("\n").trim();
             const size = getTextSize(text ?? "", ctx.font);
             ctx.fillText(text, 512 / 2 - size.width / 2 + 8, 512 / 2 - (size.height.ascent + size.height.descent) / 2);
