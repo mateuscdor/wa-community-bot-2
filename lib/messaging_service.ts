@@ -137,6 +137,7 @@ export default class MessagingService {
         try {
             assert(this.client, "Client must be set using setClient() method!");
 
+            console.log(recipient)
             if (metadata) {
                 metadata.meta.set("ignore", this._shouldIgnore);
             } else {
