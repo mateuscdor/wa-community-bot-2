@@ -117,7 +117,7 @@ export default class HelpCommand extends Command {
             helpMessage += "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
         }
 
-        helpMessage += `${this.language.execution.suffix}`;
+        helpMessage += `${this.language.execution.suffix}\n\n${this.language.execution.footer}`;
 
         if (sendInGroup || ["here", "כאן"].some((e) => message.content?.trim().toLowerCase().includes(e))) {
             await messagingService.replyAdvanced(
