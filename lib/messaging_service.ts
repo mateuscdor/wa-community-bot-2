@@ -9,6 +9,7 @@ import {Command} from "./command";
 import {Chat} from "./chats";
 import {whatsappBot} from ".";
 import {applyPlaceholders} from "./utils/message_utils";
+import moment from "moment";
 
 export type Placeholder = {
     chat?: Chat;
@@ -154,6 +155,7 @@ export default class MessagingService {
             if (caption != undefined && caption.length > 0)
                 (content as any).caption = await applyPlaceholders(caption, placeholder);
 
+            if (options) options["timestamp"] = new Date(moment().utc().unix());
             const response = await this.client!.sendMessage(recipient, content, options);
 
             if (this.metadataEnabled && metadata) {

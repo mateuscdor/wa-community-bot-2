@@ -8,7 +8,7 @@
     "start": "npm run build && node dist/index.js"
   },
   "dependencies": {
-    "-": "^0.0.1",
+
     "@adiwajshing/baileys": "^4.3.0",
     "@adiwajshing/keyed-db": "^0.2.4",
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
