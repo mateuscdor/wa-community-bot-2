@@ -100,7 +100,7 @@ export default class MessagingService {
         if (isJidGroup(message.to)) {
             recipient = privateReply ? message.from : message.to;
         } else {
-            recipient = message.fromMe ? message.to : message.from;
+            recipient = message.raw?.key.remoteJid ?? message.sender ?? message.fromMe ? message.to : message.from;
         }
 
         return this._internalSendMessage(
