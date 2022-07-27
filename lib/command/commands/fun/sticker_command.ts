@@ -1,4 +1,4 @@
-import {WASocket} from "@adiwajshing/baileys";
+import {jidDecode, WASocket} from "@adiwajshing/baileys";
 import Sticker, {StickerTypes} from "wa-sticker-formatter/dist";
 import {BlockedReason} from "../../../blockable";
 import {Chat} from "../../../chats";
@@ -10,6 +10,7 @@ import CommandTrigger from "../../command_trigger";
 import languages from "../../../constants/language.json";
 import {createCanvas} from "canvas";
 import {DeveloperLevel} from "../../../database/models";
+import {choice, weightedChoice} from "../economy/utils";
 
 export default class StickerCommand extends Command {
     private language: typeof languages.commands.sticker[Language];
@@ -40,16 +41,21 @@ export default class StickerCommand extends Command {
             const bgColor = "#212c33";
             const textColor = "#e9edef";
             const footerColor = "#9fa4a7";
-            const messageSize = [72, 72]
+            const numberColor = choice(["#df64b6", "#f79877", "#d885ea", "#a281f0", "#63baea", "#f7d37c"]);
+            const messageSize = [100, 100];
 
-            const bodyText = body?.length ?? 0 > 0 ? body : quoted?.content ?? "test";
+            const chosenMessage = body?.length ?? 0 > 0 ? message : quoted!;
+            const bodyText = chosenMessage.content;
             const canvas = createCanvas(messageSize[0], messageSize[1]);
             const ctx = canvas.getContext("2d");
             ctx.fillStyle = bgColor;
             ctx.fillRect(0, 0, messageSize[0], messageSize[1]);
-            ctx.fillStyle = textColor;
+            ctx.fillStyle = numberColor;
+            ctx.font = "12.8px Segoe UI";
+            ctx.fillText(formatJidToCleanNumber(chosenMessage.sender) ?? "", 6, 7 + 12.8);
+            let numberSize = ctx.measureText(formatJidToCleanNumber(chosenMessage.sender) ?? "");
             ctx.font = "14.2px Segoe UI";
-            ctx.fillText(bodyText ?? "", 6, messageSize[1] - 7);
+            ctx.fillText(bodyText ?? "", 6, 7 + 14.2 + numberSize.actualBoundingBoxDescent + 7);
             messageMedia = canvas.toBuffer();
         }
 
@@ -80,4 +86,14 @@ export default class StickerCommand extends Command {
     }
 
     onBlocked(data: Message, blockedReason: BlockedReason) {}
+}
+
+function formatJidToCleanNumber(jid?: string) {
+    const num = jidDecode(jid)?.user;
+    if (!num) return;
+
+    const match = num.match(/^(\d{3})(\d{2})(\d{3})(\d{4})$/);
+    if (match) {
+        return `+${match[1]} ${match[2]}-${match[3]}-${match[4]}`;
+    }
 }
