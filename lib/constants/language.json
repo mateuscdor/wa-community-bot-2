@@ -971,6 +971,40 @@
                 ]
             }
         },
+        "steal": {
+            "triggers": [
+                "steal",
+                "rob",
+                "גניבה"
+            ],
+            "english": {
+                "triggers": [
+                    "steal",
+                    "rob"
+                ],
+                "category": "Economy",
+                "description": "Steal money from someone",
+                "usage": "{prefix}{command} @tag",
+                "execution": {
+                    "no_user": "Must provide a user to steal from.",
+                    "no_balance": "This user is too poor to rob 💀.",
+                    "success_give": "\"oh you poor little thief, take {amount}\""
+                }
+            },
+            "hebrew": {
+                "triggers": [
+                    "גניבה"
+                ],
+                "category": "כלכלה",
+                "description": "לגנוב כסף ממישהו",
+                "usage": "{prefix}{command} @תיוג",
+                "execution": {
+                    "no_user": "בבקשה תתייג את מי שאתה רוצה לשדוד.",
+                    "no_balance": "למשתמש הזה אין כסף לגנוב 💀.",
+                    "success_give": "\"oh you poor little thief, take {amount}\""
+                }
+            }
+        },
         "daily": {
             "triggers": [
                 "daily",

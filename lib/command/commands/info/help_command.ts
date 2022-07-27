@@ -76,7 +76,7 @@ export default class HelpCommand extends Command {
             filteredCommands.push(command);
         }
 
-        let helpMessage = `${this.language.execution.prefix}\n`;
+        let helpMessage = `${this.language.execution.prefix}\n=-=-=-=-=-=-=-=-=-=`;
         const sections: Map<string, proto.ISection> = new Map();
         let id = 0;
         for (const command of filteredCommands) {
@@ -106,6 +106,12 @@ export default class HelpCommand extends Command {
             id++;
         }
 
+        for (const section of sections.values()) {
+            for (const row of section.rows ?? []) {
+                helpMessage += `● ${row.title}\n${row.description}\n\n`;
+            }
+        }
+
         helpMessage += `${this.language.execution.suffix}`;
 
         if (sendInGroup || ["here", "כאן"].some((e) => message.content?.trim().toLowerCase().includes(e))) {
@@ -126,7 +132,7 @@ export default class HelpCommand extends Command {
                 message,
                 {
                     text: helpMessage,
-                    buttonText: "Click me for help!",
+                    buttonText: this.language.execution.button,
                     sections: Array.from(sections.entries()).map((arr) => arr[1] as proto.ISection),
                     footer: this.language.execution.footer,
                 },
