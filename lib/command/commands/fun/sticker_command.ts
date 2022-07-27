@@ -41,22 +41,23 @@ export default class StickerCommand extends Command {
             const bgColor = "#212c33";
             const textColor = "#e9edef";
             const footerColor = "#9fa4a7";
-            const numberColor = choice(["#df64b6", "#f79877", "#d885ea", "#a281f0", "#63baea", "#f7d37c"]);
+            const numberColors = ["#df64b6", "#f79877", "#d885ea", "#a281f0", "#63baea", "#f7d37c"];
+            const numberColor = numberColors[Math.floor(Math.random() * numberColors.length)];
             const messageSize = [100, 100];
 
             const chosenMessage = body?.length ?? 0 > 0 ? message : quoted!;
-            const bodyText = chosenMessage.content;
+            const bodyText = body?.length ?? 0 > 0 ? body : chosenMessage.content;
             const bodyAuthor = formatJidToCleanNumber(chosenMessage.sender) ?? "";
 
-            console.log(`${bodyAuthor} said: ${bodyText} | ${numberColor}`);
+            console.log(`${bodyAuthor} said: ${bodyText} | ${numberColor} with ${textColor}`);
             const canvas = createCanvas(messageSize[0], messageSize[1]);
             const ctx = canvas.getContext("2d");
             ctx.fillStyle = bgColor;
             ctx.fillRect(0, 0, messageSize[0], messageSize[1]);
             ctx.fillStyle = numberColor;
             ctx.font = "12.8px Segoe UI";
-            ctx.fillText(formatJidToCleanNumber(chosenMessage.sender) ?? "", 6, 7 + 12.8);
-            let numberSize = ctx.measureText(formatJidToCleanNumber(chosenMessage.sender) ?? "");
+            ctx.fillText(bodyAuthor ?? "", 6, 7 + 12.8);
+            let numberSize = ctx.measureText(bodyAuthor ?? "");
             ctx.font = "14.2px Segoe UI";
             ctx.fillStyle = textColor;
             // ctx.fillText(bodyText ?? "", 6, 7 + 14.2 + numberSize.actualBoundingBoxDescent + 7);
