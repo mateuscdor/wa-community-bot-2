@@ -111,6 +111,8 @@ export default class HelpCommand extends Command {
             for (const row of section.rows ?? []) {
                 helpMessage += `${row.title}\n${row.description}\n\n`;
             }
+
+            helpMessage += "|-------------------|\n";
         }
 
         helpMessage += `${this.language.execution.suffix}`;
