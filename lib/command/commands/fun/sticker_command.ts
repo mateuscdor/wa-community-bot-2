@@ -2,13 +2,14 @@ import {WASocket} from "@adiwajshing/baileys";
 import Sticker, {StickerTypes} from "wa-sticker-formatter/dist";
 import {BlockedReason} from "../../../blockable";
 import {Chat} from "../../../chats";
-import {messagingService} from "../../../constants/services";
+import {messagingService, userRepository} from "../../../constants/services";
 import {MessageMetadata} from "../../../message";
 import Message from "../../../message/message";
 import Command from "../../command";
 import CommandTrigger from "../../command_trigger";
 import languages from "../../../constants/language.json";
 import {createCanvas} from "canvas";
+import {DeveloperLevel} from "../../../database/models";
 
 export default class StickerCommand extends Command {
     private language: typeof languages.commands.sticker[Language];
@@ -29,17 +30,26 @@ export default class StickerCommand extends Command {
 
     async execute(client: WASocket, chat: Chat, message: Message, body?: string) {
         const ogMedia = await message.media;
-        const quotedMedia = await (await message.getQuoted())?.media;
+        const quoted = await message.getQuoted();
+        const quotedMedia = await quoted?.media;
         let messageMedia = ogMedia ?? quotedMedia;
-        if (!messageMedia) {
+        const user = await userRepository.get(message.sender ?? "");
+
+        if (!messageMedia && (user?.model.developerLevel ?? DeveloperLevel.None) > DeveloperLevel.Admin) {
             // draw an image that looks like a whatsapp message
-            const canvas = createCanvas(500, 500);
+            const bgColor = "#212c33";
+            const textColor = "#e9edef";
+            const footerColor = "#9fa4a7";
+            const messageSize = [72, 72]
+
+            const bodyText = body?.length ?? 0 > 0 ? body : quoted?.content ?? "test";
+            const canvas = createCanvas(messageSize[0], messageSize[1]);
             const ctx = canvas.getContext("2d");
-            ctx.fillStyle = "#ffffff";
-            ctx.fillRect(0, 0, 500, 500);
-            ctx.fillStyle = "#000000";
-            ctx.font = "30px Arial";
-            ctx.fillText(body ?? "", 10, 50);
+            ctx.fillStyle = bgColor;
+            ctx.fillRect(0, 0, messageSize[0], messageSize[1]);
+            ctx.fillStyle = textColor;
+            ctx.font = "14.2px Segoe UI";
+            ctx.fillText(body ?? "", 6, messageSize[0] - 7);
             messageMedia = canvas.toBuffer();
         }
 
