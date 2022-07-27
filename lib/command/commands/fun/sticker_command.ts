@@ -49,7 +49,7 @@ export default class StickerCommand extends Command {
             ctx.fillRect(0, 0, messageSize[0], messageSize[1]);
             ctx.fillStyle = textColor;
             ctx.font = "14.2px Segoe UI";
-            ctx.fillText(body ?? "", 6, messageSize[0] - 7);
+            ctx.fillText(body ?? "", 6, 7);
             messageMedia = canvas.toBuffer();
         }
 
