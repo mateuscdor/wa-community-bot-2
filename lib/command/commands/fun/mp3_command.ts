@@ -87,7 +87,6 @@ export default class MP3Command extends Command {
         ffmpeg(videoStream)
             .audioBitrate(128)
             .toFormat("mp3")
-            .audioCodec("libopus")
             .save(path)
             .on("end", async () => {
                 if (!downloadData) {
@@ -127,7 +126,7 @@ export default class MP3Command extends Command {
                 {
                     audio: file as WAMediaUpload,
                     fileName: title + ".mp3",
-                    mimetype: "audio/mpeg; codecs=opus",
+                    mimetype: "audio/mpeg",
                     ptt: false,
                 },
                 {quoted: message.raw ?? undefined},
