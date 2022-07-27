@@ -13,6 +13,7 @@ import {Boom} from "@hapi/boom";
 import {existsSync, fstat, mkdir, mkdirSync} from "fs";
 import P from "pino";
 import {messagingService} from "./constants/services";
+import { wait } from "./utils/async_utils";
 import {getClientID} from "./utils/client_utils";
 
 export class BotClient {
@@ -81,6 +82,7 @@ export class BotClient {
             printQRInTerminal: true,
             auth: state,
             getMessage: async (message) => {
+                await wait(200)
                 return this.store.messages[message.remoteJid!].get(message.id!)?.message ?? undefined;
             },
             msgRetryCounterMap: this.messageRetryMap,
