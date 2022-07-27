@@ -112,7 +112,9 @@ export default class HelpCommand extends Command {
                 helpMessage += `${row.title}\n${row.description}\n\n`;
             }
 
-            helpMessage += "|-------------------|\n";
+            // remove last newline
+            helpMessage = helpMessage.slice(0, -1);
+            helpMessage += "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
         }
 
         helpMessage += `${this.language.execution.suffix}`;
