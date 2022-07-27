@@ -1417,6 +1417,6 @@
     },
     "tagged_info": {
         "english": "Whop, do you need something?\nTry using {prefix}help",
-        "hebrew": "הא? צריך משהו?\nתנסה להשתמש ב{prefix}עזרה"
+        "hebrew": "הא? צריך משהו?\nתנסה {prefix}עזרה"
     }
 }
