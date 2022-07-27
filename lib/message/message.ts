@@ -16,6 +16,7 @@ import Metadata from "../database/models/metadata";
 export default class Message {
     public model: MessageModel;
     private _quoted: Message | undefined;
+    private _media: Buffer | undefined;
 
     public raw: WAMessage | undefined;
 
@@ -106,9 +107,14 @@ export default class Message {
     }
 
     public get media() {
-        return getMessageMedia(this).then((f) =>
-            f ? f : saveMessageMedia(this.raw!).then((f) => getMessageMedia(this)),
-        );
+        if (this._media) return this._media;
+
+        return getMessageMedia(this).then(async (f) => {
+            if (f) return f;
+            await saveMessageMedia(this.raw!);
+            this._media = await getMessageMedia(this);
+            return this._media;
+        });
     }
 
     public get mediaType() {
