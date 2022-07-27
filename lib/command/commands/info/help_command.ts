@@ -109,7 +109,7 @@ export default class HelpCommand extends Command {
         for (const section of sections.values()) {
             helpMessage += `*${section.title}*\n`;
             for (const row of section.rows ?? []) {
-                helpMessage += `‣ ${row.title}\n${row.description}\n\n`;
+                helpMessage += `⚫ ${row.title}\n${row.description}\n\n`;
             }
 
             // remove last newline
