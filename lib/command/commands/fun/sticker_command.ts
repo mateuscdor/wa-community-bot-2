@@ -35,7 +35,6 @@ export default class StickerCommand extends Command {
         const quoted = await message.getQuoted();
         const quotedMedia = await quoted?.media;
         let messageMedia = ogMedia ?? quotedMedia;
-        const user = await userRepository.get(message.sender ?? "");
 
         if (!messageMedia && quoted) {
             // draw an image that looks like a whatsapp message

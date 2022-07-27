@@ -73,13 +73,13 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
                 \nAs such, I have the ability to see the messages in this chat.\
                 \nI DO NOT plan to but the possibility is there.\
                 \nIf you are not keen with this, do not send the bot messages.\
-                \nEnjoy my bot! Get started using: ${config.default_command_prefix}help\n\nP.S You can DM the bot.`;
+                \nEnjoy my bot! Get started using: ${chat.model.commandPrefix}help\n\nP.S You can DM the bot.`;
                 const joinMessageHebrew = `**התראה**\nהבוט מנוהל על ידי אדם.\
                     \nבכך ברשותי האפשרות לצפות בהודעות בצ'אטים.\
                     \n*אני לא* מתכנן לעשות זאת אך האפשרות קיימת.\
                     \nאם אינך מעוניין בכך, אל תשלח לבוט הודעות.\
                     \nתהנו מהבוט שלי!\
-                    \nכתבו ${config.default_command_prefix}עזרה כדי להתחיל להשתמש בו!`;
+                    \nכתבו ${chat.model.commandPrefix}עזרה כדי להתחיל להשתמש בו!`;
                 await chatRepository.update(chatJid, {
                     $set: {sent_disclaimer: true},
                 });
@@ -88,7 +88,7 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
                     msg,
                     {
                         text: joinMessage,
-                        buttons: [{buttonText: {displayText: `${config.default_command_prefix}help`}, buttonId: "0"}],
+                        buttons: [{buttonText: {displayText: `${chat?.model.commandPrefix}help`}, buttonId: "0"}],
                     },
                     false,
                 );
@@ -97,7 +97,7 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
                     msg,
                     {
                         text: joinMessageHebrew,
-                        buttons: [{buttonText: {displayText: `${config.default_command_prefix}עזרה`}, buttonId: "0"}],
+                        buttons: [{buttonText: {displayText: `${chat?.model.commandPrefix}עזרה`}, buttonId: "0"}],
                     },
                     false,
                 );
