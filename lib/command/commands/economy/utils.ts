@@ -91,8 +91,5 @@ export function weightedChoice<T>(weightedArray: [T, number][]): T {
 }
 
 export function choice<T>(arr: T[]): T {
-    const weight = 100.0 / arr.length;
-    const weights = Array.from({length: arr.length}, (_, i) => [arr[i], weight]);
-    const chosenIndex = weightedRandom(weights);
-    return arr[chosenIndex][0];
+    return arr[Math.floor(Math.random() * arr.length)];
 }
