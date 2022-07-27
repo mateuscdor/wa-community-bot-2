@@ -52,8 +52,7 @@ export function getMediaPath(message: proto.IWebMessageInfo) {
         fs.mkdirSync(`${mediaFolderPath}/` + mediaType);
     }
 
-    const mimetypeData =
-        message?.message?.extendedTextMessage?.contextInfo?.quotedMessage?.audioMessage?.mimetype;
+    const mimetypeData = getMediaMessage(message)?.mimetype;
     if (!mimetypeData) return;
 
     const mimetype = mimetypeData.split(";")[0].split("/")[1];
@@ -105,9 +104,9 @@ export function getMediaMessage(message: proto.IWebMessageInfo) {
 export async function extractMessageMediaStream(message: proto.IWebMessageInfo) {
     const mediaMessage = getMediaMessage(message);
     if (!mediaMessage) return;
-    
+
     const mediaType = getMessageMediaType(message);
     if (!mediaType) return;
 
-    return downloadContentFromMessage(message as DownloadableMessage, mediaType)
+    return downloadContentFromMessage(message as DownloadableMessage, mediaType);
 }

@@ -21,7 +21,7 @@ import crypto from "crypto";
  */
 export default class SpeechToTextCommand extends Command {
     private language: typeof languages.commands.speech_to_text[Language];
-    private audioSavePath: string = path.resolve(__dirname, "../../../scripts/inputs/");
+    private audioSavePath: string = path.resolve(__dirname, "../../../../lib/scripts/inputs/");
 
     constructor(language: Language) {
         const langs = languages.commands.speech_to_text;
@@ -68,7 +68,7 @@ export default class SpeechToTextCommand extends Command {
         }
 
         const id = `${Date.now().toString()}-${crypto.randomBytes(3).readUintLE(0, 3).toString(36)}`;
-        const savePath = this.audioSavePath + "/" + `${id}` + ".wav";
+        const savePath = `${this.audioSavePath}/${id}.wav`;
         await messagingService.reply(message, this.language.execution.started, true);
 
         ffmpeg(audioPath)
