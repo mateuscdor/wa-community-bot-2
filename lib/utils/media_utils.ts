@@ -52,7 +52,14 @@ export function getMediaPath(message: proto.IWebMessageInfo) {
         fs.mkdirSync(`${mediaFolderPath}/` + mediaType);
     }
 
-    return `${mediaFolderPath}/${mediaType}/${Message.calculateSaveId(message)}`;
+    const mimetypeData =
+        message?.message?.extendedTextMessage?.contextInfo?.quotedMessage?.audioMessage?.mimetype;
+    if (!mimetypeData) return;
+
+    const mimetype = mimetypeData.split(";")[0].split("/")[1];
+    if (!mimetype) return;
+
+    return `${mediaFolderPath}/${mediaType}/${Message.calculateSaveId(message)}.${mimetype}`;
 }
 
 export async function getMessageMedia(message: Message) {
@@ -76,16 +83,31 @@ export function getMessageMediaType(message: proto.IWebMessageInfo) {
     }
 }
 
-export async function extractMessageMediaStream(message: proto.IWebMessageInfo) {
-    if (message.message?.imageMessage) {
-        return downloadContentFromMessage(message.message?.imageMessage as DownloadableMessage, "image");
-    } else if (message.message?.videoMessage) {
-        return downloadContentFromMessage(message.message?.videoMessage as DownloadableMessage, "video");
-    } else if (message.message?.stickerMessage) {
-        return downloadContentFromMessage(message.message?.stickerMessage as DownloadableMessage, "sticker");
-    } else if (message.message?.documentMessage) {
-        return downloadContentFromMessage(message.message?.documentMessage as DownloadableMessage, "document");
-    } else if (message.message?.audioMessage) {
-        return downloadContentFromMessage(message.message?.audioMessage as DownloadableMessage, "audio");
+export function getMediaMessage(message: proto.IWebMessageInfo) {
+    const type = getMessageMediaType(message);
+
+    switch (type) {
+        case "image":
+            return message.message?.imageMessage;
+        case "video":
+            return message.message?.videoMessage;
+        case "sticker":
+            return message.message?.stickerMessage;
+        case "document":
+            return message.message?.documentMessage;
+        case "audio":
+            return message.message?.audioMessage;
+        default:
+            return;
     }
+}
+
+export async function extractMessageMediaStream(message: proto.IWebMessageInfo) {
+    const mediaMessage = getMediaMessage(message);
+    if (!mediaMessage) return;
+    
+    const mediaType = getMessageMediaType(message);
+    if (!mediaType) return;
+
+    return downloadContentFromMessage(message as DownloadableMessage, mediaType)
 }

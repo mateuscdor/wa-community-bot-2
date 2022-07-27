@@ -237,10 +237,12 @@
                 "usage": "{prefix}{command}",
                 "execution": {
                     "no_reply": "Please reply to a message you want to speech to text",
+                    "error": "An error has occurred. If this error persists, please contact the developer.",
                     "no_audio": "Please reply to an audio message",
                     "no_audio_in_storage": "Please reply to an audio message\nMaybe try sending the audio again.",
                     "success_message": "*SPEECH TO TEXT:*\n{text}",
-                    "started": "Processing..."
+                    "started": "Processing...",
+                    "too_big": "This audio file is too big. Please try sending a smaller than 10MB."
                 }
             },
             "hebrew": {
@@ -255,9 +257,11 @@
                 "execution": {
                     "no_reply": "הגב להודעה שאתה רוצה לתמלל",
                     "no_audio": "הגב להודעה קולית כדי לתמלל אותה",
+                    "error": "שגיאה! אם השגיאה הזו ממשיכה בבקשה תיצור קשר עם  המפתח של הבוט.",
                     "no_audio_in_storage": "הגב להודעה קולית כדי לתמלל אותה\nאולי תנסה לשלוח את ההודעה הקולית שוב.",
                     "success_message": "*תמלול:*\n{text}",
-                    "started": "מעבד..."
+                    "started": "מעבד...",
+                    "too_big": "קובץ השמע הזה גדול מדי... תנסה לשלוח משהו שקטן מ10 מגהבייט."
                 }
             }
         },

@@ -11,6 +11,9 @@ import path from "path";
 import {TextDecoder} from "util";
 import languages from "../../../constants/language.json";
 import fs from "fs";
+import ffmpeg from "fluent-ffmpeg";
+import {Readable} from "stream";
+import crypto from "crypto";
 
 /**
  * DEVELOPER NOTE:
@@ -18,6 +21,7 @@ import fs from "fs";
  */
 export default class SpeechToTextCommand extends Command {
     private language: typeof languages.commands.speech_to_text[Language];
+    private audioSavePath: string = path.resolve(__dirname, "../../../scripts/inputs/");
 
     constructor(language: Language) {
         const langs = languages.commands.speech_to_text;
@@ -46,30 +50,49 @@ export default class SpeechToTextCommand extends Command {
         }
 
         const audioPath = quoted.mediaPath;
+        let media: Buffer | undefined;
         if (audioPath && !fs.existsSync(audioPath)) {
-            await quoted.media;
+            media = await quoted.media;
         }
-        if (!audioPath || !fs.existsSync(audioPath)) {
+
+        // if media is bigger than 10mb return error
+        if (media && media.length > 10 * 1024 * 1024) {
+            return await messagingService.reply(message, this.language.execution.too_big, true);
+        }
+
+        if (!audioPath || !fs.existsSync(audioPath) || !media) {
             return await messagingService.reply(message, this.language.execution.no_audio_in_storage, true);
         }
 
+        const id = `${Date.now().toString()}-${crypto.randomBytes(3).readUintLE(0, 3).toString(36)}`;
+        const savePath = this.audioSavePath + "/" + `${id}` + ".wav";
         await messagingService.reply(message, this.language.execution.started, true);
-        const pythonProcess = spawn("python", [
-            path.resolve(__dirname, "../../../../lib/scripts/speech-to-text.py"),
-            path.resolve(audioPath),
-            message.raw?.key.remoteJid ?? "jid",
-            message.id,
-            body?.trim()?.split(" ")[0] || "he",
-        ]);
 
-        pythonProcess.stdout.on("data", async (data) => {
-            const text = new TextDecoder("utf-8").decode(data);
-            await messagingService.reply(message, this.language.execution.success_message, true, {
-                placeholder: {
-                    custom: new Map([["text", text]]),
-                },
+        ffmpeg(audioPath)
+            .toFormat("wav")
+            .on("error", (err) => messagingService.reply(message, this.language.execution.error, true))
+            .save(savePath)
+            .on("end", () => {
+                const pythonProcess = spawn("python", [
+                    path.resolve(__dirname, "../../../../lib/scripts/speech-to-text.py"),
+                    path.resolve(savePath),
+                    id,
+                    body?.trim()?.split(" ")[0] || "he",
+                ]);
+
+                pythonProcess.stdout
+                    .on("data", async (data) => {
+                        const text = new TextDecoder("utf-8").decode(data);
+                        await messagingService.reply(message, this.language.execution.success_message, true, {
+                            placeholder: {
+                                custom: new Map([["text", text]]),
+                            },
+                        });
+                    })
+                    .on("error", (err) => {
+                        messagingService.reply(message, this.language.execution.error, true);
+                    });
             });
-        });
     }
 
     onBlocked(data: Message, blockedReason: BlockedReason) {}
