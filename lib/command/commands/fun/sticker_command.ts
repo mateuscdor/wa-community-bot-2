@@ -46,6 +46,9 @@ export default class StickerCommand extends Command {
 
             const chosenMessage = body?.length ?? 0 > 0 ? message : quoted!;
             const bodyText = chosenMessage.content;
+            const bodyAuthor = formatJidToCleanNumber(chosenMessage.sender) ?? "";
+
+            console.log(`${bodyAuthor} said: ${bodyText} | ${numberColor}`);
             const canvas = createCanvas(messageSize[0], messageSize[1]);
             const ctx = canvas.getContext("2d");
             ctx.fillStyle = bgColor;
