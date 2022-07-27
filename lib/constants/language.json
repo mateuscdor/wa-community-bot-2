@@ -822,7 +822,7 @@
                 "description": "An exploit to spoof a friend's message",
                 "usage": "{prefix}{command} @mention \"spoof message\" \"bot message>\"",
                 "execution": {
-                    "error": "Must follow {prefix}{command} @mention \"spoofed message\" \"bot message\""
+                    "error": "Please follow the following format (with quotes):\n{prefix}{command} @mention \"spoofed message\" \"bot message\""
                 }
             },
             "hebrew": {
@@ -833,7 +833,7 @@
                 "description": "בעיה בווצאפ שנותנת לזייף הודעה של חבר",
                 "usage": "{prefix}{command} @תיוג \"הודעה מזויפת\" \"הודעה של הבוט\"",
                 "execution": {
-                    "error": "בבקשה תעקוב אחר הפורמט הבא:\n{prefix}{command} @תיוג \"הודעה מזויפת\" \"הודעה של הבוט\""
+                    "error": "בבקשה תעקוב אחר הפורמט הבא (עם גרשיים):\n{prefix}{command} @תיוג \"הודעה מזויפת\" \"הודעה של הבוט\""
                 }
             }
         },
