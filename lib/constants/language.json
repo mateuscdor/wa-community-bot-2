@@ -51,7 +51,7 @@
                 "usage": "{prefix}{command} <message>",
                 "execution": {
                     "creator_message_receive": "You received a message from:",
-                    "no_body": "You need to specify what you want to send to the developer.",
+                    "no_body": "You need to specify what you want to send to the developer.\nE.g: {prefix}{command} Why should I use this bot?",
                     "vcard_default_name": "Bot User",
                     "success_message": "Forwarded your message to the creator of the bot!"
                 }
@@ -68,7 +68,7 @@
                 "execution": {
                     "creator_message_receive": "You received a message from:",
                     "vcard_default_name": "Bot User",
-                    "no_body": "אתה צריך שיהיה גוף הודעה בפקודה על מנת לשלוח אותה ליוצר הבוט.",
+                    "no_body": "אתה צריך שיהיה גוף הודעה בפקודה על מנת לשלוח אותה ליוצר הבוט.\nלדוגמה: {prefix}{command} למה שאשתמש בבוט הזה?",
                     "success_message": "הודעתך הועברה ליוצר הבוט!"
                 }
             }
