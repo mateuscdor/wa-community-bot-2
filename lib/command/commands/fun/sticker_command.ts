@@ -41,7 +41,7 @@ export default class StickerCommand extends Command {
             const font = "Segoe UI";
             const getFontText = (size: number) => `${size}px ${font}`;
             const maxWidth = 350;
-            let isEnglish = /[a-zA-Z0-9\s\.,;:!?\(\)\[\]\{\}'"-]+/.test(quoted.content![0]);
+            let isEnglish = /[a-zA-Z0-9\s\.,;:!?\(\)\[\]\{\}'"-<>]+/.test(quoted.content![0]);
 
             const bgColor = "#212c33";
             const textColor = "#e9edef";
