@@ -108,5 +108,5 @@ export async function extractMessageMediaStream(message: proto.IWebMessageInfo) 
     const mediaType = getMessageMediaType(message);
     if (!mediaType) return;
 
-    return downloadContentFromMessage(message as DownloadableMessage, mediaType);
+    return downloadContentFromMessage(mediaMessage as DownloadableMessage, mediaType);
 }
