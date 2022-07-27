@@ -76,7 +76,7 @@ export default class HelpCommand extends Command {
             filteredCommands.push(command);
         }
 
-        let helpMessage = `${this.language.execution.prefix}\n=-=-=-=-=-=-=-=-=-=`;
+        let helpMessage = `${this.language.execution.prefix}\n\n`;
         const sections: Map<string, proto.ISection> = new Map();
         let id = 0;
         for (const command of filteredCommands) {
@@ -107,8 +107,9 @@ export default class HelpCommand extends Command {
         }
 
         for (const section of sections.values()) {
+            helpMessage += `*${section.title}*\n`;
             for (const row of section.rows ?? []) {
-                helpMessage += `● ${row.title}\n${row.description}\n\n`;
+                helpMessage += `${row.title}\n${row.description}\n\n`;
             }
         }
 
