@@ -13,7 +13,7 @@ export default class LanguageCommand extends InteractableCommand {
         super({
             triggers: ["language", "שפה"].map((e) => new CommandTrigger(e)),
             usage: "{prefix}{command}",
-            category: "Language",
+            category: "Language/שפה",
             groupLevel: GroupLevel.Admin,
             description: "Change language. החלפת שפה.",
         });
@@ -33,10 +33,10 @@ export default class LanguageCommand extends InteractableCommand {
             );
         }
 
-        const language = body.trim().split(" ")[0];
+        const language = body.trim().split(" ")[0].replace("אנגלית", "english").replace("עברית", "hebrew");
         await chatRepository.update(chat.model.jid, {$set: {language}});
         const newChat = await chatRepository.get(chat.model.jid, true);
-        await newChat?.registerUserCommands()
+        await newChat?.registerUserCommands();
         const lang = languages.language_changed[newChat?.model.language ?? "english"];
         return await messagingService.reply(message, lang, true);
     }
