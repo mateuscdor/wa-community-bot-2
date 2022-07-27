@@ -191,7 +191,7 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
             }
 
             const mentions = msg.raw?.message?.extendedTextMessage?.contextInfo?.mentionedJid ?? [];
-            if (mentions.includes(BotClient.currentClientId ?? "")) {
+            if (!msg.fromMe && mentions.includes(BotClient.currentClientId ?? "")) {
                 const helpCommand = (await chat?.getCommandByTrigger("help")) as HelpCommand;
 
                 await messagingService.replyAdvanced(
