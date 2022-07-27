@@ -97,7 +97,7 @@ export default class HelpCommand extends Command {
             });
             section?.rows?.push({
                 title: prefix + command.name,
-                description: await applyPlaceholders(formattedDescription, {message, command, chat, user}),
+                description: await applyPlaceholders(command.description, {message, command, chat, user}),
                 rowId: `HELP_COMMAND-${id}\n${command.announcedAliases
                     .map((e) => `{prefix}${e}`)
                     .join("\n")}\n\r${formattedDescription}`,
