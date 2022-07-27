@@ -9,6 +9,7 @@ import moment from "moment";
 import {EveryoneCommand, HelpCommand, PingCommand} from "./command/commands";
 import config from "./config.json";
 import languages from "./constants/language.json";
+import {applyPlaceholders} from "./utils/message_utils";
 
 ffmpeg.setFfmpegPath(ffmpegPath);
 dotenv.config({path: "./"});
@@ -199,11 +200,16 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
                 await messagingService.replyAdvanced(
                     msg,
                     {
-                        text: languages.tagged_info[chat?.model.language ?? "hebrew"],
+                        text: languages.tagged_info[chat?.model.language ?? "hebrew"].message,
                         buttons: [
                             {
                                 buttonId: "0",
-                                buttonText: {displayText: `${chat?.model.commandPrefix}${helpCommand.name}`},
+                                buttonText: {
+                                    displayText: await applyPlaceholders(
+                                        languages.tagged_info[chat?.model.language ?? "hebrew"].command,
+                                        {command: helpCommand, chat},
+                                    ),
+                                },
                             },
                         ],
                     },

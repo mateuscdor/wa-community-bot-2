@@ -9,6 +9,7 @@ import Command from "../../command";
 import CommandTrigger from "../../command_trigger";
 import languages from "../../../constants/language.json";
 import {applyPlaceholders} from "../../../utils/message_utils";
+import User from "../../../user/user";
 
 export default class HelpCommand extends Command {
     private commandHandler: CommandHandler;
@@ -62,6 +63,56 @@ export default class HelpCommand extends Command {
             );
         }
 
+        const [sections, sendInGroup] = await this.getHelpSections(chat, message, user);
+        let helpMessage = `${this.language.execution.prefix}\n\n`;
+
+        const sendFull = ["מלא", "full"].some((e) => body?.toLowerCase()?.includes(e));
+        if (sendFull) helpMessage += await this.getHelpText(sections);
+
+        helpMessage += `${this.language.execution.suffix}`;
+        if (sendFull) {
+            helpMessage += `\n\n${this.language.execution.footer}`;
+        }
+
+        if (sendInGroup || ["here", "כאן"].some((e) => message.content?.trim().toLowerCase().includes(e))) {
+            await messagingService.replyAdvanced(
+                message,
+                {
+                    text: helpMessage,
+                    buttonText: sendFull ? undefined : this.language.execution.button,
+                    sections: sendFull
+                        ? undefined
+                        : Array.from(sections.entries()).map((arr) => arr[1] as proto.ISection),
+                    footer: sendFull ? undefined : this.language.execution.footer,
+                },
+                true,
+            );
+        } else {
+            if (isJidGroup(message.to))
+                messagingService.replyAdvanced(message, {text: this.language.execution.dms}, true);
+            await messagingService.replyAdvanced(
+                message,
+                {
+                    text: helpMessage,
+                    buttonText: sendFull ? undefined : this.language.execution.button,
+                    sections: sendFull
+                        ? undefined
+                        : Array.from(sections.entries()).map((arr) => arr[1] as proto.ISection),
+                    footer: sendFull ? undefined : this.language.execution.footer,
+                },
+                true,
+                {privateReply: true},
+            );
+        }
+    }
+
+    onBlocked(data: Message, blockedReason: BlockedReason) {}
+
+    public async getHelpSections(
+        chat: Chat,
+        message: Message,
+        user: User | undefined,
+    ): Promise<[Map<string, proto.ISection>, boolean]> {
         const allCommands = this.commandHandler.blockables;
         const filteredCommands: Array<Command> = [];
         let sendInGroup = true;
@@ -76,7 +127,6 @@ export default class HelpCommand extends Command {
             filteredCommands.push(command);
         }
 
-        let helpMessage = `${this.language.execution.prefix}\n\n`;
         const sections: Map<string, proto.ISection> = new Map();
         let id = 0;
         for (const command of filteredCommands) {
@@ -96,7 +146,7 @@ export default class HelpCommand extends Command {
                 user,
             });
             section?.rows?.push({
-                title: prefix + command.name,
+                title: this.commandHandler.prefix + command.name,
                 description: await applyPlaceholders(command.description, {message, command, chat, user}),
                 rowId: `HELP_COMMAND-${id}\n${command.announcedAliases
                     .map((e) => `{prefix}${e}`)
@@ -106,48 +156,24 @@ export default class HelpCommand extends Command {
             id++;
         }
 
-        // for (const section of sections.values()) {
-        //     helpMessage += `*${section.title}*\n`;
-        //     for (const row of section.rows ?? []) {
-        //         helpMessage += `● ${row.title}\n${row.description}\n\n`;
-        //     }
-
-        //     // remove last newline
-        //     helpMessage = helpMessage.slice(0, -1);
-        //     helpMessage += "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
-        // }
-
-        helpMessage += `${this.language.execution.suffix}`;
-
-        if (sendInGroup || ["here", "כאן"].some((e) => message.content?.trim().toLowerCase().includes(e))) {
-            await messagingService.replyAdvanced(
-                message,
-                {
-                    text: helpMessage,
-                    buttonText: this.language.execution.button,
-                    sections: Array.from(sections.entries()).map((arr) => arr[1] as proto.ISection),
-                    footer: this.language.execution.footer,
-                },
-                true,
-            );
-        } else {
-            if (isJidGroup(message.to))
-                messagingService.replyAdvanced(message, {text: this.language.execution.dms}, true);
-            await messagingService.replyAdvanced(
-                message,
-                {
-                    text: helpMessage,
-                    buttonText: this.language.execution.button,
-                    sections: Array.from(sections.entries()).map((arr) => arr[1] as proto.ISection),
-                    footer: this.language.execution.footer,
-                },
-                true,
-                {privateReply: true},
-            );
-        }
+        return [sections, sendInGroup];
     }
 
-    onBlocked(data: Message, blockedReason: BlockedReason) {}
+    public async getHelpText(sections: Map<string, proto.ISection>): Promise<string> {
+        let help = "";
+        for (const section of sections.values()) {
+            help += `*${section.title}*\n`;
+            for (const row of section.rows ?? []) {
+                help += `● ${row.title}\n${row.description}\n\n`;
+            }
+
+            // remove last newline
+            help = help.slice(0, -1);
+            help += "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
+        }
+
+        return applyPlaceholders(help, {command: this});
+    }
 
     private getCommandExtendedDescription(command: Command) {
         return `*${this.language.execution.description}:*\n${command.description}${
