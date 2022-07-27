@@ -86,7 +86,7 @@ export default class MP3Command extends Command {
         const videoStream = ytdl(video.url, {filter: "audioonly", quality: "highestaudio"});
         ffmpeg(videoStream)
             .audioBitrate(128)
-            .toFormat("ogg")
+            .toFormat("mp3")
             .audioCodec("libopus")
             .save(path)
             .on("end", async () => {
@@ -126,7 +126,7 @@ export default class MP3Command extends Command {
                 jid,
                 {
                     audio: file as WAMediaUpload,
-                    fileName: title + ".ogg",
+                    fileName: title + ".mp3",
                     mimetype: "audio/mpeg; codecs=opus",
                     ptt: false,
                 },
