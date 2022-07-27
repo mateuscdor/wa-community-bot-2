@@ -1,4 +1,4 @@
-import {proto, WASocket} from "@adiwajshing/baileys";
+import {isJidGroup, proto, WASocket} from "@adiwajshing/baileys";
 import {BlockedReason} from "../../../blockable";
 import {Chat} from "../../../chats";
 import {messagingService, userRepository} from "../../../constants/services";
@@ -120,7 +120,8 @@ export default class HelpCommand extends Command {
                 true,
             );
         } else {
-            messagingService.replyAdvanced(message, {text: this.language.execution.dms}, true);
+            if (isJidGroup(message.to))
+                messagingService.replyAdvanced(message, {text: this.language.execution.dms}, true);
             await messagingService.replyAdvanced(
                 message,
                 {
