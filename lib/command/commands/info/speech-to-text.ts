@@ -53,9 +53,7 @@ export default class SpeechToTextCommand extends Command {
         let media: Buffer | undefined;
         console.log(this.audioSavePath)
         if (audioPath && !fs.existsSync(audioPath)) {
-            console.log(`fetching ${audioPath}`)
             media = await quoted.media;
-            console.log(media)
         }
 
         // if media is bigger than 10mb return error
