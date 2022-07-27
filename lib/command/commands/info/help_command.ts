@@ -66,7 +66,7 @@ export default class HelpCommand extends Command {
         const [sections, sendInGroup] = await this.getHelpSections(chat, message, user);
         let helpMessage = `${this.language.execution.prefix}\n\n`;
 
-        const sendFull = ["מלא", "full"].some((e) => body?.toLowerCase()?.includes(e));
+        const sendFull = !["מלא", "full"].some((e) => body?.toLowerCase()?.includes(e));
         if (sendFull) helpMessage += await this.getHelpText(sections);
 
         helpMessage += `${this.language.execution.suffix}`;
