@@ -1,6 +1,5 @@
 import makeWASocket, {
     makeInMemoryStore,
-    useSingleFileAuthState,
     WASocket,
     BaileysEventEmitter,
     DisconnectReason,
@@ -8,17 +7,19 @@ import makeWASocket, {
     BaileysEventMap,
     Browsers,
     useMultiFileAuthState,
+    MessageRetryMap,
 } from "@adiwajshing/baileys";
 import {Boom} from "@hapi/boom";
 import {existsSync, fstat, mkdir, mkdirSync} from "fs";
 import P from "pino";
-import { messagingService } from "./constants/services";
+import {messagingService} from "./constants/services";
 import {getClientID} from "./utils/client_utils";
 
 export class BotClient {
     public static currentClientId: string | undefined;
     private authPath: string | undefined;
     private storePath: string | undefined;
+    private messageRetryMap: MessageRetryMap;
 
     public store: ReturnType<typeof makeInMemoryStore>;
 
@@ -52,6 +53,7 @@ export class BotClient {
         this.authPath = authPath;
         this.storePath = storePath;
 
+        this.messageRetryMap = {};
         this.store = makeInMemoryStore({
             logger: P().child({level: "fatal", stream: "store"}),
         });
@@ -78,6 +80,10 @@ export class BotClient {
             logger: P({level: "fatal"}),
             printQRInTerminal: true,
             auth: state,
+            getMessage: async (message) => {
+                return this.store.messages[message.remoteJid!].get(message.id!)?.message ?? undefined;
+            },
+            msgRetryCounterMap: this.messageRetryMap,
         });
 
         messagingService.setClient(this.client);
