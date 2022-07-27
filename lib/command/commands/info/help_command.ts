@@ -106,16 +106,16 @@ export default class HelpCommand extends Command {
             id++;
         }
 
-        for (const section of sections.values()) {
-            helpMessage += `*${section.title}*\n`;
-            for (const row of section.rows ?? []) {
-                helpMessage += `● ${row.title}\n${row.description}\n\n`;
-            }
+        // for (const section of sections.values()) {
+        //     helpMessage += `*${section.title}*\n`;
+        //     for (const row of section.rows ?? []) {
+        //         helpMessage += `● ${row.title}\n${row.description}\n\n`;
+        //     }
 
-            // remove last newline
-            helpMessage = helpMessage.slice(0, -1);
-            helpMessage += "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
-        }
+        //     // remove last newline
+        //     helpMessage = helpMessage.slice(0, -1);
+        //     helpMessage += "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n";
+        // }
 
         helpMessage += `${this.language.execution.suffix}`;
 
@@ -124,8 +124,8 @@ export default class HelpCommand extends Command {
                 message,
                 {
                     text: helpMessage,
-                    // buttonText: this.language.execution.button,
-                    // sections: Array.from(sections.entries()).map((arr) => arr[1] as proto.ISection),
+                    buttonText: this.language.execution.button,
+                    sections: Array.from(sections.entries()).map((arr) => arr[1] as proto.ISection),
                     footer: this.language.execution.footer,
                 },
                 true,
@@ -138,8 +138,8 @@ export default class HelpCommand extends Command {
                 message,
                 {
                     text: helpMessage,
-                    // buttonText: this.language.execution.button,
-                    // sections: Array.from(sections.entries()).map((arr) => arr[1] as proto.ISection),
+                    buttonText: this.language.execution.button,
+                    sections: Array.from(sections.entries()).map((arr) => arr[1] as proto.ISection),
                     footer: this.language.execution.footer,
                 },
                 true,
