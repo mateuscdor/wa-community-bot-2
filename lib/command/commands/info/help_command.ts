@@ -124,8 +124,8 @@ export default class HelpCommand extends Command {
                 message,
                 {
                     text: helpMessage,
-                    buttonText: this.language.execution.button,
-                    sections: Array.from(sections.entries()).map((arr) => arr[1] as proto.ISection),
+                    // buttonText: this.language.execution.button,
+                    // sections: Array.from(sections.entries()).map((arr) => arr[1] as proto.ISection),
                     footer: this.language.execution.footer,
                 },
                 true,
@@ -137,8 +137,8 @@ export default class HelpCommand extends Command {
                 message,
                 {
                     text: helpMessage,
-                    buttonText: this.language.execution.button,
-                    sections: Array.from(sections.entries()).map((arr) => arr[1] as proto.ISection),
+                    // buttonText: this.language.execution.button,
+                    // sections: Array.from(sections.entries()).map((arr) => arr[1] as proto.ISection),
                     footer: this.language.execution.footer,
                 },
                 true,
