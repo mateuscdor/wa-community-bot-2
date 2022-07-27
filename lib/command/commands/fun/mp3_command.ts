@@ -86,7 +86,6 @@ export default class MP3Command extends Command {
         const videoStream = ytdl(video.url, {filter: "audioonly", quality: "highestaudio"});
         ffmpeg(videoStream)
             .audioBitrate(128)
-            .audioFrequency(44100)
             .toFormat("ogg")
             .audioCodec("libopus")
             .save(path)
