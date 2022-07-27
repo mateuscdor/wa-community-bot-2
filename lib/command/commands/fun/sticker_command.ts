@@ -8,6 +8,7 @@ import Message from "../../../message/message";
 import Command from "../../command";
 import CommandTrigger from "../../command_trigger";
 import languages from "../../../constants/language.json";
+import {createCanvas} from "canvas";
 
 export default class StickerCommand extends Command {
     private language: typeof languages.commands.sticker[Language];
@@ -30,6 +31,18 @@ export default class StickerCommand extends Command {
         const ogMedia = await message.media;
         const quotedMedia = await (await message.getQuoted())?.media;
         let messageMedia = ogMedia ?? quotedMedia;
+        if (!messageMedia) {
+            // draw an image that looks like a whatsapp message
+            const canvas = createCanvas(500, 500);
+            const ctx = canvas.getContext("2d");
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, 500, 500);
+            ctx.fillStyle = "#000000";
+            ctx.font = "30px Arial";
+            ctx.fillText(body ?? "", 10, 50);
+            messageMedia = canvas.toBuffer();
+        }
+
         if (!messageMedia) {
             return await messagingService.reply(message, this.language.execution.no_media, true);
         }
