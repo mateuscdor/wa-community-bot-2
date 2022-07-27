@@ -23,6 +23,7 @@ export default class AddCommand extends Command {
             usage: lang.usage,
             category: lang.category,
             description: lang.description,
+            blockedChats: ['dm'],
             groupLevel: GroupLevel.Admin,
         });
 
@@ -117,9 +118,7 @@ export default class AddCommand extends Command {
     }
 
     onBlocked(data: Message, blockedReason: BlockedReason) {
-        console.log(blockedReason)
         if (blockedReason === BlockedReason.BlockedChat) {
-            console.log(data)
             return messagingService.reply(data, this.language.execution.blocked_chat, true);
         }
     }
