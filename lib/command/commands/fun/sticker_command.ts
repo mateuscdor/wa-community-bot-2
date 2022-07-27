@@ -55,7 +55,8 @@ export default class StickerCommand extends Command {
             ctx.fillText(formatJidToCleanNumber(chosenMessage.sender) ?? "", 6, 7 + 12.8);
             let numberSize = ctx.measureText(formatJidToCleanNumber(chosenMessage.sender) ?? "");
             ctx.font = "14.2px Segoe UI";
-            ctx.fillText(bodyText ?? "", 6, 7 + 14.2 + numberSize.actualBoundingBoxDescent + 7);
+            ctx.fillStyle = textColor;
+            // ctx.fillText(bodyText ?? "", 6, 7 + 14.2 + numberSize.actualBoundingBoxDescent + 7);
             messageMedia = canvas.toBuffer();
         }
 
