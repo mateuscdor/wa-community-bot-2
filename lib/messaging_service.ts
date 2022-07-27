@@ -100,6 +100,7 @@ export default class MessagingService {
         if (isJidGroup(message.to)) {
             recipient = privateReply ? message.from : message.to;
         } else {
+            console.log(`IS DM : ${message.raw?.key.remoteJid}, ${message.sender} | ${message.fromMe} + ${message.to}, ${message.from}`);
             recipient = message.raw?.key.remoteJid ?? message.sender ?? message.fromMe ? message.to : message.from;
         }
 
@@ -137,7 +138,6 @@ export default class MessagingService {
         try {
             assert(this.client, "Client must be set using setClient() method!");
 
-            console.log(recipient)
             if (metadata) {
                 metadata.meta.set("ignore", this._shouldIgnore);
             } else {
