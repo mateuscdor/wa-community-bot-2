@@ -308,7 +308,8 @@
                     "bot_no_admin": "Give the bot admin access in order to use this command.",
                     "failed_add": "Failed 😢\nFailed to add: {text}",
                     "success": "Success 🎊",
-                    "no_body": "You must either provide a body with phone numbers or contact cards"
+                    "no_body": "You must either provide a body with phone numbers or contact cards",
+                    "blocked_chat": "You can only use this command in a group chat."
                 }
             },
             "hebrew": {
@@ -322,7 +323,8 @@
                     "bot_no_admin": "על מנת להשתמש בפקודה זו, עליך לתת לבוט אדמין בקבוצה",
                     "failed_add": "נכשל 😢\nנכשל להוסיף: {text}",
                     "success": "הצלחה 🎊",
-                    "no_body": "אתה חייב לספק בגוף ההודעה מספרי טלפון או כרטיסי איש קשר"
+                    "no_body": "אתה חייב לספק בגוף ההודעה מספרי טלפון או כרטיסי איש קשר",
+                    "blocked_chat": "אפשר להשתמש בפקודה זו רק בקבוצות."
                 }
             }
         },
