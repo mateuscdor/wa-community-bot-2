@@ -618,7 +618,7 @@
                 "extended_description": "Downloads an MP3 of a YouTube video ({prefix}{command} song name)",
                 "usage": "{prefix}{command} <song>",
                 "execution": {
-                    "no_content": "You must provide a song to search for.",
+                    "no_content": "You must provide a song to search for.\n{prefix}{command} Awesome song",
                     "no_results": "No results found for {song}",
                     "too_long": "I can only download videos up to 10 minutes long. Maybe that's why?",
                     "downloading": "Downloading MP3 of \"{title}\" from YouTube...",
@@ -635,7 +635,7 @@
                 "extended_description": "מוריד שיר מיוטיוב באמצעות הבוט ({prefix}{command} שם השיר)",
                 "usage": "{prefix}{command} <שיר>",
                 "execution": {
-                    "no_content": "בבקשה תספק שיר לחיפוש.",
+                    "no_content": "בבקשה תספק שיר לחיפוש.\nלדוגמה: {prefix}{command} שיר מגניב",
                     "no_results": "לא נמצאו תוצאות עבור {song}",
                     "too_long": "אני רק יכול להוריד שירים שלא עולות על 10 דקות. אולי זה למה?",
                     "downloading": "אני עכשיו מוריד \"{title}\" מיוטיוב...",

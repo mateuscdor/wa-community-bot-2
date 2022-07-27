@@ -42,7 +42,10 @@ export default class MP3Command extends Command {
     async execute(client: WASocket, chat: Chat, message: Message, body?: string) {
         if (!message.raw?.key.remoteJid)
             return await messagingService.reply(message, "That's... Odd... It seems like this group doesn't exist 🤨");
-        if (!body) return await messagingService.reply(message, this.language.execution.no_content, true);
+        if (!body)
+            return await messagingService.reply(message, this.language.execution.no_content, true, {
+                placeholder: this.getDefaultPlaceholder({chat, message}),
+            });
 
         const videos = await yt.search(body);
         const video = videos.filter((vid) => {
