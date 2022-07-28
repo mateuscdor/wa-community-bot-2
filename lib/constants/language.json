@@ -988,14 +988,30 @@
                 "execution": {
                     "no_user": "Must provide a user to steal from.",
                     "no_balance": "This user is too poor to rob 💀.",
-                    "success_give": "\"oh you poor little thief, take {amount}\"",
-                    "take_messages": {
-                        "90": "LMFAO 😂😂 you basically took EVERYTHINg there is to take from this poor bastard",
-                        "60": "Great heist! you could have tried to better but good I guess...",
-                        "30": "C'mon... At least try.. maybe next time you could score more 🤦‍♂️",
-                        "10": "Are you even trying? C'mon your a thief...",
-                        "0": "LMAO and you quit your job for this?? 😹😹😹"
-                    },
+                    "caught": "You were caught *HAHAHA*\nYou paid {name} {coins} {coin}",
+                    "not_enough_money": "The victim doesn't even have 5,000 coins, it ain't worth it man.",
+                    "take_messages": [
+                        [
+                            90,
+                            "LMFAO 😂😂 you basically took EVERYTHINg there is to take from this poor bastard"
+                        ],
+                        [
+                            65,
+                            "Great heist! you could have tried to better but good I guess..."
+                        ],
+                        [
+                            40,
+                            "C'mon... At least try.. maybe next time you could score more 🤦‍♂️"
+                        ],
+                        [
+                            15,
+                            "Are you even trying? C'mon your a thief..."
+                        ],
+                        [
+                            0,
+                            "LMAO and you quit your job for this?? 😹😹😹"
+                        ]
+                    ],
                     "success_footer": "Your payout was {coins} {coin}"
                 }
             },
@@ -1009,7 +1025,61 @@
                 "execution": {
                     "no_user": "בבקשה תתייג את מי שאתה רוצה לשדוד.",
                     "no_balance": "למשתמש הזה אין כסף לגנוב 💀.",
-                    "success_give": "\"oh you poor little thief, take {amount}\""
+                    "caught": "חחחחחחחחחחחחחחחח נתפסת אני מת\nשילמת ל{name} {coins} {coin}",
+                    "not_enough_money": "לקורבן אין אפילו 5000 מטבעות... תתרחק.. זה לא שווה את זה.",
+                    "take_messages": [
+                        [
+                            90,
+                            [
+                                "אני מתתתת 😹 לקחת ליטרלי את כל מה שאפשר לקחת מהעני המסכן הזה",
+                                [
+                                    90,
+                                    100
+                                ]
+                            ]
+                        ],
+                        [
+                            65,
+                            [
+                                "שדידה יפה...  יש מקום להשתפר בטכניקה טיפה אבל יפה.",
+                                [
+                                    10,
+                                    45
+                                ]
+                            ]
+                        ],
+                        [
+                            40,
+                            [
+                                "נו באמת... לפחות תנסה... אולי פעם הבאה תצליח לשדוד יותר.",
+                                [
+                                    15,
+                                    35
+                                ]
+                            ]
+                        ],
+                        [
+                            15,
+                            [
+                                "אתה בכלל מנסה? כאילו.. אתה אמור להיות גנב...",
+                                [
+                                    7,
+                                    20
+                                ]
+                            ]
+                        ],
+                        [
+                            0,
+                            [
+                                "ועזבת את העבודה שלך בשביל זה??? 😹😹😹",
+                                [
+                                    1,
+                                    10
+                                ]
+                            ]
+                        ]
+                    ],
+                    "success_footer": "קיבלת {coins} {coin}"
                 }
             }
         },
@@ -1466,11 +1536,13 @@
     "tagged_info": {
         "english": {
             "message": "Whop, do you need something?\nTry using {prefix}help",
-            "text_version": "full"
+            "text_version": "menu",
+            "difference": "Those who use WhatsApp beta won't be able to see this menu."
         },
         "hebrew": {
             "message": "הא? צריך משהו?\nתנסה {prefix}עזרה",
-            "text_version": "מלא"
+            "text_version": "תפריט",
+            "difference": "אנשים שמשתמשים בווצאפ בטא לא יוכלו לראות את תפריט זו"
         }
     }
 }

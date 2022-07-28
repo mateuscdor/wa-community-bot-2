@@ -66,7 +66,7 @@ export default class HelpCommand extends Command {
         const [sections, sendInGroup] = await this.getHelpSections(chat, message, user);
         let helpMessage = `${this.language.execution.prefix}\n\n`;
 
-        const sendFull = !["מלא", "full"].some((e) => body?.toLowerCase()?.includes(e));
+        const sendFull = !["תפריט", "menu"].some((e) => body?.toLowerCase()?.includes(e));
         if (sendFull) helpMessage += await this.getHelpText(sections);
 
         helpMessage += `${this.language.execution.suffix}`;
@@ -75,6 +75,7 @@ export default class HelpCommand extends Command {
         }
 
         if (sendInGroup || ["here", "כאן"].some((e) => message.content?.trim().toLowerCase().includes(e))) {
+            if (sendFull) await messagingService.reply(message, languages.tagged_info[this.langCode].difference, true);
             await messagingService.replyAdvanced(
                 message,
                 {
@@ -90,6 +91,11 @@ export default class HelpCommand extends Command {
         } else {
             if (isJidGroup(message.to))
                 messagingService.replyAdvanced(message, {text: this.language.execution.dms}, true);
+
+            if (sendFull)
+                await messagingService.reply(message, languages.tagged_info[this.langCode].difference, true, {
+                    privateReply: true,
+                });
             await messagingService.replyAdvanced(
                 message,
                 {
