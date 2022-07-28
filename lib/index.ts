@@ -69,42 +69,6 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
                 return console.error(`Failed to get a chat for JID(${chatJid}).`);
             }
 
-            if (!chat.model.sentDisclaimer) {
-                const joinMessage = `**Disclaimer**\
-                \nThis bot is handled and managed by a human\
-                \nAs such, I have the ability to see the messages in this chat.\
-                \nI DO NOT plan to but the possibility is there.\
-                \nIf you are not keen with this, do not send the bot messages.\
-                \nEnjoy my bot! Get started using: ${chat.model.commandPrefix}help\n\nP.S You can DM the bot.`;
-                const joinMessageHebrew = `**התראה**\nהבוט מנוהל על ידי אדם.\
-                    \nבכך ברשותי האפשרות לצפות בהודעות בצ'אטים.\
-                    \n*אני לא* מתכנן לעשות זאת אך האפשרות קיימת.\
-                    \nאם אינך מעוניין בכך, אל תשלח לבוט הודעות.\
-                    \nתהנו מהבוט שלי!\
-                    \nכתבו ${chat.model.commandPrefix}עזרה כדי להתחיל להשתמש בו!`;
-                await chatRepository.update(chatJid, {
-                    $set: {sent_disclaimer: true},
-                });
-                chat = await chatRepository.get(chatJid, true);
-                await messagingService.replyAdvanced(
-                    msg,
-                    {
-                        text: joinMessage,
-                        buttons: [{buttonText: {displayText: `${chat?.model.commandPrefix}help`}, buttonId: "0"}],
-                    },
-                    false,
-                );
-
-                await messagingService.replyAdvanced(
-                    msg,
-                    {
-                        text: joinMessageHebrew,
-                        buttons: [{buttonText: {displayText: `${chat?.model.commandPrefix}עזרה`}, buttonId: "0"}],
-                    },
-                    false,
-                );
-            }
-
             const selectedRowId = rawMsg.message?.listResponseMessage?.singleSelectReply?.selectedRowId;
             if (selectedRowId && selectedRowId?.startsWith("HELP_COMMAND")) {
                 const helpCommand = await chat?.getCommandByTrigger("help");
@@ -229,6 +193,12 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
 
             await chat?.handleMessage(msg).catch((e) => console.error(e));
         }
+    });
+
+    eventListener.on("chats.upsert", (chats: proto.IChat[]) => {
+        console.log("CHAT START")
+        console.log(chats[0]);
+        console.log("CHAT END")
     });
 }
 

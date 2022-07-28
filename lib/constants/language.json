@@ -990,6 +990,7 @@
                     "no_balance": "This user is too poor to rob 💀.",
                     "caught": "You were caught *HAHAHA*\nYou paid {name} {coins} {coin}",
                     "not_enough_money": "The victim doesn't even have 5,000 coins, it ain't worth it man.",
+                    "not_enough_money_self": "You're so poor... You need at least 5,000 coinds to steal from someone.",
                     "take_messages": [
                         [
                             90,
@@ -1027,6 +1028,7 @@
                     "no_balance": "למשתמש הזה אין כסף לגנוב 💀.",
                     "caught": "חחחחחחחחחחחחחחחח נתפסת אני מת\nשילמת ל{name} {coins} {coin}",
                     "not_enough_money": "לקורבן אין אפילו 5000 מטבעות... תתרחק.. זה לא שווה את זה.",
+                    "not_enough_money_self": "אתה כל כך עני... אתה צריך לפחות 5,000 מטבעות כדי לשדוד מישהו.",
                     "take_messages": [
                         [
                             90,
