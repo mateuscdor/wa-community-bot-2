@@ -51,7 +51,7 @@ export default class CrimeCommand extends EconomyCommand {
         if (!user || !userJid) {
             return await messagingService.reply(
                 message,
-                "Seems like this user doesn't exist. Please contact an admin.",
+                "Seems like you as a user don't exist. Please contact an admin.",
                 true,
             );
         }

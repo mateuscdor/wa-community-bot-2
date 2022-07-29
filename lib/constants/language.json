@@ -1424,6 +1424,110 @@
                     "failed_crime_footer": "תדמיין להיות כל כך גרוע..."
                 }
             }
+        },
+        "postmemes": {
+            "triggers": [
+                "postmemes",
+                "postmeme",
+                "pm",
+                "תעלהמימים"
+            ],
+            "english": {
+                "triggers": [
+                    "postmemes",
+                    "postmeme",
+                    "pm"
+                ],
+                "category": "Economy",
+                "description": "Post \"memes\" to earn money from good ones!",
+                "execution": {
+                    "memes": [
+                        "fresh",
+                        "copypasta",
+                        "intellectual",
+                        "repost",
+                        "kind"
+                    ],
+                    "responses": [
+                        [
+                            25,
+                            {
+                                "title": "Your meme is a DEAD BORING TERRIBLE DISGUSTING meme.",
+                                "footer": "You get {coins} {coin} try harder next time. We're not angry, just disappointed.",
+                                "money_range": [0, 0]
+                            }
+                        ],
+                        [
+                            70,
+                            {
+                                "title": "You posted a decent meme!",
+                                "footer": "You earned {coins} {coin} for your funny efforts.",
+                                "money_range": [1400, 1900]
+                            }
+                        ],
+                        [
+                            5,
+                            {
+                                "title": "You posted a TRENDING meme!",
+                                "footer": "You earned {coins} {coin} for your efforts, niceeee meme bro",
+                                "money_range": [1900, 2300]
+                            }
+                        ]
+                    ],
+                    "too_long": "You're too boring.. You took too long to answer.", 
+                    "request_title": "{tag}'s meme posting session",
+                    "request_body": "Pick a meme to post to the internet!",
+                    "request_footer": "Hopefully people will like it and give you some $$$$, but it's also possible they hate it and you LOSE money from lawsuit fees.",
+                    "invalid_meme": "You didn't pick a meme..................."
+                }
+            },
+            "hebrew": {
+                "triggers": [
+                    "תעלהמימים"
+                ],
+                "category": "כלכלה",
+                "description": "תעלה \"מימים\" כדי להשיג כסף מכאלו טובים!",
+                "execution": {
+                    "memes": [
+                        "חדש",
+                        "העתק הדבק",
+                        "חוכמה",
+                        "העלאה מחדש",
+                        "נחמד"
+                    ],
+                    "responses": [
+                        [
+                            25,
+                            {
+                                "title": "המים שלך *משעמם* _מגעיל_ ו```דוחה```. תתבייש.",
+                                "footer": "קיבלת {coins} {coin}. תנסה יותר פעם הבאה. אנחנו לא כועסים, סתם מאוכזבים...",
+                                "money_range": [0, 0]
+                            }
+                        ],
+                        [
+                            70,
+                            {
+                                "title": "העלתה מים סביר!",
+                                "footer": "קיבלת {coins} {coin} על הנסיונות שלך!",
+                                "money_range": [1400, 1900]
+                            }
+                        ],
+                        [
+                            5,
+                            {
+                                "title": "העלתה מים טרנדי!",
+                                "footer": "קיבלת {coins} {coin} על הניסיות שלך. איזה מייםםםם אחשליייי",
+                                "money_range": [1900, 2300]
+                            }
+                        ]
+                    ],
+                    "too_long": "אתה יותר מדי משעמם. לקח לך יותר מדי זמן לענות.",
+                    "request_title": "סשן העלאת המימים של {tag}",
+                    "request_body": "תבחר מים שאתה רוצה לעלות לאינטרנט",
+                    "request_footer": "נקווה שאנשים יאהבו את זה ויתנו לכם $$$$, אבללל זה גם אפשרי שישנאו אותו ותפסיד כסף ותביעות!",
+                    "invalid_meme": "אתה לא בחרת מים..................."
+                }
+            }
         }
     },
     "economy": {

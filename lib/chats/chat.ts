@@ -43,6 +43,7 @@ import {
     DepositCommand,
     GiveBalanceCommand,
     HighlowCommand,
+    PostMemesCommand,
     WithdrawCommand,
 } from "../command/commands/economy";
 import {messageRepository, messagingService, userRepository} from "../constants/services";
@@ -128,6 +129,7 @@ export default abstract class Chat {
         handler?.add(new BegCommand(this.model.language));
         handler?.add(new WithdrawCommand(this.model.language));
         handler?.add(new CrimeCommand(this.model.language));
+        handler?.add(new PostMemesCommand(this.model.language));
 
         // bot misc commands
         handler?.add(new LanguageCommand());
