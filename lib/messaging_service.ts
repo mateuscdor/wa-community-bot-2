@@ -164,7 +164,6 @@ export default class MessagingService {
             if (caption != undefined && caption.length > 0)
                 (content as any).caption = await applyPlaceholders(caption, placeholder);
 
-            if (options) options["timestamp"] = new Date(moment().utc().unix());
             const response = await this.client!.sendMessage(recipient, content, options);
             if (response && response.message)
                 this.sentMessagesCache.set(`${response.key.remoteJid}-${response.key.id}`, response.message);
