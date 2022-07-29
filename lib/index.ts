@@ -249,7 +249,8 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
 
 process.on("uncaughtException", async (err) => {
     logger.error("UNHANDLED EXCEPTION CAUGHT:");
-    logger.error(err);
+    console.error(err)
+    logger.error(err.stack);
     // await whatsappBot.restart();
 });
 
