@@ -19,8 +19,8 @@ export const logger = createLogger({
     exitOnError: false,
     format: format.json(),
     transports: [
-        new transports.File({filename: `${botLogsDirectory}/${moment().format("DD-MM-YYYY-HH-mm-ss")}.log`, level: "info"}),
-        new transports.Console({format: format.cli({level: true}), level: "debug"}),
+        new transports.File({filename: `${botLogsDirectory}/${moment().format("DD-MM-YYYY-HH-mm-ss")}.log`, level: "debug"}),
+        new transports.Console({format: format.cli({level: true}), level: "debug", }),
     ],
 });
 
