@@ -89,7 +89,7 @@ export class BotClient {
             },
             msgRetryCounterMap: this.authManager.messageRetryMap,
         });
-        
+
         this.isRunning = true;
         messagingService.setClient(this.client);
         this.store.bind(this.client.ev);
@@ -131,7 +131,9 @@ export class BotClient {
     }
 
     public close() {
+        logger.info('Closing bot client connection');
         this.isRunning = false;
         this.client?.end(undefined);
+        logger.info('Closed bot client connection');
     }
 }
