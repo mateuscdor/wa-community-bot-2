@@ -34,7 +34,7 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
 
             // // apply metadata bound to message id in messaging service (this allows bot to send messages with metadata)
             const msg = await messagingService.messageInterceptor(rawMsg);
-            logger.debug(`Processing message`, msg);
+            logger.debug(`Processing message - ${msg.from} -> ${msg.to} | ${msg.content}`);
             const userJid = normalizeJid(msg.sender ?? "");
             // if (!["972557223809"].some((e) => userJid?.startsWith(e))) return;
 
