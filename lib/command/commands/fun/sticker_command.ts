@@ -115,6 +115,7 @@ export default class StickerCommand extends Command {
             ctx.fillText(timeText, messageSize[0] - 6 - footerTextSize.width, messageSize[1] - 4);
 
             messageMedia = canvas.toBuffer();
+            return this.sendSticker(message, messageMedia, 100);
         } else if (!messageMedia && body) {
             // draw an image that with body text in the center
             const canvas = createCanvas(512, 512);
@@ -123,18 +124,25 @@ export default class StickerCommand extends Command {
             ctx.fillRect(0, 0, 512, 512);
             ctx.fillStyle = "#000000";
             ctx.font = "bold 48px Segoe UI";
-            const text = getTextLines(body, "48px Segoe UI", 512 - 8 * 2).join("\n").trim();
+            const text = getTextLines(body, "48px Segoe UI", 512 - 8 * 2)
+                .join("\n")
+                .trim();
             const size = getTextSize(text ?? "", ctx.font);
             ctx.fillText(text, 512 / 2 - size.width / 2 + 8, 512 / 2 - (size.height.ascent + size.height.descent) / 2);
 
             messageMedia = canvas.toBuffer();
+            return this.sendSticker(message, messageMedia, 100);
         }
 
         if (!messageMedia) {
             return await messagingService.reply(message, this.language.execution.no_media, true);
         }
 
-        const stickerBuffer = await this.createSticker(messageMedia).toBuffer();
+        this.sendSticker(message, messageMedia, 40);
+    }
+
+    private async sendSticker(message: Message, media: Buffer, quality: number) {
+        const stickerBuffer = await this.createSticker(media, "bot", "bot", quality).toBuffer();
         if (stickerBuffer.length < 50) {
             return await messagingService.reply(message, this.language.execution.no_media, true);
         } else if (stickerBuffer.length > 2 * 1000000) {
@@ -147,12 +155,12 @@ export default class StickerCommand extends Command {
         });
     }
 
-    private createSticker(buffer: Buffer, author: string = "bot", pack: string = "bot") {
+    private createSticker(buffer: Buffer, author: string = "bot", pack: string = "bot", quality: number) {
         return new Sticker(buffer, {
             pack: pack,
             author: author,
             type: StickerTypes.FULL,
-            quality: 100,
+            quality: quality,
         });
     }
 
