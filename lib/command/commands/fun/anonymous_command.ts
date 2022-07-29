@@ -33,7 +33,7 @@ export default class AnonymousCommand extends Command {
             });
         }
 
-        const splitData = body?.replace(/(?<=\d\d\d) /i, "")?.split(" ") ?? [];
+        const splitData = body?.split(" ") ?? [];
         let number = splitData.shift();
         number = number
             ?.replace(/-/g, "")

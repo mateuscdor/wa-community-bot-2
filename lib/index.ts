@@ -266,7 +266,7 @@ async function sendDisclaimer(chat: Chat) {
                 \nAs such, I have the ability to see the messages in this chat.\
                 \nI DO NOT plan to but the possibility is there.\
                 \nIf you are not keen with this, do not send the bot messages.\
-                \nEnjoy my bot! Get started using: ${chat.model.commandPrefix}help\n\nP.S You can DM the bot.`;
+                \nEnjoy my bot! Get started using: ${chat.model.commandPrefix}help\n\nP.S You can DM the bot.\n\n_Heavy inspiration was taken from Dank Memer bot (Discord)_`;
 
     const joinMessageHebrew = `**התראה**\nהבוט מנוהל על ידי אדם.\
                     \nבכך ברשותי האפשרות לצפות בהודעות בצ'אטים.\
