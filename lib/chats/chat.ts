@@ -180,7 +180,7 @@ export default abstract class Chat {
                         {
                             placeholder: {
                                 custom: {
-                                    time: timeToWait.toFixed(2),
+                                    time: timeToWait.toString(),
                                     second: pluralForm(timeToWait, languages.times[this.model.language].second),
                                 },
                                 chat: this,
