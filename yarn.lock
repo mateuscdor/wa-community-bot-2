@@ -174,6 +174,11 @@
     "@types/node" "*"
     "@types/responselike" "*"
 
+"@types/death@^1.1.2":
+  "integrity" "sha512-Rr5NV/H/zj6zgbh6TCwMEe0NhCVS2QbAor0pikvzGx5fh+xsnmV3KUEq2Vb4vgi9ytBHorva+ryQmij2rrstTQ=="
+  "resolved" "https://registry.npmjs.org/@types/death/-/death-1.1.2.tgz"
+  "version" "1.1.2"
+
 "@types/fluent-ffmpeg@^2.1.20":
   "integrity" "sha512-B+OvhCdJ3LgEq2PhvWNOiB/EfwnXLElfMCgc4Z1K5zXgSfo9I6uGKwR/lqmNPFQuebNnes7re3gqkV77SyypLg=="
   "resolved" "https://registry.npmjs.org/@types/fluent-ffmpeg/-/fluent-ffmpeg-2.1.20.tgz"
@@ -567,6 +572,11 @@
   "integrity" "sha512-2P0p0pFGzHS5EMnhdxQi7aJN+iMheud0UhG4dlE1DLAlvL8JHjJJTX/CSm4JXwV0Ka5nGk3zC5mcb5bUQUxxMA=="
   "resolved" "https://registry.npmjs.org/dateformat/-/dateformat-4.6.3.tgz"
   "version" "4.6.3"
+
+"death@^1.1.0":
+  "integrity" "sha512-vsV6S4KVHvTGxbEcij7hkWRv0It+sGGWVOM67dQde/o5Xjnr+KmLjxWJii2uEObIrt1CcM9w0Yaovx+iOlIL+w=="
+  "resolved" "https://registry.npmjs.org/death/-/death-1.1.0.tgz"
+  "version" "1.1.0"
 
 "debug@^4.3.4", "debug@4":
   "integrity" "sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ=="

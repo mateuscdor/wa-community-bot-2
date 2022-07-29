@@ -12,6 +12,7 @@ import languages from "./constants/language.json";
 import {applyPlaceholders} from "./utils/message_utils";
 import {logger} from "./constants/logger";
 import {Chat} from "./chats";
+import on_death from "death";
 
 ffmpeg.setFfmpegPath(ffmpegPath);
 dotenv.config({path: "./"});
@@ -251,6 +252,12 @@ process.on("uncaughtException", async (err) => {
     logger.error(err);
     // await whatsappBot.restart();
 });
+
+on_death((sig) => {
+    logger.info(`Received death signal ${sig}`);
+    whatsappBot.client?.end(sig)
+    process.exit(0);
+})
 
 function registerListeners() {}
 
