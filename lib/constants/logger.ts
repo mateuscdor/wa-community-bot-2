@@ -12,11 +12,6 @@ export const logger = createLogger({
 export const botTrafficLogger = pino(
     {
         level: "info",
-        prettyPrint: {
-            colorize: true,
-            levelFirst: true,
-            translateTime: "yyyy-dd-mm, h:MM:ss TT",
-        },
     },
     pino.destination(`../../logs/traffic/${moment().format("DD-MM-YYYY-HH-mm-ss")}.log`),
 );
@@ -24,12 +19,7 @@ export const botTrafficLogger = pino(
 export const storeLogger = pino(
     {
         level: "info",
-        stream: "store",
-        prettyPrint: {
-            colorize: true,
-            levelFirst: true,
-            translateTime: "yyyy-dd-mm, h:MM:ss TT",
-        },
+        stream: "store"
     },
     pino.destination(`../../logs/store/${moment().format("DD-MM-YYYY-HH-mm-ss")}.log`),
 );
