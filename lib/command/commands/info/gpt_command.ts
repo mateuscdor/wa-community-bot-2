@@ -50,7 +50,7 @@ export default class GptCommand extends Command {
         }
 
         // body can only contain english and special characters
-        if (!/^[a-zA-Z0-9\s\.,;:!?\(\)\[\]\{\}'"-]+$/.test(body)) {
+        if (!/^[a-zA-Z0-9\s\.,;:!?\(\)\[\]\{\}'"-\*&\$#@%\^\-\+]+$/.test(body)) {
             return await messagingService.reply(message, this.language.execution.only_english, true);
         }
 
