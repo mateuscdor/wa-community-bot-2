@@ -29,7 +29,7 @@ export const logger = createLogger({
                 format.colorize(),
                 format.timestamp(),
                 format.metadata(),
-                format.printf((info) => `${info.timestamp} ${info.level}: ${info.message} - ${info.meta}`),
+                format.printf(({level, message, label, timestamp, metadata}) => `${timestamp} ${level}: ${message} - ${metadata}`),
             ),
         }),
     ],
