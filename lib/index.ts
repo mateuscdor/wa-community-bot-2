@@ -185,6 +185,27 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
         }
     });
 
+    eventListener.on("groups.upsert", async (groups) => {
+        for (const group of groups) {
+            const chat = await chatRepository.get(group.id, true);
+            if (!chat) {
+                return;
+            }
+
+            if (chat.model.sentDisclaimer) {
+                const langCode = chat.model.language;
+                const helpCommand = (await chat?.getCommandByTrigger("help")) as HelpCommand;
+
+                await messagingService.sendMessage(chat.model.jid, {
+                    text: languages.chat_upsert_help[langCode].help,
+                    buttons: [
+                        {buttonText: {displayText: `${chat?.model.commandPrefix}${helpCommand.name}`}, buttonId: "0"},
+                    ],
+                });
+            }
+        }
+    });
+
     eventListener.on("chats.upsert", async (chats: proto.IChat[]) => {
         for (const chatData of chats) {
             const chatJid = chatData.id;
