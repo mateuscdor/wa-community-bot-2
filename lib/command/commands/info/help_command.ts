@@ -75,7 +75,7 @@ export default class HelpCommand extends Command {
         }
 
         if (sendInGroup || ["here", "כאן"].some((e) => message.content?.trim().toLowerCase().includes(e))) {
-            if (sendFull) await messagingService.reply(message, languages.tagged_info[this.langCode].difference, true);
+            if (!sendFull) await messagingService.reply(message, languages.tagged_info[this.langCode].difference, true);
             await messagingService.replyAdvanced(
                 message,
                 {
