@@ -32,9 +32,14 @@ export default class StickerCommand extends Command {
 
     async execute(client: WASocket, chat: Chat, message: Message, body?: string) {
         const ogMedia = await message.media;
-        const quoted = await message.getQuoted();
-        const quotedMedia = await quoted?.media;
+        const quoted = ogMedia ? undefined : await message.getQuoted();
+        const quotedMedia = ogMedia ? undefined : await quoted?.media;
         let messageMedia = ogMedia ?? quotedMedia;
+
+        // 2mb in bytes
+        if (messageMedia && messageMedia.length > 3 * 1024 * 1024) {
+            return await messagingService.reply(message, this.language.execution.too_big, true);
+        }
 
         if (!messageMedia && quoted) {
             // draw an image that looks like a whatsapp message
@@ -145,7 +150,7 @@ export default class StickerCommand extends Command {
         const stickerBuffer = await this.createSticker(media, "bot", "bot", quality).toBuffer();
         if (stickerBuffer.length < 50) {
             return await messagingService.reply(message, this.language.execution.no_media, true);
-        } else if (stickerBuffer.length > 2 * 1000000) {
+        } else if (stickerBuffer.length > 2 * 1024 * 1024) {
             // if bigger than 2mb error.
             return await messagingService.reply(message, this.language.execution.too_big, true);
         }

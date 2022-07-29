@@ -111,7 +111,8 @@ export default class Message {
 
         return getMessageMedia(this).then(async (f) => {
             if (f) return f;
-            await saveMessageMedia(this.raw!);
+            if (!this.raw) return;
+            await saveMessageMedia(this.raw);
             this._media = await getMessageMedia(this);
             return this._media;
         });
