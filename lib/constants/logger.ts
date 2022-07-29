@@ -23,7 +23,13 @@ export const logger = createLogger({
             filename: `${botLogsDirectory}/${moment().format("DD-MM-YYYY-HH-mm-ss")}.log`,
             level: "debug",
         }),
-        new transports.Console({level: "debug"}),
+        new transports.Console({
+            level: "debug",
+            format: format.combine(
+                format.colorize(),
+                format.printf((info) => `${info.timestamp} ${info.level}: ${info.message} - ${info.meta}`),
+            ),
+        }),
     ],
 });
 
