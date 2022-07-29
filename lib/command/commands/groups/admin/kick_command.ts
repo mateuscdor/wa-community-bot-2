@@ -9,6 +9,7 @@ import {getGroupPrivilegeMap} from "../../../../utils/group_utils";
 import {BotClient} from "../../../../bot/whatsapp_bot";
 import {BlockedReason} from "../../../../blockable";
 import languages from "../../../../constants/language.json";
+import { logger } from "../../../../constants/logger";
 
 export default class KickCommand extends Command {
     private language: typeof languages.commands.kick[Language];
@@ -79,7 +80,7 @@ export default class KickCommand extends Command {
             try {
                 await client.groupParticipantsUpdate(message.to, [number], "remove");
             } catch (error) {
-                console.error(error);
+                logger.error(error);
                 failedList.push(number);
             }
         }

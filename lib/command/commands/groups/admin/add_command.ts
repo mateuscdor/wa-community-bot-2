@@ -10,6 +10,7 @@ import {getGroupPrivilegeMap} from "../../../../utils/group_utils";
 import {BotClient} from "../../../../bot/whatsapp_bot";
 import {BlockedReason} from "../../../../blockable";
 import languages from "../../../../constants/language.json";
+import { logger } from "../../../../constants/logger";
 
 export default class AddCommand extends Command {
     private language: typeof languages.commands.add[Language];
@@ -65,7 +66,7 @@ export default class AddCommand extends Command {
                 try {
                     await client.groupParticipantsUpdate(message.to, [number], "add");
                 } catch (error) {
-                    console.error(error);
+                    logger.error(error);
                     failedList.push(number);
                 }
             }
@@ -104,7 +105,7 @@ export default class AddCommand extends Command {
             try {
                 await client.groupParticipantsUpdate(message.to, [number], "add");
             } catch (error) {
-                console.error(error);
+                logger.error(error);
                 failedList.push(number);
             }
         }

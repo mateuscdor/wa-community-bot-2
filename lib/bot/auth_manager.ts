@@ -15,7 +15,6 @@ export class AuthManager {
         this.initialized = new Promise((resolve, reject) => {
             try {
                 if (!existsSync(authenticationPath)) {
-                    console.log(`creating directory ${authenticationPath}`);
                     mkdirSync(authenticationPath);
                 }
             } catch (e) {

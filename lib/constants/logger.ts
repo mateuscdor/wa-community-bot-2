@@ -18,7 +18,10 @@ export const logger = createLogger({
     level: "info",
     exitOnError: false,
     format: format.json(),
-    transports: [new transports.File({filename: `${botLogsDirectory}/${moment().format("DD-MM-YYYY-HH-mm-ss")}.log`})],
+    transports: [
+        new transports.File({filename: `${botLogsDirectory}/${moment().format("DD-MM-YYYY-HH-mm-ss")}.log`, level: "info"}),
+        new transports.Console({format: format.cli({level: true}), level: "debug"}),
+    ],
 });
 
 export const botTrafficLogger = pino(

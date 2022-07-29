@@ -10,6 +10,7 @@ import {EveryoneCommand, HelpCommand, PingCommand} from "./command/commands";
 import config from "./config.json";
 import languages from "./constants/language.json";
 import {applyPlaceholders} from "./utils/message_utils";
+import {logger} from "./constants/logger";
 
 ffmpeg.setFfmpegPath(ffmpegPath);
 dotenv.config({path: "./"});
@@ -60,13 +61,16 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
                 try {
                     chat = await chatRepository.create(chatJid);
                 } catch (e) {
-                    console.error(e);
-                    chat = (await chatRepository.get(chatJid, true).catch((err) => console.error(err))) || undefined;
+                    logger.error(e);
+                    chat =
+                        (await chatRepository.get(chatJid, true).catch((err) => {
+                            logger.error(err);
+                        })) || undefined;
                 }
             }
 
             if (!chat) {
-                return console.error(`Failed to get a chat for JID(${chatJid}).`);
+                return logger.error(`Failed to fetch chat.`, {jid: chatJid});
             }
 
             const selectedRowId = rawMsg.message?.listResponseMessage?.singleSelectReply?.selectedRowId;
@@ -181,7 +185,7 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
                 );
             }
 
-            await chat?.handleMessage(msg).catch((e) => console.error(e));
+            await chat?.handleMessage(msg).catch((e) => logger.error(e));
         }
     });
 
@@ -216,13 +220,16 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
                 try {
                     chat = await chatRepository.create(chatJid);
                 } catch (e) {
-                    console.error(e);
-                    chat = (await chatRepository.get(chatJid, true).catch((err) => console.error(err))) || undefined;
+                    logger.error(e);
+                    chat =
+                        (await chatRepository.get(chatJid, true).catch((err) => {
+                            logger.error(err);
+                        })) || undefined;
                 }
             }
 
             if (!chat) {
-                return console.error(`Failed to get a chat for JID(${chatJid}).`);
+                return logger.error(`Failed to fetch chat.`, {jid: chatJid});
             }
 
             if (!chat.model.sentDisclaimer) {
@@ -259,8 +266,8 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
 }
 
 process.on("uncaughtException", async (err) => {
-    console.log("Caught unhandled exception:");
-    console.error(err);
+    logger.error("UNHANDLED EXCEPTION CAUGHT:");
+    logger.error(err);
     // await whatsappBot.restart();
 });
 
@@ -279,7 +286,8 @@ async function fetchOrCreateUserFromJID(jid: string, pushName?: string) {
         }
 
         if (!user) {
-            return console.error(`Failed to get user with JID(${jid})`);
+            logger.error(`Failed to get user with JID(${jid})`, {jid});
+            return;
         }
     }
 

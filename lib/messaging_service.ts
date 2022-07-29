@@ -17,6 +17,7 @@ import {Chat} from "./chats";
 import {whatsappBot} from ".";
 import {applyPlaceholders} from "./utils/message_utils";
 import moment from "moment";
+import { logger } from "./constants/logger";
 
 export type Placeholder = {
     chat?: Chat;
@@ -174,10 +175,7 @@ export default class MessagingService {
 
             return Message.fromWAMessage(response!, metadata);
         } catch (error) {
-            console.error("FAILED TO SEND MESSAGE");
-            console.error(content);
-            console.error(options);
-            console.error(error);
+            logger.error("FAILED TO SEND MESSAGE", content, options, error);
             const response = await this.client!.sendMessage(recipient, {text: "Failed to send this message."}, options);
             return Message.fromWAMessage(response!, metadata);
         }

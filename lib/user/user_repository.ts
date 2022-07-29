@@ -8,6 +8,7 @@ import {Balance} from "../economy";
 import {normalizeJid} from "../utils/group_utils";
 import User from "./user";
 import config from "../config.json";
+import {logger} from "../constants/logger";
 
 export default class UserRepository {
     private repository: Map<string, User> = new Map<string, User>();
@@ -103,15 +104,18 @@ export default class UserRepository {
 
     public async create(model: UserModel): Promise<User | undefined> {
         try {
+            logger.info(`Creating user`, {jid: model.jid});
             await usersCollection.insertOne(model.toMap());
+            logger.info(`User created`, {jid: model.jid});
 
             const user = new User(model);
             await user.init();
+            logger.info(`Created user has been initailized`, {jid: model.jid});
             this.updateLocal(user);
             return user;
         } catch (err) {
-            console.error(`USER WITH JID ${model.jid} ALREADY EXISTS`);
-            console.error(err);
+            logger.error('ATTEMPTED TO CREATE USER BUT ALREADY EXISTS', {jid: model.jid});
+            logger.error(err);
         }
     }
 

@@ -1,4 +1,5 @@
 import {MongoClient} from "mongodb";
+import { logger } from "../constants/logger";
 import {
     databaseName,
     databaseUrl,
@@ -23,5 +24,5 @@ chatsCollection.createIndex({jid: 1}, {unique: true});
 
 export async function connectToDatabase() {
     await client.connect();
-    console.log("Successfully connected to database!");
+    logger.info("Established connection to database");
 }

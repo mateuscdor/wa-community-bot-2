@@ -12,7 +12,7 @@ import makeWASocket, {
 import {Boom} from "@hapi/boom";
 import {existsSync, fstat, mkdir, mkdirSync} from "fs";
 import pino from "pino";
-import {botTrafficLogger, storeLogger} from "../constants/logger";
+import {botTrafficLogger, logger, storeLogger} from "../constants/logger";
 import {messagingService} from "../constants/services";
 import {wait} from "../utils/async_utils";
 import {getClientID} from "../utils/client_utils";
@@ -41,7 +41,6 @@ export class BotClient {
         const storePath = `${session_path}/store`;
         const authPath = `${session_path}/auth`;
         if (!existsSync(session_path)) {
-            console.log("creating");
             mkdirSync(session_path);
         }
         if (!existsSync(storePath)) {
@@ -75,48 +74,48 @@ export class BotClient {
             printQRInTerminal: true,
             auth: await this.authManager.getState(),
             getMessage: async (message) => {
-                console.log(
+                logger.info(
                     `Attempting to fetch message ${message.remoteJid ? `${message.remoteJid}-` : ""}${message.id}`,
+                    {jid: message.remoteJid, id: message.id},
                 );
 
                 const res = message.id
                     ? messagingService.getSentMessage(message.remoteJid ?? undefined, message.id)
                     : undefined;
 
-                return res || this.store.chats[message.remoteJid ?? ""]?.messages[message.id ?? ''];
+                return res || this.store.chats[message.remoteJid ?? ""]?.messages[message.id ?? ""];
             },
             msgRetryCounterMap: this.authManager.messageRetryMap,
         });
 
         messagingService.setClient(this.client);
         this.store.bind(this.client.ev);
-        console.log("Client Ready!");
+        logger.info("BOT CLIENT - has started");
         this.eventListener = this.client.ev;
 
         this.registerListeners(this.eventListener, this);
         this.eventListener.on("connection.update", (update) => {
             const {connection, lastDisconnect} = update;
-            console.log(`conn ${connection} - ${lastDisconnect?.error}`);
+            logger.info(`BOT CLIENT - CONNECTION UPDATE: ${connection}`, {connection, lastDisconnect});
             if (lastDisconnect?.error) {
-                console.log("ERROR!");
-                console.error(lastDisconnect.error);
+                logger.error(lastDisconnect.error);
             }
             if (connection === "close") {
                 // reconnect if not logged out
                 if (new Boom(lastDisconnect?.error)?.output?.statusCode !== DisconnectReason.loggedOut) {
-                    console.log("disconnected");
-
+                    logger.info("BOT CLIENT - disconnected, trying to reconnect");
                     this.start();
                 } else {
-                    // console.log('connection closed')
+                    logger.info("BOT CLIENT - connection closed");
                 }
             } else if (connection == "open") {
                 BotClient.currentClientId = getClientID(this.client!);
             }
-            // console.log('connection update', update)
         });
         // listen for when the auth credentials is updated
         this.eventListener.on("creds.update", () => this.authManager.saveAuthState());
+
+        logger.info("BOT CLIENT - Registered listeners");
     }
 
     public async restart() {
