@@ -1450,7 +1450,7 @@
                     ],
                     "responses": [
                         [
-                            25,
+                            20,
                             {
                                 "title": "Your meme is a DEAD BORING TERRIBLE DISGUSTING meme.",
                                 "footer": "You get {coins} {coin} try harder next time. We're not angry, just disappointed.",
@@ -1466,7 +1466,7 @@
                             }
                         ],
                         [
-                            5,
+                            10,
                             {
                                 "title": "You posted a TRENDING meme!",
                                 "footer": "You earned {coins} {coin} for your efforts, niceeee meme bro",
@@ -1497,7 +1497,7 @@
                     ],
                     "responses": [
                         [
-                            25,
+                            20,
                             {
                                 "title": "המים שלך *משעמם* _מגעיל_ ו```דוחה```. תתבייש.",
                                 "footer": "קיבלת {coins} {coin}. תנסה יותר פעם הבאה. אנחנו לא כועסים, סתם מאוכזבים...",
@@ -1513,7 +1513,7 @@
                             }
                         ],
                         [
-                            5,
+                            10,
                             {
                                 "title": "העלתה מים טרנדי!",
                                 "footer": "קיבלת {coins} {coin} על הניסיות שלך. איזה מייםםםם אחשליייי",
