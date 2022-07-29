@@ -1,3 +1,4 @@
+import { StatsD } from "hot-shots";
 import ChatRepository from "../chats/chat_repository";
 import ReminderService from "../database/models/reminder/reminder_service";
 import ItemRepository from "../economy/items/item_repository";
@@ -11,3 +12,4 @@ export const userRepository = new UserRepository();
 export const reminderService = new ReminderService();
 export const messageRepository = new MessageRepository();
 export const itemRepository = new ItemRepository();
+export const dogstatsd = new StatsD()

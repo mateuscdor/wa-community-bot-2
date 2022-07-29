@@ -10,7 +10,7 @@ import {
     saveMessageMedia,
 } from "../utils/media_utils";
 import {getMessageBody, getQuotedMessage} from "../utils/message_utils";
-import {BotClient} from "../whatsapp_bot";
+import {BotClient} from "../bot/whatsapp_bot";
 import Metadata from "../database/models/metadata";
 
 export default class Message {

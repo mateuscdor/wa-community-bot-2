@@ -5,7 +5,7 @@ import {Command} from "../command";
 import {messagingService} from "../constants/services";
 import Message from "../message/message";
 import User from "../user/user";
-import {BotClient} from "../whatsapp_bot";
+import {BotClient} from "../bot/whatsapp_bot";
 import {sleep} from "./utils";
 import config from "../config.json";
 import { Placeholder } from "../messaging_service";

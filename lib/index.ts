@@ -1,4 +1,4 @@
-import {BotClient} from "./whatsapp_bot";
+import {BotClient} from "./bot/whatsapp_bot";
 import {BaileysEventEmitter, isJidUser, proto} from "@adiwajshing/baileys";
 const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
 import ffmpeg from "fluent-ffmpeg";
@@ -102,16 +102,6 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
                     true,
                 );
             }
-
-            // const [isExecutableCommand, commands] = await chat.isExecutableCommand(msg);
-            // if (isExecutableCommand) {
-            //     const promises: Promise<any>[] = [];
-            //     for (const command of commands ?? []) {
-            //         promises.push(user.addCooldown(chat.model.jid, command));
-            //     }
-
-            //     await Promise.all(promises);
-            // }
 
             if (
                 msg.content?.includes("@everyone") ||

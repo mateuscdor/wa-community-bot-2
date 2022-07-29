@@ -12,15 +12,14 @@ import makeWASocket, {
 import {Boom} from "@hapi/boom";
 import {existsSync, fstat, mkdir, mkdirSync} from "fs";
 import P from "pino";
-import {messagingService} from "./constants/services";
-import { wait } from "./utils/async_utils";
-import {getClientID} from "./utils/client_utils";
+import {messagingService} from "../constants/services";
+import {wait} from "../utils/async_utils";
+import {getClientID} from "../utils/client_utils";
+import {AuthManager} from "./auth_manager";
 
 export class BotClient {
     public static currentClientId: string | undefined;
-    private authPath: string | undefined;
-    private storePath: string | undefined;
-    private messageRetryMap: MessageRetryMap;
+    private authManager: AuthManager;
 
     public store: ReturnType<typeof makeInMemoryStore>;
 
@@ -47,17 +46,13 @@ export class BotClient {
         if (!existsSync(storePath)) {
             mkdirSync(storePath);
         }
-        if (!existsSync(authPath)) {
-            mkdirSync(authPath);
-        }
 
-        this.authPath = authPath;
-        this.storePath = storePath;
+        this.authManager = new AuthManager(authPath);
 
-        this.messageRetryMap = {};
         this.store = makeInMemoryStore({
             logger: P().child({level: "fatal", stream: "store"}),
         });
+
         this.store.readFromFile(storePath + "/baileys_store_multi.json");
         // save every 10s
         setInterval(() => {
@@ -69,23 +64,24 @@ export class BotClient {
         this.registerListeners = registerListeners;
     }
 
-    public start() {
-        if (!this.authPath) return;
-        useMultiFileAuthState(this.authPath).then((authState) => {
-            this.initBot(authState.state, authState.saveCreds);
-        });
-    }
+    public async start() {
+        if (!(await this.authManager.isInitialized)) {
+            throw new Error("Failed to initialize auth manager");
+        }
 
-    private initBot(state: AuthenticationState, saveCreds: () => Promise<void>) {
         this.client = makeWASocket({
             logger: P({level: "fatal"}),
             printQRInTerminal: true,
-            auth: state,
+            auth: await this.authManager.getState(),
             getMessage: async (message) => {
-                await wait(200)
-                return this.store.messages[message.remoteJid!].get(message.id!)?.message ?? undefined;
+                console.log(
+                    `Attempting to fetch message ${message.remoteJid ? `${message.remoteJid}-` : ""}${message.id}`,
+                );
+                return message.id
+                    ? messagingService.getSentMessage(message.remoteJid ?? undefined, message.id)
+                    : undefined;
             },
-            msgRetryCounterMap: this.messageRetryMap,
+            msgRetryCounterMap: this.authManager.messageRetryMap,
         });
 
         messagingService.setClient(this.client);
@@ -116,7 +112,7 @@ export class BotClient {
             // console.log('connection update', update)
         });
         // listen for when the auth credentials is updated
-        this.eventListener.on("creds.update", saveCreds);
+        this.eventListener.on("creds.update", () => this.authManager.saveAuthState());
     }
 
     public async restart() {

@@ -7,7 +7,7 @@ import CommandTrigger from "../../../command_trigger";
 import vCard from "vcard-parser";
 import {GroupLevel} from "../../../../models";
 import {getGroupPrivilegeMap} from "../../../../utils/group_utils";
-import {BotClient} from "../../../../whatsapp_bot";
+import {BotClient} from "../../../../bot/whatsapp_bot";
 import {BlockedReason} from "../../../../blockable";
 import languages from "../../../../constants/language.json";
 

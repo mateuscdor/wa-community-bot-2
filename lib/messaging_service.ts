@@ -1,4 +1,11 @@
-import {AnyMessageContent, isJidGroup, MiscMessageGenerationOptions, WAMessage, WASocket} from "@adiwajshing/baileys";
+import {
+    AnyMessageContent,
+    isJidGroup,
+    MiscMessageGenerationOptions,
+    proto,
+    WAMessage,
+    WASocket,
+} from "@adiwajshing/baileys";
 import {assert} from "console";
 import {ObjectId} from "mongodb";
 import {createImportSpecifier} from "typescript";
@@ -28,6 +35,8 @@ export default class MessagingService {
         filter: (message: Message) => Promise<boolean> | boolean,
         callback: (message: Message) => Promise<any> | any,
     ][];
+
+    private sentMessagesCache: Map<string, proto.IMessage> = new Map();
 
     private _shouldIgnore: boolean = false;
 
@@ -157,6 +166,8 @@ export default class MessagingService {
 
             if (options) options["timestamp"] = new Date(moment().utc().unix());
             const response = await this.client!.sendMessage(recipient, content, options);
+            if (response && response.message)
+                this.sentMessagesCache.set(`${response.key.remoteJid}-${response.key.id}`, response.message);
 
             if (this.metadataEnabled && metadata) {
                 this.metadataAssignment.set(response?.key.id!, metadata);
@@ -171,6 +182,10 @@ export default class MessagingService {
             const response = await this.client!.sendMessage(recipient, {text: "Failed to send this message."}, options);
             return Message.fromWAMessage(response!, metadata);
         }
+    }
+
+    public getSentMessage(jid: string | undefined, id: string): proto.IMessage | undefined {
+        return this.sentMessagesCache.get(`${jid ? `${jid}-` : ""}${id}`);
     }
 
     public addMessageCallback(
