@@ -133,6 +133,7 @@
                 "execution": {
                     "prefix": "*----- HELP ME I'M RETARDED ----*",
                     "category_help": "*Category - {category}*",
+                    "categories_help": "*Categories - {category}*",
                     "suffix": "Hope I helped ✌\n~bot",
                     "footer": "Donators receive special perks!\nhttps://payboxapp.page.link/VNQQ1AAknBKoneF79\nhttps://www.patreon.com/wailcommunitybot\nhttps://paypal.me/whatsappbotisrael\n\nWant me to make you a bot? https://www.fiverr.com/share/Y0Zb9a",
                     "button": "Click me for help!",
@@ -153,6 +154,7 @@
                 "execution": {
                     "prefix": "*----- עזרה אני מפגר!!! -----*",
                     "category_help": "*קטגוריה - {category}*",
+                    "categories_help": "*קטגוריות - {category}*",
                     "suffix": "מקווה שעזרתי ✌",
                     "footer": "תורמים מקבלים פריבילגיות מיוחדות!\nhttps://payboxapp.page.link/VNQQ1AAknBKoneF79\nhttps://www.patreon.com/wailcommunitybot\nhttps://paypal.me/whatsappbotisrael\n\nרוצים שאצור לכם בוט? https://www.fiverr.com/share/Y0Zb9a",
                     "button": "תלחץ עליי לעזרה!",

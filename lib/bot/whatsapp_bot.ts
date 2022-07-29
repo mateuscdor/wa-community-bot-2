@@ -27,7 +27,7 @@ export class BotClient {
 
     public client: WASocket | undefined | null;
     public eventListener: BaileysEventEmitter | undefined;
-    public profilePicture: Promise<Buffer | undefined> | undefined;
+    public profilePicture: Promise<string | undefined> | undefined;
 
     private isRunning: boolean = false;
 
@@ -120,20 +120,17 @@ export class BotClient {
                 }
             } else if (connection == "open") {
                 BotClient.currentClientId = getClientID(this.client!);
+                this.profilePicture = new Promise((resolve) => {
+                    this.client?.profilePictureUrl(BotClient.currentClientId!).then((url) => {
+                        resolve(url)
+                    });
+                });
             }
         });
         // listen for when the auth credentials is updated
         this.eventListener.on("creds.update", () => this.authManager.saveAuthState());
 
         logger.info("BOT CLIENT - Registered listeners");
-
-        this.profilePicture = new Promise((resolve) => {
-            this.client?.profilePictureUrl(BotClient.currentClientId!).then((url) => {
-                if (url) {
-                    resolve(axios.get(url, {responseType: "arraybuffer"}).then((res) => Buffer.from(res.data)));
-                }
-            });
-        });
     }
 
     public async restart() {

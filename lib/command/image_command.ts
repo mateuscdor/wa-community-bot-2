@@ -1,34 +1,4 @@
-import {
-    OrderDetails,
-    Product,
-    CatalogCollection,
-    ProductCreate,
-    ProductUpdate,
-    BinaryNode,
-    proto,
-    MessageRelayOptions,
-    MessageReceiptType,
-    MediaConnInfo,
-    WAMediaUploadFunction,
-    AnyMessageContent,
-    MiscMessageGenerationOptions,
-    GroupMetadata,
-    ParticipantAction,
-    MessageUpsertType,
-    WAPatchCreate,
-    WAPresence,
-    WAMediaUpload,
-    WABusinessProfile,
-    InitialReceivedChatsState,
-    ChatModification,
-    BaileysEventEmitter,
-    BaileysEventMap,
-    AuthenticationCreds,
-    SignalKeyStoreWithTransaction,
-    Contact,
-    ConnectionState,
-    WASocket,
-} from "@adiwajshing/baileys";
+import {AnyMessageContent, WASocket} from "@adiwajshing/baileys";
 import axios from "axios";
 import {RandomSeed} from "random-seed";
 import {whatsappBot} from "..";
@@ -40,10 +10,11 @@ import CommandTrigger from "./command_trigger";
 import InteractableCommand from "./interactable_command";
 import languages from "../constants/language.json";
 import {BlockedReason} from "../blockable";
+import {writeFile} from "fs";
 
 type ImageCommandRequestBody = {
     text: string;
-    avatars: Buffer[];
+    avatars: string[];
     usernames: string[];
     kwargs?: {[key: string]: any};
 };
@@ -63,6 +34,7 @@ export type ImageGenCommandData = {
 
 export default class ImageCommand extends InteractableCommand {
     private lang: typeof languages.commands.image[Language];
+    private route: string;
 
     constructor(
         private genData: ImageGenCommandData,
@@ -70,8 +42,10 @@ export default class ImageCommand extends InteractableCommand {
         {category, description}: {category?: string; description?: string},
     ) {
         super({
-            triggers: Object.values(genData.name).map((e) => new CommandTrigger(e)),
-            announcedAliases: [genData.name[language]],
+            triggers: Object.values(genData.name)
+                .filter((e) => e)
+                .map((e) => new CommandTrigger(e)),
+            announcedAliases: [genData.name[language] ? genData.name[language] : genData.name["english"]],
             usage:
                 "{prefix}{command}" +
                 (genData.required.text ? " <text>" : "") +
@@ -89,6 +63,7 @@ export default class ImageCommand extends InteractableCommand {
             ]),
         });
 
+        this.route = `http://localhost:8080/api/${genData.route}`;
         this.lang = languages.commands.image[language];
     }
 
@@ -103,19 +78,14 @@ export default class ImageCommand extends InteractableCommand {
         const msgMentions = message.mentions;
 
         const botPfp = (await whatsappBot.profilePicture)!;
-        const mentions: string[] = [msgMentions[0], msgMentions[1] ?? message.sender];
+        const mentions: string[] = [msgMentions[0] ?? message.sender, msgMentions[1]];
         const users = await Promise.all(mentions.map((e) => (e ? userRepository.get(e) : undefined)));
         const avatarUrls = await Promise.all(mentions.map((e) => (e ? client.profilePictureUrl(e) : undefined)));
-        const avatars = await Promise.all(
-            avatarUrls.map((e) =>
-                e ? axios.get(e, {responseType: "arraybuffer"}).then((e) => Buffer.from(e.data, "utf-8")) : undefined,
-            ),
-        );
 
         if (this.genData.required.mentions === 2) {
-            requestBody.avatars = [avatars[0] ?? botPfp, avatars[1]!];
+            requestBody.avatars = [avatarUrls[0]!, avatarUrls[1] ?? botPfp];
         } else if (this.genData.required.mentions === 1) {
-            requestBody.avatars = [avatars[0] ?? avatars[1] ?? botPfp];
+            requestBody.avatars = [avatarUrls[0] ?? avatarUrls[1] ?? botPfp];
         }
 
         requestBody.usernames = users
@@ -131,7 +101,9 @@ export default class ImageCommand extends InteractableCommand {
         }
 
         if (this.genData.type == "post") {
-            const response = await axios.post(this.genData.route, requestBody, {responseType: "arraybuffer"});
+            console.log(this.genData.route)
+            console.log(requestBody)
+            const response = await axios.post(this.route, requestBody, {responseType: "arraybuffer"});
             const data = response.data;
             if (data.error) {
                 return messagingService.reply(
@@ -142,18 +114,19 @@ export default class ImageCommand extends InteractableCommand {
             }
 
             // check if image response
-            const isImage = response.headers["content-type"].startsWith("image");
-            const content = Buffer.from(data, "utf-8");
+            const mimetype = response.headers["content-type"];
+            const isImage = mimetype.startsWith("image");
+            const content = Buffer.from(data, "binary");
 
-            const responseContent: AnyMessageContent = {text: ""};
-            responseContent[isImage ? "image" : "video"] = content;
-            return messagingService.replyAdvanced(message, responseContent, true);
+            const responseContent = {mimetype, [isImage ? "image" : "video"]: content};
+            return messagingService.replyAdvanced(message, responseContent as any as AnyMessageContent, true);
         } else if (this.genData.type == "get") {
-            const response = await axios.get(this.genData.route, {
+            const response = await axios.get(this.route, {
                 params: {
                     text: requestBody.text,
-                    usernames: requestBody.usernames,
+                    usernames: requestBody.usernames.join(","),
                 },
+                responseType: "arraybuffer",
             });
 
             const data = response.data;
@@ -166,12 +139,12 @@ export default class ImageCommand extends InteractableCommand {
             }
 
             // check if image response
-            const isImage = response.headers["content-type"].startsWith("image");
-            const content = Buffer.from(data, "utf-8");
+            const mimetype = response.headers["content-type"];
+            const isImage = mimetype.startsWith("image");
+            const content = Buffer.from(data, "binary");
 
-            const responseContent: AnyMessageContent = {text: ""};
-            responseContent[isImage ? "image" : "video"] = content;
-            return messagingService.replyAdvanced(message, responseContent, true);
+            const responseContent = {mimetype, [isImage ? "image" : "video"]: content};
+            return messagingService.replyAdvanced(message, responseContent as any as AnyMessageContent, true);
         }
     }
 

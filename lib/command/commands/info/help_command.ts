@@ -10,6 +10,7 @@ import CommandTrigger from "../../command_trigger";
 import languages from "../../../constants/language.json";
 import {applyPlaceholders} from "../../../utils/message_utils";
 import User from "../../../user/user";
+import {logger} from "../../../constants/logger";
 
 export default class HelpCommand extends Command {
     private commandHandler: CommandHandler;
@@ -63,22 +64,44 @@ export default class HelpCommand extends Command {
             );
         }
 
-        const [filteredCommands, sendInGroup] = await this.getFilteredCommands(message);
-        const categoriesList = filteredCommands.map(
-            (e) => e.category?.toLowerCase() ?? this.language.execution.misc.toLowerCase(),
-        );
-        const categories = new Set(categoriesList);
+        args = body!.split(" ") as string[];
+        let [filteredCommands, sendInGroup] = await this.getFilteredCommands(message);
+        const categories = [
+            ...new Set(
+                filteredCommands.map((e) => e.category?.toLowerCase() ?? this.language.execution.misc.toLowerCase()),
+            ),
+        ];
         const argsSet = new Set(args.map((e) => e.toLowerCase()));
-        let allowedCategories = Array.from(categories).filter((cat) => argsSet.has(cat.toLowerCase()));
-        if (allowedCategories.length === 0) {
-            allowedCategories = categoriesList;
+        let allowedCategories = new Set(Array.from(categories).filter((cat) => argsSet.has(cat.toLowerCase())));
+        let allowedCategoriesList = [...allowedCategories];
+        if (allowedCategoriesList.length === 0) {
+            allowedCategoriesList = categories;
+            allowedCategories = new Set(categories);
         }
-        let sections = await this.getHelpSections(filteredCommands, chat, message, user, allowedCategories);
-        const isSpecificSectionRequest = sections[args[0].toLowerCase()] != undefined;
-        if (isSpecificSectionRequest) {
-            sections = new Map([args[0].toLowerCase(), sections[args[0].toLowerCase()]]);
-        } else {
-            sections[languages.image_gen[this.langCode].category.toLowerCase()] = {
+
+        const isSpecificSectionRequest = allowedCategoriesList.length != categories.length;
+        if (!isSpecificSectionRequest) {
+            allowedCategories.delete(languages.image_gen[this.langCode].category.toLowerCase());
+        }
+        let sections = await this.getHelpSections(filteredCommands, chat, message, user, [...allowedCategories]);
+
+        let helpMessage = `${this.language.execution.prefix}\n${
+            isSpecificSectionRequest
+                ? (sections.size > 1
+                      ? this.language.execution.categories_help
+                      : this.language.execution.category_help
+                  ).replace(
+                      "{category}",
+                      Array.from(sections.values())
+                          .map((e) => e.title)
+                          .join(", "),
+                  )
+                : ""
+        }\n${isSpecificSectionRequest ? "\n" : ""}`;
+
+        if (isSpecificSectionRequest) sendInGroup = true;
+        if (!isSpecificSectionRequest) {
+            sections.set(languages.image_gen[this.langCode].category.toLowerCase(), {
                 title: languages.image_gen[this.langCode].category.toUpperCase(),
                 rows: [
                     {
@@ -86,17 +109,8 @@ export default class HelpCommand extends Command {
                         description: languages.image_gen[this.langCode].description,
                     },
                 ],
-            };
+            });
         }
-
-        let helpMessage = `${this.language.execution.prefix}\n${
-            isSpecificSectionRequest
-                ? this.language.execution.category_help.replace(
-                      "{category}",
-                      sections.get(args[0].toLowerCase())?.title!,
-                  )
-                : ""
-        }\n${isSpecificSectionRequest ? "\n" : ""}`;
 
         const sendFull = !["תפריט", "menu"].some((e) => body?.toLowerCase()?.includes(e));
         if (sendFull) helpMessage += await this.getHelpText(sections);
@@ -153,13 +167,11 @@ export default class HelpCommand extends Command {
         user: User | undefined,
         allowedCategories: string[],
     ): Promise<Map<string, proto.ISection>> {
-        const filteredCommands: Array<Command> = [];
         const allowedCategoriesSet = new Set(allowedCategories);
-        allowedCategoriesSet.delete(languages.image_gen[this.langCode].category.toLowerCase());
 
         const sections: Map<string, proto.ISection> = new Map();
         let id = 0;
-        for (const command of filteredCommands) {
+        for (const command of commands) {
             const sectionKey = command.category?.toLowerCase() ?? this.language.execution.misc.toLowerCase();
             if (!allowedCategoriesSet.has(sectionKey)) continue;
             if (!sections.has(sectionKey)) {
