@@ -57,12 +57,12 @@ export default class PostMemesCommand extends EconomyCommand {
         // pick a meme response
         const responses = this.language.execution.responses as PostMemeWeightedResponse[];
         const memesChoosable = this.language.execution.memes;
-        const memesText = memesChoosable.map((memeName, i) => `*${i}.* ${memeName}`).join("\n");
+        const memesText = memesChoosable.map((memeName, i) => `*${i + 1}.* ${memeName}`).join("\n");
         const memesNumbers = memesChoosable.map((memeName, i) => [memeName, (i + 1).toString()]).flat();
         const meme = weightedChoice(responses.map((e) => [e[1], e[0]]));
 
         const requestText = `${this.language.execution.request_title}\n\n${this.language.execution.request_body}\n${this.language.execution.request_footer}\n\n${memesText}`;
-        await messagingService.reply(message, requestText, true, {
+        await messagingService.replyAdvanced(message, {text: requestText, mentions: [user.model.jid]}, true, {
             placeholder: this.getDefaultPlaceholder({chat, message, user}),
         });
         const memeChosenMsg = await this.validatedWaitForInteractionWith(
@@ -87,7 +87,7 @@ export default class PostMemesCommand extends EconomyCommand {
         const memeResponseText = `${this.language.execution.request_title}\n\n${meme.title}\n${meme.footer}`;
         const coinsAmount = user.random.intBetween(meme.money_range[0], meme.money_range[1]);
 
-        await messagingService.reply(message, memeResponseText, true, {
+        await messagingService.replyAdvanced(message, {text: memeResponseText, mentions: [user.model.jid]}, true, {
             placeholder: this.getDefaultPlaceholder({
                 chat,
                 message,
