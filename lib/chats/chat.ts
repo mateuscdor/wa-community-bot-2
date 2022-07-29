@@ -4,7 +4,7 @@ import {whatsappBot} from "..";
 import {BlockedReason} from "../blockable";
 import Blockable from "../blockable/blockable";
 import Triggerable from "../blockable/triggerable";
-import {Command, CommandTrigger} from "../command";
+import {Command, CommandTrigger, ImageCommand} from "../command";
 import {
     PromoteCommand,
     AnonymousCommand,
@@ -54,6 +54,8 @@ import CommandHandler from "../handlers/command_handler";
 import Message from "../message/message";
 import {havePluralS, pluralForm} from "../utils/message_utils";
 import languages from "../constants/language.json";
+import imageGenJson from "../constants/image_gen.json";
+import {ImageGenCommandData} from "../command/image_command";
 
 export default abstract class Chat {
     public model: ChatModel;
@@ -133,6 +135,15 @@ export default abstract class Chat {
         handler?.add(new WithdrawCommand(this.model.language));
         handler?.add(new CrimeCommand(this.model.language));
         handler?.add(new PostMemesCommand(this.model.language));
+
+        // bot image gen commands
+        for (const imageGenCommandData of imageGenJson) {
+            handler?.add(
+                new ImageCommand(imageGenCommandData as ImageGenCommandData, this.model.language, {
+                    category: languages.image_gen[this.model.language].category,
+                }),
+            );
+        }
 
         // bot misc commands
         handler?.add(new LanguageCommand());

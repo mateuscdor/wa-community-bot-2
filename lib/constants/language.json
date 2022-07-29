@@ -132,6 +132,7 @@
                 "usage": "{prefix}{command} <command>",
                 "execution": {
                     "prefix": "*----- HELP ME I'M RETARDED ----*",
+                    "category_help": "*Category - {category}*",
                     "suffix": "Hope I helped ✌\n~bot",
                     "footer": "Donators receive special perks!\nhttps://payboxapp.page.link/VNQQ1AAknBKoneF79\nhttps://www.patreon.com/wailcommunitybot\nhttps://paypal.me/whatsappbotisrael\n\nWant me to make you a bot? https://www.fiverr.com/share/Y0Zb9a",
                     "button": "Click me for help!",
@@ -151,6 +152,7 @@
                 "usage": "{prefix}{command} <פקודה>",
                 "execution": {
                     "prefix": "*----- עזרה אני מפגר!!! -----*",
+                    "category_help": "*קטגוריה - {category}*",
                     "suffix": "מקווה שעזרתי ✌",
                     "footer": "תורמים מקבלים פריבילגיות מיוחדות!\nhttps://payboxapp.page.link/VNQQ1AAknBKoneF79\nhttps://www.patreon.com/wailcommunitybot\nhttps://paypal.me/whatsappbotisrael\n\nרוצים שאצור לכם בוט? https://www.fiverr.com/share/Y0Zb9a",
                     "button": "תלחץ עליי לעזרה!",
@@ -1454,7 +1456,10 @@
                             {
                                 "title": "Your meme is a DEAD BORING TERRIBLE DISGUSTING meme.",
                                 "footer": "You get {coins} {coin} try harder next time. We're not angry, just disappointed.",
-                                "money_range": [0, 0]
+                                "money_range": [
+                                    0,
+                                    0
+                                ]
                             }
                         ],
                         [
@@ -1462,7 +1467,10 @@
                             {
                                 "title": "You posted a decent meme!",
                                 "footer": "You earned {coins} {coin} for your funny efforts.",
-                                "money_range": [1400, 1900]
+                                "money_range": [
+                                    1400,
+                                    1900
+                                ]
                             }
                         ],
                         [
@@ -1470,11 +1478,14 @@
                             {
                                 "title": "You posted a TRENDING meme!",
                                 "footer": "You earned {coins} {coin} for your efforts, niceeee meme bro",
-                                "money_range": [1900, 2300]
+                                "money_range": [
+                                    1900,
+                                    2300
+                                ]
                             }
                         ]
                     ],
-                    "too_long": "You're too boring.. You took too long to answer.", 
+                    "too_long": "You're too boring.. You took too long to answer.",
                     "request_title": "*{tag}'s meme posting session*",
                     "request_body": "Pick a meme to post to the internet!",
                     "request_footer": "Hopefully people will like it and give you some $$$$, but it's also possible they hate it and you LOSE money from lawsuit fees.",
@@ -1501,7 +1512,10 @@
                             {
                                 "title": "המים שלך *משעמם* _מגעיל_ ו```דוחה```. תתבייש.",
                                 "footer": "קיבלת {coins} {coin}. תנסה יותר פעם הבאה. אנחנו לא כועסים, סתם מאוכזבים...",
-                                "money_range": [0, 0]
+                                "money_range": [
+                                    0,
+                                    0
+                                ]
                             }
                         ],
                         [
@@ -1509,7 +1523,10 @@
                             {
                                 "title": "העלתה מים סביר!",
                                 "footer": "קיבלת {coins} {coin} על הנסיונות שלך!",
-                                "money_range": [1400, 1900]
+                                "money_range": [
+                                    1400,
+                                    1900
+                                ]
                             }
                         ],
                         [
@@ -1517,7 +1534,10 @@
                             {
                                 "title": "העלתה מים טרנדי!",
                                 "footer": "קיבלת {coins} {coin} על הניסיות שלך. איזה מייםםםם אחשליייי",
-                                "money_range": [1900, 2300]
+                                "money_range": [
+                                    1900,
+                                    2300
+                                ]
                             }
                         ]
                     ],
@@ -1526,6 +1546,20 @@
                     "request_body": "תבחר מים שאתה רוצה לעלות לאינטרנט",
                     "request_footer": "נקווה שאנשים יאהבו את זה ויתנו לכם $$$$, אבללל יש אפשרות שישנאו אותו ותפסיד כסף מתביעות!",
                     "invalid_meme": "אתה לא בחרת מים..................."
+                }
+            }
+        },
+        "image": {
+            "english": {
+                "execution": {
+                    "default_name": "THIS GUY",
+                    "body_required": "This is why your mom left.. you need to have text"
+                }
+            },
+            "hebrew": {
+                "execution": {
+                    "default_name": "מפגר בלי שם ווצאפ",
+                    "body_required": "זה למה אמא שלך עזבה... אתה צריך לשלוח את הפקודה עם טקסט"
                 }
             }
         }
@@ -1665,6 +1699,18 @@
         },
         "hebrew": {
             "message": "אתה לא יכול להשתמש בפקודה זו לעוד {time} {second}.\nאתה יכול להפחית את זה בהרבה על ידי תרומה!"
+        }
+    },
+    "image_gen": {
+        "english": {
+            "category": "Image",
+            "title": "{prefix}help image",
+            "description": "Image generation help menu"
+        },
+        "hebrew": {
+            "category": "תמונה",
+            "title": "{prefix}עזרה תמונה",
+            "description": "תפריט עזרה ליוצר התמונות"
         }
     }
 }

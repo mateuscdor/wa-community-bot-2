@@ -10,6 +10,7 @@ import makeWASocket, {
     MessageRetryMap,
 } from "@adiwajshing/baileys";
 import {Boom} from "@hapi/boom";
+import axios from "axios";
 import {existsSync, fstat, mkdir, mkdirSync} from "fs";
 import pino from "pino";
 import {botTrafficLogger, logger, storeLogger} from "../constants/logger";
@@ -26,6 +27,7 @@ export class BotClient {
 
     public client: WASocket | undefined | null;
     public eventListener: BaileysEventEmitter | undefined;
+    public profilePicture: Promise<Buffer | undefined> | undefined;
 
     private isRunning: boolean = false;
 
@@ -124,6 +126,14 @@ export class BotClient {
         this.eventListener.on("creds.update", () => this.authManager.saveAuthState());
 
         logger.info("BOT CLIENT - Registered listeners");
+
+        this.profilePicture = new Promise((resolve) => {
+            this.client?.profilePictureUrl(BotClient.currentClientId!).then((url) => {
+                if (url) {
+                    resolve(axios.get(url, {responseType: "arraybuffer"}).then((res) => Buffer.from(res.data)));
+                }
+            });
+        });
     }
 
     public async restart() {
@@ -131,9 +141,9 @@ export class BotClient {
     }
 
     public close() {
-        logger.info('Closing bot client connection');
+        logger.info("Closing bot client connection");
         this.isRunning = false;
         this.client?.end(undefined);
-        logger.info('Closed bot client connection');
+        logger.info("Closed bot client connection");
     }
 }

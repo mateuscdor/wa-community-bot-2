@@ -32,7 +32,7 @@ export default class HelpCommand extends Command {
         this.commandHandler = commandHandler;
     }
 
-    async execute(client: WASocket, chat: Chat, message: Message, body?: string) {
+    async execute(client: WASocket, chat: Chat, message: Message, body?: string, ...args: string[]) {
         const prefix = chat.model.commandPrefix;
 
         const user = await userRepository.get(message.sender ?? "");
@@ -63,8 +63,40 @@ export default class HelpCommand extends Command {
             );
         }
 
-        const [sections, sendInGroup] = await this.getHelpSections(chat, message, user);
-        let helpMessage = `${this.language.execution.prefix}\n\n`;
+        const [filteredCommands, sendInGroup] = await this.getFilteredCommands(message);
+        const categoriesList = filteredCommands.map(
+            (e) => e.category?.toLowerCase() ?? this.language.execution.misc.toLowerCase(),
+        );
+        const categories = new Set(categoriesList);
+        const argsSet = new Set(args.map((e) => e.toLowerCase()));
+        let allowedCategories = Array.from(categories).filter((cat) => argsSet.has(cat.toLowerCase()));
+        if (allowedCategories.length === 0) {
+            allowedCategories = categoriesList;
+        }
+        let sections = await this.getHelpSections(filteredCommands, chat, message, user, allowedCategories);
+        const isSpecificSectionRequest = sections[args[0].toLowerCase()] != undefined;
+        if (isSpecificSectionRequest) {
+            sections = new Map([args[0].toLowerCase(), sections[args[0].toLowerCase()]]);
+        } else {
+            sections[languages.image_gen[this.langCode].category.toLowerCase()] = {
+                title: languages.image_gen[this.langCode].category.toUpperCase(),
+                rows: [
+                    {
+                        title: languages.image_gen[this.langCode].title.replace("{prefix}", prefix),
+                        description: languages.image_gen[this.langCode].description,
+                    },
+                ],
+            };
+        }
+
+        let helpMessage = `${this.language.execution.prefix}\n${
+            isSpecificSectionRequest
+                ? this.language.execution.category_help.replace(
+                      "{category}",
+                      sections.get(args[0].toLowerCase())?.title!,
+                  )
+                : ""
+        }\n${isSpecificSectionRequest ? "\n" : ""}`;
 
         const sendFull = !["תפריט", "menu"].some((e) => body?.toLowerCase()?.includes(e));
         if (sendFull) helpMessage += await this.getHelpText(sections);
@@ -115,28 +147,21 @@ export default class HelpCommand extends Command {
     onBlocked(data: Message, blockedReason: BlockedReason) {}
 
     public async getHelpSections(
+        commands: Command[],
         chat: Chat,
         message: Message,
         user: User | undefined,
-    ): Promise<[Map<string, proto.ISection>, boolean]> {
-        const allCommands = this.commandHandler.blockables;
+        allowedCategories: string[],
+    ): Promise<Map<string, proto.ISection>> {
         const filteredCommands: Array<Command> = [];
-        let sendInGroup = true;
-
-        for (const command of allCommands) {
-            if (!command.mainTrigger.command) continue;
-            if (command.mainTrigger.command == this.mainTrigger.command) continue;
-
-            if ((await this.commandHandler.isBlocked(message, command, false)) != undefined) continue;
-
-            if (command.developerLevel >= DeveloperLevel.Moderator) sendInGroup = false;
-            filteredCommands.push(command);
-        }
+        const allowedCategoriesSet = new Set(allowedCategories);
+        allowedCategoriesSet.delete(languages.image_gen[this.langCode].category.toLowerCase());
 
         const sections: Map<string, proto.ISection> = new Map();
         let id = 0;
         for (const command of filteredCommands) {
             const sectionKey = command.category?.toLowerCase() ?? this.language.execution.misc.toLowerCase();
+            if (!allowedCategoriesSet.has(sectionKey)) continue;
             if (!sections.has(sectionKey)) {
                 sections.set(sectionKey, {
                     title: command.category?.toUpperCase() ?? this.language.execution.misc.toUpperCase(),
@@ -162,7 +187,25 @@ export default class HelpCommand extends Command {
             id++;
         }
 
-        return [sections, sendInGroup];
+        return sections;
+    }
+
+    private async getFilteredCommands(message: Message): Promise<[Command[], boolean]> {
+        const allCommands = this.commandHandler.blockables;
+        const filteredCommands: Array<Command> = [];
+        let sendInGroup = true;
+
+        for (const command of allCommands) {
+            if (!command.mainTrigger.command) continue;
+            if (command.mainTrigger.command == this.mainTrigger.command) continue;
+
+            if ((await this.commandHandler.isBlocked(message, command, false)) != undefined) continue;
+
+            if (command.developerLevel >= DeveloperLevel.Moderator) sendInGroup = false;
+            filteredCommands.push(command);
+        }
+
+        return [filteredCommands, sendInGroup];
     }
 
     public async getHelpText(sections: Map<string, proto.ISection>): Promise<string> {
