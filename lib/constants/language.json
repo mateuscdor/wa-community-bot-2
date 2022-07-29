@@ -1658,5 +1658,13 @@
         "hebrew": {
             "help": "היי! רק רציתי לוודא שאתה יודע איך להשיג עזרה עם שימוש בבוט.\nתלחץ על הכפתור למטה או תתייג אותי לעזרה!"
         }
+    },
+    "cooldown": {
+        "english": {
+            "message": "You have to wait {time} {second} before using this command again.\nYou can avoid this by donating!"
+        },
+        "hebrew": {
+            "message": "אתה לא יכול להשתמש בפקודה זו לעוד {time} {second}.\nאתה יכול להיפטר מזה על ידי תרומה!"
+        }
     }
 }

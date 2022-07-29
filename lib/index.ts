@@ -22,6 +22,7 @@ whatsappBot.start();
 registerListeners();
 registerCommands();
 
+let messageNumber = 0;
 function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClient) {
     eventListener?.on("messages.upsert", async (chats) => {
         for (const rawMsg of chats.messages) {
@@ -34,7 +35,7 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
 
             // // apply metadata bound to message id in messaging service (this allows bot to send messages with metadata)
             const msg = await messagingService.messageInterceptor(rawMsg);
-            logger.debug(`Processing message - ${msg.from} -> ${msg.to} | ${msg.content}`);
+            logger.debug(`Processing message (${messageNumber++}) - ${msg.from} -> ${msg.to} | ${msg.content}`);
             const userJid = normalizeJid(msg.sender ?? "");
             // if (!["972557223809"].some((e) => userJid?.startsWith(e))) return;
 

@@ -1,6 +1,7 @@
 import {AnyMessageContent, MiscMessageGenerationOptions} from "@adiwajshing/baileys";
 import {ChildProcess} from "child_process";
 import {whatsappBot} from "..";
+import {BlockedReason} from "../blockable";
 import Blockable from "../blockable/blockable";
 import Triggerable from "../blockable/triggerable";
 import {Command, CommandTrigger} from "../command";
@@ -51,6 +52,8 @@ import ChatModel from "../database/models/chat/chat_model";
 import BlockableHandler from "../handlers/blockable_handler";
 import CommandHandler from "../handlers/command_handler";
 import Message from "../message/message";
+import {havePluralS, pluralForm} from "../utils/message_utils";
+import languages from "../constants/language.json";
 
 export default abstract class Chat {
     public model: ChatModel;
@@ -156,6 +159,35 @@ export default abstract class Chat {
 
             for (const [trigger, blockable] of res) {
                 const isBlocked = await handler.isBlocked(message, blockable, true, trigger);
+
+                if (isBlocked == BlockedReason.Cooldown) {
+                    const user = await userRepository.get(message.sender ?? "");
+                    const timeToWait =
+                        (user?.timeTillCooldownEnd(message.raw?.key.remoteJid!, blockable as Command) ?? 0) / 1000.0;
+                    const donateCommand = await this.getCommandByTrigger("donate");
+                    await messagingService.replyAdvanced(
+                        message,
+                        {
+                            text: languages.cooldown[this.model.language].message,
+                            buttons: [
+                                {
+                                    buttonId: "0",
+                                    buttonText: {displayText: `${this.model.commandPrefix}${donateCommand?.name}`},
+                                },
+                            ],
+                        },
+                        true,
+                        {
+                            placeholder: {
+                                custom: {
+                                    time: timeToWait.toFixed(2),
+                                    second: pluralForm(timeToWait, languages.times[this.model.language].second),
+                                },
+                                chat: this,
+                            },
+                        },
+                    );
+                }
 
                 if (isBlocked != undefined) {
                     return await blockable.onBlocked(message, isBlocked);

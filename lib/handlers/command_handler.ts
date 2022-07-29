@@ -57,14 +57,6 @@ export default class CommandHandler extends BlockableHandler<Message> {
         trigger?: Triggerable<Message> | undefined,
     ): Promise<BlockedReason | undefined> {
         const res = await this.isBlockedCheck(data, blockable, checkCooldown, trigger);
-        if (res == BlockedReason.Cooldown) {
-            const user = await userRepository.get(data.sender ?? "");
-            const timeToWait = (user?.timeTillCooldownEnd(data.raw?.key.remoteJid!, blockable as Command) ?? 0) / 1000.0
-            await messagingService.reply(
-                data,
-                `You have to wait ${timeToWait} second${havePluralS(timeToWait)} before using this command again.\nYou can avoid this by donating!`,
-            );
-        }
 
         return res;
     }
