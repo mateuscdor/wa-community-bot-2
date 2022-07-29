@@ -195,10 +195,65 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
         }
     });
 
-    eventListener.on("chats.upsert", (chats: proto.IChat[]) => {
-        console.log("CHAT START")
-        console.log(chats[0]);
-        console.log("CHAT END")
+    eventListener.on("chats.upsert", async (chats: proto.IChat[]) => {
+        for (const chatData of chats) {
+            const chatJid = chatData.id;
+            if (!chatJid) continue;
+
+            let chat = await chatRepository.get(chatJid, true);
+            if (!chat) {
+                try {
+                    chat = await chatRepository.create(chatJid);
+                } catch (e) {
+                    console.error(e);
+                    chat = (await chatRepository.get(chatJid, true).catch((err) => console.error(err))) || undefined;
+                }
+            }
+
+            if (!chat) {
+                return console.error(`Failed to get a chat for JID(${chatJid}).`);
+            }
+
+            if (!chat.model.sentDisclaimer) {
+                const joinMessage = `**Disclaimer**\
+                \nThis bot is handled and managed by a human\
+                \nAs such, I have the ability to see the messages in this chat.\
+                \nI DO NOT plan to but the possibility is there.\
+                \nIf you are not keen with this, do not send the bot messages.\
+                \nEnjoy my bot! Get started using: ${chat.model.commandPrefix}help\n\nP.S You can DM the bot.`;
+
+                const joinMessageHebrew = `**התראה**\nהבוט מנוהל על ידי אדם.\
+                    \nבכך ברשותי האפשרות לצפות בהודעות בצ'אטים.\
+                    \n*אני לא* מתכנן לעשות זאת אך האפשרות קיימת.\
+                    \nאם אינך מעוניין בכך, אל תשלח לבוט הודעות.\
+                    \nתהנו מהבוט שלי!\
+                    \nכתבו ${chat.model.commandPrefix}עזרה כדי להתחיל להשתמש בו!`;
+
+                await chatRepository.update(chatJid, {
+                    $set: {sent_disclaimer: true},
+                });
+                chat = await chatRepository.get(chatJid, true);
+                await messagingService.sendMessage(chatJid, {
+                    text: joinMessage,
+                    buttons: [{buttonText: {displayText: `${chat?.model.commandPrefix}help`}, buttonId: "0"}],
+                });
+
+                await messagingService.sendMessage(chatJid, {
+                    text: joinMessageHebrew,
+                    buttons: [{buttonText: {displayText: `${chat?.model.commandPrefix}עזרה`}, buttonId: "0"}],
+                });
+            } else {
+                const langCode = chat.model.language;
+                const helpCommand = (await chat?.getCommandByTrigger("help")) as HelpCommand;
+
+                await messagingService.sendMessage(chatJid, {
+                    text: languages.chat_upsert_help[langCode].help,
+                    buttons: [
+                        {buttonText: {displayText: `${chat?.model.commandPrefix}${helpCommand.name}`}, buttonId: "0"},
+                    ],
+                });
+            }
+        }
     });
 }
 

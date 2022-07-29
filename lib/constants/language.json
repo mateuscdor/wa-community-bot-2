@@ -1546,5 +1546,13 @@
             "text_version": "תפריט",
             "difference": "אנשים שמשתמשים בווצאפ בטא לא יוכלו לראות את תפריט זו"
         }
+    },
+    "chat_upsert_help": {
+        "english": {
+            "help": "Hey! Just want to make sure you know how to get help using the bot.\nClick the button below for help or mention me for help!"
+        },
+        "hebrew": {
+            "help": "היי! רק רציתי לוודא שאתה יודע איך להשיג עזרה עם שימוש בבוט.\nתלחץ על הכפתור למטה או תתייג אותי לעזרה!"
+        }
     }
 }
