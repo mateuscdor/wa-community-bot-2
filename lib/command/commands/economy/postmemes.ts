@@ -75,9 +75,13 @@ export default class PostMemesCommand extends EconomyCommand {
 
         if (!memeChosenMsg) return;
 
+        const num = Number(memeChosenMsg.content?.trim()) - 1;
         const memeChosen =
-            Number(memeChosenMsg.content?.trim()) - 1 ||
-            memesChoosable.findIndex((e) => memeChosenMsg.content?.trim().toLowerCase().startsWith(e.toLowerCase()));
+            !num && num != 0
+                ? memesChoosable.findIndex((e) =>
+                      memeChosenMsg.content?.trim().toLowerCase().startsWith(e.toLowerCase()),
+                  )
+                : num;
 
         if (memeChosen === -1) {
             return await messagingService.reply(message, this.language.execution.invalid_meme, true);
