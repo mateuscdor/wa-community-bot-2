@@ -17,7 +17,7 @@ import {Chat} from "./chats";
 import {whatsappBot} from ".";
 import {applyPlaceholders} from "./utils/message_utils";
 import moment from "moment";
-import { logger } from "./constants/logger";
+import {logger} from "./constants/logger";
 
 export type Placeholder = {
     chat?: Chat;
@@ -46,6 +46,11 @@ export default class MessagingService {
         this.metadataAssignment = new Map();
         this.messageCallbacks = [];
         this.metadataEnabled = metadataEnabled;
+
+        setInterval(() => {
+            // clear references in sentMessagesCache
+            this.sentMessagesCache.clear();
+        }, 1000 * 60 * 2);
     }
 
     /**

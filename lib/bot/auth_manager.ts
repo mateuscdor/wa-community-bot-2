@@ -12,6 +12,13 @@ export class AuthManager {
     constructor(private authenticationPath: string) {
         this.messageRetryMap = {};
 
+        setInterval(() => {
+            // clear references in messageRetryMap
+            Object.keys(this.messageRetryMap).forEach((key) => {
+                delete this.messageRetryMap[key];
+            });
+        }, 1000 * 60 * 2);
+
         this.initialized = new Promise((resolve, reject) => {
             try {
                 if (!existsSync(authenticationPath)) {
