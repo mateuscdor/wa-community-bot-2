@@ -13,7 +13,7 @@ export const botTrafficLogger = pino(
     {
         level: "info",
     },
-    pino.destination(`../../logs/traffic/${moment().format("DD-MM-YYYY-HH-mm-ss")}.log`),
+    pino.destination(`./logs/traffic/${moment().format("DD-MM-YYYY-HH-mm-ss")}.log`),
 );
 
 export const storeLogger = pino(
@@ -21,5 +21,5 @@ export const storeLogger = pino(
         level: "info",
         stream: "store"
     },
-    pino.destination(`../../logs/store/${moment().format("DD-MM-YYYY-HH-mm-ss")}.log`),
+    pino.destination(`./logs/store/${moment().format("DD-MM-YYYY-HH-mm-ss")}.log`),
 );
