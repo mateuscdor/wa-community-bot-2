@@ -22,15 +22,16 @@ export const logger = createLogger({
         new transports.File({
             filename: `${botLogsDirectory}/${moment().format("DD-MM-YYYY-HH-mm-ss")}.log`,
             level: "info",
+            format: format.combine(format.json()),
         }),
         new transports.Console({
             level: "debug",
             format: format.combine(
                 format.splat(),
                 format.colorize(),
-                format.timestamp(),
-                format.metadata(),
-                format.printf(({level, message, label, timestamp, metadata}) => `${timestamp} ${level}: ${message} - ${metadata}`),
+                format.timestamp({format: "YYYY-MM-DD HH:mm:ss"}),
+                format.metadata({fillExcept: ["message", "level", "timestamp", "label"]}),
+                format.printf((info) => `${info.timestamp} ${info.level}: ${info.message}`),
             ),
         }),
     ],
