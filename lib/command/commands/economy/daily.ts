@@ -49,9 +49,9 @@ export default class DailyCommand extends EconomyCommand {
         let dailyStreak = dailyMeta.get("streak") as number;
         const lastDaily = moment.unix(dailyMeta.get("last_daily") as number).utc();
         // allow only one daily per day - day resets at UTC midnight
-        const timeTillUTCMidnight = moment.utc().add(1, 'day').startOf("day").diff(moment().utc(), "seconds");
+        const timeTillNextUTCMidnight = moment.utc().add(1, "day").startOf("day").diff(moment().utc(), "seconds");
         // format timeTillUTCMidnight to x hour, x minutes and x seconds and if hour or minute is 0, remove it
-        const timeTillUTCMidnightMoment = moment.unix(timeTillUTCMidnight).utc();
+        const timeTillUTCMidnightMoment = moment.unix(timeTillNextUTCMidnight).utc();
         const hours = timeTillUTCMidnightMoment.hours();
         const minutes = timeTillUTCMidnightMoment.minutes();
         const seconds = timeTillUTCMidnightMoment.seconds();
@@ -77,7 +77,7 @@ export default class DailyCommand extends EconomyCommand {
         }
 
         // if last time daily was done is before start of current day, reset streak
-        const isStreakBroken = dailyStreak > 0 && lastDaily.isBefore(moment().utc().startOf('day'));
+        const isStreakBroken = dailyStreak > 0 && lastDaily.isBefore(moment().utc().subtract(1, "day").startOf("day"));
         if (isStreakBroken) dailyStreak = 1;
         else dailyStreak++;
 
