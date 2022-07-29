@@ -1475,7 +1475,7 @@
                         ]
                     ],
                     "too_long": "You're too boring.. You took too long to answer.", 
-                    "request_title": "{tag}'s meme posting session",
+                    "request_title": "*{tag}'s meme posting session*",
                     "request_body": "Pick a meme to post to the internet!",
                     "request_footer": "Hopefully people will like it and give you some $$$$, but it's also possible they hate it and you LOSE money from lawsuit fees.",
                     "invalid_meme": "You didn't pick a meme..................."
@@ -1522,9 +1522,9 @@
                         ]
                     ],
                     "too_long": "אתה יותר מדי משעמם. לקח לך יותר מדי זמן לענות.",
-                    "request_title": "סשן העלאת המימים של {tag}",
+                    "request_title": "*סשן העלאת המימים של {tag}*",
                     "request_body": "תבחר מים שאתה רוצה לעלות לאינטרנט",
-                    "request_footer": "נקווה שאנשים יאהבו את זה ויתנו לכם $$$$, אבללל זה גם אפשרי שישנאו אותו ותפסיד כסף ותביעות!",
+                    "request_footer": "נקווה שאנשים יאהבו את זה ויתנו לכם $$$$, אבללל יש אפשרות שישנאו אותו ותפסיד כסף מתביעות!",
                     "invalid_meme": "אתה לא בחרת מים..................."
                 }
             }
