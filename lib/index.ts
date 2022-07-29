@@ -77,10 +77,6 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
                 return logger.error(`Failed to fetch chat.`, {jid: chatJid});
             }
 
-            if (!chat.model.sentDisclaimer) {
-                await sendDisclaimer(chat);
-            }
-
             const selectedRowId = rawMsg.message?.listResponseMessage?.singleSelectReply?.selectedRowId;
             if (selectedRowId && selectedRowId?.startsWith("HELP_COMMAND")) {
                 const helpCommand = await chat?.getCommandByTrigger("help");
