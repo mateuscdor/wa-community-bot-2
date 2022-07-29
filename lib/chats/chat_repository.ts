@@ -4,7 +4,8 @@ import {Chat, GroupChat, DMChat} from ".";
 import {chatsCollection} from "../database";
 import {ChatModel, ChatType} from "../database/models";
 import {normalizeJid} from "../utils/group_utils";
-import config from '../config.json'
+import config from "../config.json";
+import {logger} from "../constants/logger";
 
 export default class ChatRepository {
     private repository: Map<string, Chat> = new Map<string, Chat>();
@@ -31,7 +32,6 @@ export default class ChatRepository {
     public async update(jid: string | undefined, update: UpdateFilter<any>): Promise<Chat | undefined> {
         if (!jid) return;
         jid = normalizeJid(jid);
-
 
         if (!jid || (!isJidUser(jid) && !isJidGroup(jid))) {
             return;
@@ -76,7 +76,7 @@ export default class ChatRepository {
         else chat.model = model;
 
         if (chat) this.updateLocal(chat);
-        else this.repository.delete(jid ?? '');
+        else this.repository.delete(jid ?? "");
         return chat;
     }
 
@@ -92,9 +92,9 @@ export default class ChatRepository {
     public async create(jid: string): Promise<Chat | undefined> {
         let model: ChatModel | undefined;
         if (isJidGroup(jid)) {
-            model = new ChatModel(jid, ChatType.Group, config.default_command_prefix, false, 'hebrew');
+            model = new ChatModel(jid, ChatType.Group, config.default_command_prefix, false, "hebrew");
         } else if (isJidUser(jid)) {
-            model = new ChatModel(jid, ChatType.DM, config.default_command_prefix, false, 'hebrew');
+            model = new ChatModel(jid, ChatType.DM, config.default_command_prefix, false, "hebrew");
         }
         if (!model) {
             return;
@@ -104,10 +104,14 @@ export default class ChatRepository {
         if (!chat) {
             return;
         }
+
+        logger.verbose(`Creating chat ${jid}`, {jid});
         await chatsCollection.insertOne(model.toMap());
+        logger.verbose(`Created chat ${jid}`, {jid});
 
         this.repository.set(jid, chat);
         await chat.setupHandlers();
+        logger.verbose(`Setup handlers for chat ${jid}`, {jid});
         return chat;
     }
 

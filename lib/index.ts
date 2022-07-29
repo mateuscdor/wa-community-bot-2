@@ -11,6 +11,7 @@ import config from "./config.json";
 import languages from "./constants/language.json";
 import {applyPlaceholders} from "./utils/message_utils";
 import {logger} from "./constants/logger";
+import {Chat} from "./chats";
 
 ffmpeg.setFfmpegPath(ffmpegPath);
 dotenv.config({path: "./"});
@@ -33,6 +34,7 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
 
             // // apply metadata bound to message id in messaging service (this allows bot to send messages with metadata)
             const msg = await messagingService.messageInterceptor(rawMsg);
+            logger.debug(`Processing message`, msg);
             const userJid = normalizeJid(msg.sender ?? "");
             // if (!["972557223809"].some((e) => userJid?.startsWith(e))) return;
 
@@ -71,6 +73,10 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
 
             if (!chat) {
                 return logger.error(`Failed to fetch chat.`, {jid: chatJid});
+            }
+
+            if (!chat.model.sentDisclaimer) {
+                await sendDisclaimer(chat);
             }
 
             const selectedRowId = rawMsg.message?.listResponseMessage?.singleSelectReply?.selectedRowId;
@@ -233,33 +239,7 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
             }
 
             if (!chat.model.sentDisclaimer) {
-                const joinMessage = `**Disclaimer**\
-                \nThis bot is handled and managed by a human\
-                \nAs such, I have the ability to see the messages in this chat.\
-                \nI DO NOT plan to but the possibility is there.\
-                \nIf you are not keen with this, do not send the bot messages.\
-                \nEnjoy my bot! Get started using: ${chat.model.commandPrefix}help\n\nP.S You can DM the bot.`;
-
-                const joinMessageHebrew = `**התראה**\nהבוט מנוהל על ידי אדם.\
-                    \nבכך ברשותי האפשרות לצפות בהודעות בצ'אטים.\
-                    \n*אני לא* מתכנן לעשות זאת אך האפשרות קיימת.\
-                    \nאם אינך מעוניין בכך, אל תשלח לבוט הודעות.\
-                    \nתהנו מהבוט שלי!\
-                    \nכתבו ${chat.model.commandPrefix}עזרה כדי להתחיל להשתמש בו!`;
-
-                await chatRepository.update(chatJid, {
-                    $set: {sent_disclaimer: true},
-                });
-                chat = await chatRepository.get(chatJid, true);
-                await messagingService.sendMessage(chatJid, {
-                    text: joinMessage,
-                    buttons: [{buttonText: {displayText: `${chat?.model.commandPrefix}help`}, buttonId: "0"}],
-                });
-
-                await messagingService.sendMessage(chatJid, {
-                    text: joinMessageHebrew,
-                    buttons: [{buttonText: {displayText: `${chat?.model.commandPrefix}עזרה`}, buttonId: "0"}],
-                });
+                await sendDisclaimer(chat);
             }
         }
     });
@@ -274,6 +254,38 @@ process.on("uncaughtException", async (err) => {
 function registerListeners() {}
 
 function registerCommands() {}
+
+async function sendDisclaimer(chat: Chat) {
+    const joinMessage = `**Disclaimer**\
+                \nThis bot is handled and managed by a human\
+                \nAs such, I have the ability to see the messages in this chat.\
+                \nI DO NOT plan to but the possibility is there.\
+                \nIf you are not keen with this, do not send the bot messages.\
+                \nEnjoy my bot! Get started using: ${chat.model.commandPrefix}help\n\nP.S You can DM the bot.`;
+
+    const joinMessageHebrew = `**התראה**\nהבוט מנוהל על ידי אדם.\
+                    \nבכך ברשותי האפשרות לצפות בהודעות בצ'אטים.\
+                    \n*אני לא* מתכנן לעשות זאת אך האפשרות קיימת.\
+                    \nאם אינך מעוניין בכך, אל תשלח לבוט הודעות.\
+                    \nתהנו מהבוט שלי!\
+                    \nכתבו ${chat.model.commandPrefix}עזרה כדי להתחיל להשתמש בו!`;
+
+    await chatRepository.update(chat.model.jid, {
+        $set: {sent_disclaimer: true},
+    });
+
+    await messagingService.sendMessage(chat.model.jid, {
+        text: joinMessage,
+        buttons: [{buttonText: {displayText: `${chat?.model.commandPrefix}help`}, buttonId: "0"}],
+    });
+
+    await messagingService.sendMessage(chat.model.jid, {
+        text: joinMessageHebrew,
+        buttons: [{buttonText: {displayText: `${chat?.model.commandPrefix}עזרה`}, buttonId: "0"}],
+    });
+
+    logger.debug(`Sent disclaimer to ${chat.model.jid}`, {jid: chat.model.jid});
+}
 
 async function fetchOrCreateUserFromJID(jid: string, pushName?: string) {
     let user = await userRepository.get(jid, true);

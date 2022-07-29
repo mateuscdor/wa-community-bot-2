@@ -104,13 +104,13 @@ export default class UserRepository {
 
     public async create(model: UserModel): Promise<User | undefined> {
         try {
-            logger.info(`Creating user`, {jid: model.jid});
+            logger.verbose(`Creating user`, {jid: model.jid});
             await usersCollection.insertOne(model.toMap());
-            logger.info(`User created`, {jid: model.jid});
+            logger.verbose(`User created`, {jid: model.jid});
 
             const user = new User(model);
             await user.init();
-            logger.info(`Created user has been initailized`, {jid: model.jid});
+            logger.verbose(`Created user has been initailized`, {jid: model.jid});
             this.updateLocal(user);
             return user;
         } catch (err) {
