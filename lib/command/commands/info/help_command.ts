@@ -101,15 +101,21 @@ export default class HelpCommand extends Command {
 
         if (isSpecificSectionRequest) sendInGroup = true;
         if (!isSpecificSectionRequest) {
-            sections.set(languages.image_gen[this.langCode].category.toLowerCase(), {
-                title: languages.image_gen[this.langCode].category.toUpperCase(),
-                rows: [
+            sections = new Map([
+                [
+                    languages.image_gen[this.langCode].category.toLowerCase(),
                     {
-                        title: languages.image_gen[this.langCode].title.replace("{prefix}", prefix),
-                        description: languages.image_gen[this.langCode].description,
+                        title: languages.image_gen[this.langCode].category.toUpperCase(),
+                        rows: [
+                            {
+                                title: languages.image_gen[this.langCode].title.replace("{prefix}", prefix),
+                                description: languages.image_gen[this.langCode].description,
+                            },
+                        ],
                     },
                 ],
-            });
+                ...sections.entries()
+            ]);
         }
 
         const sendFull = !["תפריט", "menu"].some((e) => body?.toLowerCase()?.includes(e));
