@@ -232,16 +232,6 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
                     text: joinMessageHebrew,
                     buttons: [{buttonText: {displayText: `${chat?.model.commandPrefix}עזרה`}, buttonId: "0"}],
                 });
-            } else {
-                const langCode = chat.model.language;
-                const helpCommand = (await chat?.getCommandByTrigger("help")) as HelpCommand;
-
-                await messagingService.sendMessage(chatJid, {
-                    text: languages.chat_upsert_help[langCode].help,
-                    buttons: [
-                        {buttonText: {displayText: `${chat?.model.commandPrefix}${helpCommand.name}`}, buttonId: "0"},
-                    ],
-                });
             }
         }
     });
