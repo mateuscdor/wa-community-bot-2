@@ -26,6 +26,7 @@ export const logger = createLogger({
         new transports.Console({
             level: "debug",
             format: format.combine(
+                format.splat(),
                 format.colorize(),
                 format.timestamp(),
                 format.metadata(),
