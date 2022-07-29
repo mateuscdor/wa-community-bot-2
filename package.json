@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc",
-    "start": "npm run build && node dist/index.js"
+    "start": "npm run build && node dist/index.js",
+    "clinic": "npm run build && clinic doctor -- node dist/index.js"
   },
   "dependencies": {
     "@adiwajshing/baileys": "^4.3.0",
