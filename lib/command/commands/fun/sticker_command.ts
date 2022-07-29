@@ -147,17 +147,21 @@ export default class StickerCommand extends Command {
     }
 
     private async sendSticker(message: Message, media: Buffer, quality: number) {
-        const stickerBuffer = await this.createSticker(media, "bot", "bot", quality).toBuffer();
-        if (stickerBuffer.length < 50) {
-            return await messagingService.reply(message, this.language.execution.no_media, true);
-        } else if (stickerBuffer.length > 2 * 1024 * 1024) {
-            // if bigger than 2mb error.
+        try {
+            const stickerBuffer = await this.createSticker(media, "bot", "bot", quality).toBuffer();
+            if (stickerBuffer.length < 50) {
+                return await messagingService.reply(message, this.language.execution.no_media, true);
+            } else if (stickerBuffer.length > 2 * 1024 * 1024) {
+                // if bigger than 2mb error.
+                return await messagingService.reply(message, this.language.execution.too_big, true);
+            }
+
+            await messagingService.replyAdvanced(message, {sticker: stickerBuffer}, true, {
+                metadata: new MessageMetadata(new Map([["media", false]])),
+            });
+        } catch (err) {
             return await messagingService.reply(message, this.language.execution.too_big, true);
         }
-
-        await messagingService.replyAdvanced(message, {sticker: stickerBuffer}, true, {
-            metadata: new MessageMetadata(new Map([["media", false]])),
-        });
     }
 
     private createSticker(buffer: Buffer, author: string = "bot", pack: string = "bot", quality: number) {
