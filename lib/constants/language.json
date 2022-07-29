@@ -1661,10 +1661,10 @@
     },
     "cooldown": {
         "english": {
-            "message": "You have to wait {time} {second} before using this command again.\nYou can avoid this by donating!"
+            "message": "You have to wait {time} {second} before using this command again.\nYou can reduce this by donating!"
         },
         "hebrew": {
-            "message": "אתה לא יכול להשתמש בפקודה זו לעוד {time} {second}.\nאתה יכול להיפטר מזה על ידי תרומה!"
+            "message": "אתה לא יכול להשתמש בפקודה זו לעוד {time} {second}.\nאתה יכול להפחית את זה על ידי תרומה!"
         }
     }
 }
