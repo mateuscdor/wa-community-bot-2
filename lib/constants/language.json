@@ -306,7 +306,7 @@
                     "add"
                 ],
                 "category": "Group Admin",
-                "description": "Add a user to the group using a phone number or contact card. ({prefix}{command} 05XXXXXXXX)",
+                "description": "Add a user to the group using a phone number or contact card. {prefix}{command} 05XXXXXXXX",
                 "usage": "{prefix}{command} <number>",
                 "execution": {
                     "bot_no_admin": "Give the bot admin access in order to use this command.",
@@ -321,7 +321,7 @@
                     "הוסף"
                 ],
                 "category": "אדמין קבוצה",
-                "description": "הוסף משתמש לקבוצה באמצעות מספר טלפון או כרטיס איש קשר. ({prefix}{command} 05XXXXXXXX)",
+                "description": "הוסף משתמש לקבוצה באמצעות מספר טלפון או כרטיס איש קשר. {prefix}{command} 05XXXXXXXX",
                 "usage": "{prefix}{command} <מספר>",
                 "execution": {
                     "bot_no_admin": "על מנת להשתמש בפקודה זו, עליך לתת לבוט אדמין בקבוצה",
