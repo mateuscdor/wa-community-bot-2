@@ -92,7 +92,7 @@ export default class HelpCommand extends Command {
             if (isJidGroup(message.to))
                 messagingService.replyAdvanced(message, {text: this.language.execution.dms}, true);
 
-            if (sendFull)
+            if (!sendFull)
                 await messagingService.reply(message, languages.tagged_info[this.langCode].difference, true, {
                     privateReply: true,
                 });
