@@ -12,7 +12,7 @@ import makeWASocket, {
 import {Boom} from "@hapi/boom";
 import {existsSync, fstat, mkdir, mkdirSync} from "fs";
 import pino from "pino";
-import { botTrafficLogger, storeLogger } from "../constants/logger";
+import {botTrafficLogger, storeLogger} from "../constants/logger";
 import {messagingService} from "../constants/services";
 import {wait} from "../utils/async_utils";
 import {getClientID} from "../utils/client_utils";
@@ -78,9 +78,12 @@ export class BotClient {
                 console.log(
                     `Attempting to fetch message ${message.remoteJid ? `${message.remoteJid}-` : ""}${message.id}`,
                 );
-                return message.id
+
+                const res = message.id
                     ? messagingService.getSentMessage(message.remoteJid ?? undefined, message.id)
                     : undefined;
+
+                return res || this.store.chats[message.remoteJid ?? ""]?.messages[message.id ?? ''];
             },
             msgRetryCounterMap: this.authManager.messageRetryMap,
         });
