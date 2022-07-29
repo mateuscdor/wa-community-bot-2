@@ -255,7 +255,7 @@ process.on("uncaughtException", async (err) => {
 
 on_death((sig) => {
     logger.info(`Received death signal ${sig}`);
-    whatsappBot.client?.end(undefined);
+    whatsappBot.close();
     process.exit(0);
 });
 

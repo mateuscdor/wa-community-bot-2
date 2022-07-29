@@ -27,6 +27,8 @@ export class BotClient {
     public client: WASocket | undefined | null;
     public eventListener: BaileysEventEmitter | undefined;
 
+    private isRunning: boolean = false;
+
     private registerListeners: (listener: BaileysEventEmitter, client: BotClient) => void;
 
     /**
@@ -87,7 +89,8 @@ export class BotClient {
             },
             msgRetryCounterMap: this.authManager.messageRetryMap,
         });
-
+        
+        this.isRunning = true;
         messagingService.setClient(this.client);
         this.store.bind(this.client.ev);
         logger.info("BOT CLIENT - has started");
@@ -95,6 +98,11 @@ export class BotClient {
 
         this.registerListeners(this.eventListener, this);
         this.eventListener.on("connection.update", (update) => {
+            if (!this.isRunning) {
+                logger.info("BOT CLIENT - connection.update - not running, exiting.");
+                return;
+            }
+
             const {connection, lastDisconnect} = update;
             logger.info(`BOT CLIENT - CONNECTION UPDATE: ${connection}`, {connection, lastDisconnect});
             if (lastDisconnect?.error) {
@@ -120,5 +128,10 @@ export class BotClient {
 
     public async restart() {
         this.start();
+    }
+
+    public close() {
+        this.isRunning = false;
+        this.client?.end(undefined);
     }
 }
