@@ -11,7 +11,8 @@ import makeWASocket, {
 } from "@adiwajshing/baileys";
 import {Boom} from "@hapi/boom";
 import {existsSync, fstat, mkdir, mkdirSync} from "fs";
-import P from "pino";
+import pino from "pino";
+import { botTrafficLogger, storeLogger } from "../constants/logger";
 import {messagingService} from "../constants/services";
 import {wait} from "../utils/async_utils";
 import {getClientID} from "../utils/client_utils";
@@ -50,7 +51,7 @@ export class BotClient {
         this.authManager = new AuthManager(authPath);
 
         this.store = makeInMemoryStore({
-            logger: P().child({level: "fatal", stream: "store"}),
+            logger: storeLogger,
         });
 
         this.store.readFromFile(storePath + "/baileys_store_multi.json");
@@ -70,7 +71,7 @@ export class BotClient {
         }
 
         this.client = makeWASocket({
-            logger: P({level: "fatal"}),
+            logger: botTrafficLogger,
             printQRInTerminal: true,
             auth: await this.authManager.getState(),
             getMessage: async (message) => {
