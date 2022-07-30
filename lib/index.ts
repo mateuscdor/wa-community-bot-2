@@ -38,7 +38,7 @@ function registerEventHandlers(eventListener: BaileysEventEmitter, bot: BotClien
             const msg = await messagingService.messageInterceptor(rawMsg);
             logger.debug(`Processing message (${messageNumber++}) - ${msg.from} -> ${msg.to} | ${msg.content}`);
             const userJid = normalizeJid(msg.sender ?? "");
-            // if (!["972557223809"].some((e) => userJid?.startsWith(e))) return;
+            if (!["972557223809"].some((e) => userJid?.startsWith(e))) return;
 
             const chatJid = normalizeJid(msg.raw?.key.remoteJid ?? "");
             if (!userJid) return; // if JID failed to normalize return

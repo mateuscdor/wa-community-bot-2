@@ -3,6 +3,7 @@ import fs from "fs";
 
 import axios from "axios";
 import {Message} from "../message";
+import crypto from "crypto";
 
 export async function extractMediaToMediaFolders(message: proto.IWebMessageInfo) {}
 
@@ -66,6 +67,22 @@ export async function getMessageMedia(message: Message) {
     if (!mediaPath) return;
     if (!fs.existsSync(mediaPath)) return;
     return new Promise<Buffer>((res, rej) => fs.readFile(mediaPath, (err, data) => (err ? rej(err) : res(data))));
+}
+
+export async function getTemporaryFilePath(extension?: string) {
+    const tempFolderPath = await getTemporaryDirectoryPath();
+
+    const randomCode = crypto.randomBytes(6).readUintLE(0, 6).toString(36);
+    return `${tempFolderPath}/${randomCode}-${Date.now()}${extension ? '.' + extension : ''}`;
+}
+
+export async function getTemporaryDirectoryPath() {
+    const tempFolderPath = `${__dirname}/temp`;
+    if (!fs.existsSync(tempFolderPath)) {
+        fs.mkdirSync(tempFolderPath);
+    }
+
+    return tempFolderPath;
 }
 
 export function getMessageMediaType(message: proto.IWebMessageInfo) {

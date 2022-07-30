@@ -32,7 +32,9 @@ export default class JIDCommand extends Command {
         if (quoted) {
             return await messagingService.reply(
                 msg,
-                `CHAT JID: ${msg.raw?.key.remoteJid ?? "N/A"}\nCURRENT MESSAGE ID: ${msg.raw?.key.id ?? "N/A"}\nMIME TYPE: ${quoted.audioMessage?.mimetype ?? 'N/A'}`,
+                `CHAT JID: ${msg.raw?.key.remoteJid ?? "N/A"}\nCURRENT MESSAGE ID: ${
+                    msg.raw?.key.id ?? "N/A"
+                }\nMIME TYPE: ${quoted.videoMessage?.mimetype ?? "N/A"}\nMIME TYPE: ${quoted.imageMessage?.mimetype ?? "N/A"}`,
                 true,
             );
         }

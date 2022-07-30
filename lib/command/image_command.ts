@@ -10,7 +10,11 @@ import CommandTrigger from "./command_trigger";
 import InteractableCommand from "./interactable_command";
 import languages from "../constants/language.json";
 import {BlockedReason} from "../blockable";
-import {writeFile} from "fs";
+import {writeFile, writeFileSync} from "fs";
+import Ffmpeg from "fluent-ffmpeg";
+import {PassThrough, Readable, Transform, Writable} from "stream";
+import fs from "fs";
+import {getTemporaryFilePath} from "../utils/media_utils";
 
 type ImageCommandRequestBody = {
     text: string;
@@ -101,8 +105,6 @@ export default class ImageCommand extends InteractableCommand {
         }
 
         if (this.genData.type == "post") {
-            console.log(this.genData.route)
-            console.log(requestBody)
             const response = await axios.post(this.route, requestBody, {responseType: "arraybuffer"});
             const data = response.data;
             if (data.error) {
@@ -116,9 +118,14 @@ export default class ImageCommand extends InteractableCommand {
             // check if image response
             const mimetype = response.headers["content-type"];
             const isImage = mimetype.startsWith("image");
+            const isGif = mimetype.startsWith("image/gif");
             const content = Buffer.from(data, "binary");
 
-            const responseContent = {mimetype, [isImage ? "image" : "video"]: content};
+            if (isGif) {
+                return this.sendGif(content, message);
+            }
+
+            const responseContent = {mimetype: mimetype, [isImage ? "image" : "video"]: content, gifPlayback: isGif};
             return messagingService.replyAdvanced(message, responseContent as any as AnyMessageContent, true);
         } else if (this.genData.type == "get") {
             const response = await axios.get(this.route, {
@@ -141,12 +148,47 @@ export default class ImageCommand extends InteractableCommand {
             // check if image response
             const mimetype = response.headers["content-type"];
             const isImage = mimetype.startsWith("image");
+            const isGif = mimetype.startsWith("image/gif");
             const content = Buffer.from(data, "binary");
 
-            const responseContent = {mimetype, [isImage ? "image" : "video"]: content};
+            if (isGif) {
+                return this.sendGif(content, message);
+            }
+
+            const responseContent = {
+                mimetype,
+                [isImage ? "image" : "video"]: content,
+                gifPlayback: isGif,
+            };
             return messagingService.replyAdvanced(message, responseContent as any as AnyMessageContent, true);
         }
     }
 
     onBlocked(data: Message, blockedReason: BlockedReason) {}
+
+    private async sendGif(buffer: Buffer, message: Message) {
+        const tempFilePath = await getTemporaryFilePath();
+        writeFileSync(tempFilePath + ".gif", buffer);
+
+        Ffmpeg(tempFilePath + ".gif")
+            .inputFormat("gif")
+            .outputFormat("mp4")
+            .save(tempFilePath + ".mp4")
+            .on("end", async () => {
+                fs.unlink(tempFilePath + ".gif", () => {});
+                return messagingService
+                    .replyAdvanced(
+                        message,
+                        {
+                            mimetype: "video/mp4",
+                            video: fs.readFileSync(tempFilePath + ".mp4"),
+                            gifPlayback: true,
+                        },
+                        true,
+                    )
+                    .then(() => {
+                        fs.unlink(tempFilePath + ".mp4", () => {});
+                    });
+            });
+    }
 }

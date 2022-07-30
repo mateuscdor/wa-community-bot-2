@@ -1236,18 +1236,6 @@
         }
     },
     {
-        "route": "yomomma",
-        "name": {
-            "english": "yomomma",
-            "hebrew": ""
-        },
-        "type": "get",
-        "required": {
-            "mentions": 0,
-            "text": false
-        }
-    },
-    {
         "route": "youtube",
         "name": {
             "english": "youtube",
